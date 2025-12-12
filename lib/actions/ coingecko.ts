@@ -25,10 +25,7 @@ export async function getCoinDetails(id:string) {
     cache: "no-store",
   });
 
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch CoinGecko Demo API data");
-  }
+  if (!res.ok) throw new Error("Failed to fetch CoinGecko Demo API data");
 
   return res.json();
 }

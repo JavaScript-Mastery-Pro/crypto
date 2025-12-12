@@ -156,74 +156,33 @@
   .container {
     @apply px-4 sm:px-12 mx-auto max-w-[1440px];
   }
-}
 
-/* CandlestickChart Styles */
-.candlestick-container {
-  padding: 12px 18px;
-  background: #0b1116;
-  border-radius: 8px;
-}
+  /* CandlestickChart Styles */
+  .candlestick-container {
+    @apply p-3 rounded-lg bg-dark-500 mt-4;
+  }
 
-.candlestick-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 16px;
-  color: #e6eef8;
-  font-size: 20px;
-  font-weight: 600;
-}
+  .candlestick-header {
+    @apply flex items-center mb-4 font-semibold text-[#e6eef8] text-[20px];
+  }
 
-.candlestick-button-group {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
+  .candlestick-button-group {
+    @apply flex gap-2 items-center;
+  }
 
-.candlestick-dropdown-button {
-  background: #141922;
-  color: #cfe8ff;
-  border-radius: 8px;
-  padding: 6px 12px;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-}
+  .candlestick-dropdown-button {
+    @apply rounded-sm px-3 py-1.5 border-0 cursor-pointer text-sm bg-dark-500 text-[#cfe8ff] ;
+  }
 
-.candlestick-dropdown-button:hover {
-  background: #1a2332;
-}
+  .candlestick-period-button {
+    @apply bg-transparent border-0 cursor-pointer px-3 py-1.5 text-sm text-[#6b7a8f] hover:text-[#9fb0c8] transition-colors duration-200;
+  }
 
-.candlestick-period-button {
-  background: transparent;
-  color: #6b7a8f;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-  padding: 6px 12px;
-  transition: color 0.2s;
-}
+  .candlestick-period-button-active {
+    @apply rounded-sm px-3 py-1.5 border-0 cursor-pointer text-sm bg-dark-500 text-[#e6eef8] ;
+  }
 
-.candlestick-period-button:hover {
-  color: #9fb0c8;
-}
-
-.candlestick-period-button-active {
-  background: #1a2332;
-  color: #e6eef8;
-  border-radius: 8px;
-  padding: 6px 12px;
-  border: none;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.candlestick-period-button-active:hover {
-  background: #212d40;
-}
-
-.candlestick-chart-container {
-  width: 100%;
-  min-height: 200px;
+  .candlestick-chart-container {
+    @apply w-full min-h-[200px];
+  }
 }

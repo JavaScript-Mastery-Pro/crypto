@@ -20,7 +20,7 @@ import { orderBook, similarCoins } from '@/lib/constants';
 
 const CoinDetails = async () => {
   const coinData = await getCoinDetails('ethereum');
-  const coinOHLCData = await getCoinOHLC('ethereum', 30);
+  const coinOHLCData = await getCoinOHLC('ethereum', 365);
 
   const coin = {
     id: coinData.id,
@@ -137,11 +137,13 @@ const CoinDetails = async () => {
         <div className='w-full grid grid-cols-3 gap-5'>
           <div className='text-base bg-dark-500 p-4 rounded-lg flex flex-col gap-1'>
             <p className='text-purple-100 '>Market Cap</p>
-            <p className='text-base font-bold'>{formatPrice(coin.marketCap)}</p>
+            <p className='text-base font-medium'>
+              {formatPrice(coin.marketCap)}
+            </p>
           </div>
           <div className='text-base bg-dark-500 p-4 rounded-lg flex flex-col gap-1'>
             <p className='text-purple-100 '>Total Volume</p>
-            <p className='text-base font-bold'>
+            <p className='text-base font-medium'>
               {formatPrice(coin.totalVolume)}
             </p>
           </div>
