@@ -1,4 +1,5 @@
 import { clsx, type ClassValue } from "clsx"
+import { CandlestickData, Time } from "lightweight-charts";
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
@@ -28,3 +29,13 @@ export function trendingClasses(value: number) {
     iconClass: isTrendingUp ? "icon-up" : "icon-down",
   };
 }
+
+export const convertOHLCData = (rawData: OHLCData[]): CandlestickData[] => {
+  return rawData.map(([timestampMs, open, high, low, close]) => ({
+    time: Math.floor(timestampMs / 1000) as Time,
+    open: Number(open),
+    high: Number(high),
+    low: Number(low),
+    close: Number(close),
+  }));
+};

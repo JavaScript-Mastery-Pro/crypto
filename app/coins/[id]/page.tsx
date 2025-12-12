@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { getCoinDetails } from '@/lib/actions/ coingecko';
+import { getCoinDetails, getCoinOHLC } from '@/lib/actions/ coingecko';
 import { cn, formatPercentage, formatPrice } from '@/lib/utils';
 import { ArrowUpRight, TrendingDown, TrendingUp } from 'lucide-react';
 
@@ -15,9 +15,12 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { Converter } from '@/components/Converter';
+import CandlestickChart from '@/components/CandlestickChart';
+import { orderBook, similarCoins } from '@/lib/constants';
 
 const CoinDetails = async () => {
   const coinData = await getCoinDetails('ethereum');
+  const coinOHLCData = await getCoinOHLC('ethereum', 30);
 
   const coin = {
     id: coinData.id,
@@ -40,22 +43,6 @@ const CoinDetails = async () => {
   };
 
   const isTrendingUp = coin.priceChangePercentage24h > 0;
-
-  const orderBook = [
-    { price: '0.031 BTC', amountBTC: '0.5 BTC', amountETH: '$15,000' },
-    { price: '0.0305 BTC', amountBTC: '1.0 BTC', amountETH: '$30,000' },
-    { price: '0.0300 BTC', amountBTC: '2.0 BTC', amountETH: '$60,000' },
-    { price: '0.0295 BTC', amountBTC: '1.5 BTC', amountETH: '$45,000' },
-    { price: '0.0290 BTC', amountBTC: '3.0 BTC', amountETH: '$90,000' },
-  ];
-
-  const similarCoins = [
-    { name: 'Bitcoin', symbol: 'BTC', price: 30000 },
-    { name: 'Cardano', symbol: 'ADA', price: 2.15 },
-    { name: 'Solana', symbol: 'SOL', price: 35.5 },
-    { name: 'Ripple', symbol: 'XRP', price: 0.75 },
-    { name: 'Polkadot', symbol: 'DOT', price: 18.2 },
-  ];
 
   console.log('Fetched coin details:', coinData);
   console.log('Processed coin details:', coin);
@@ -86,9 +73,9 @@ const CoinDetails = async () => {
               </Badge>
             </div>
           </div>
-          <div className='grid grid-cols-3 gap-6 w-fit'>
+          <div className='grid grid-cols-3 mt-8 gap-6 w-fit'>
             {/* Today */}
-            <div className='text-base border-r border-purple-600 flex flex-col gap-1'>
+            <div className='text-base border-r border-purple-600 flex flex-col gap-2'>
               <p className='text-purple-100'>Today</p>
               <div
                 className={cn('flex gap-1 items-center text-sm font-medium', {
@@ -105,7 +92,7 @@ const CoinDetails = async () => {
               </div>
             </div>
             {/* 30 Days */}
-            <div className='text-base border-r border-purple-600 flex flex-col gap-1'>
+            <div className='text-base border-r border-purple-600 flex flex-col gap-2'>
               <p className='text-purple-100'>30 Days</p>
               <div
                 className={cn('flex gap-1 items-center text-sm font-medium', {
@@ -122,7 +109,7 @@ const CoinDetails = async () => {
               </div>
             </div>
             {/* Rank */}
-            <div className='text-base flex flex-col gap-1'>
+            <div className='text-base flex flex-col gap-2'>
               <p className='text-purple-100 '>24h Price Change</p>
               <p
                 className={cn('flex gap-1 items-center text-sm font-medium', {
@@ -141,6 +128,7 @@ const CoinDetails = async () => {
         {/* Trend Overview */}
         <div className='w-full'>
           <h4 className='text-2xl'>Trend Overview</h4>
+          <CandlestickChart data={coinOHLCData} />
         </div>
 
         <Separator className='my-8 bg-purple-600' />
