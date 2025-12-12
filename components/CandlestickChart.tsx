@@ -1,17 +1,23 @@
 'use client';
 
-import { useEffect, useRef, useMemo } from 'react';
+import { useEffect, useRef, useMemo, useState } from 'react';
 import {
   IChartApi,
   ISeriesApi,
   createChart,
   CandlestickSeries,
 } from 'lightweight-charts';
-import { getCandlestickConfig, getChartConfig } from '@/lib/constants';
+import {
+  getCandlestickConfig,
+  getChartConfig,
+  PERIOD_BUTTONS,
+  PERIOD_CONFIG,
+} from '@/lib/constants';
 import { convertOHLCData } from '@/lib/utils';
 
 export default function CandlestickChart({
   data,
+  coinId,
   height = 360,
 }: CandlestickChartProps) {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
@@ -19,16 +25,62 @@ export default function CandlestickChart({
   const candleSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
-  // Memoize converted data to avoid recalculating on every render
-  const chartData = useMemo(() => convertOHLCData(data), [data]);
+  const [period, setPeriod] = useState<Period>('monthly');
+  const [ohlcData, setOhlcData] = useState<OHLCData[]>(data);
+  const [loading, setLoading] = useState(false);
 
+  // Memoize converted data to avoid recalculating on every render
+  const chartData = useMemo(() => convertOHLCData(ohlcData), [ohlcData]);
+
+  // Fetch OHLC data
+  const fetchOHLCData = async (selectedPeriod: Period) => {
+    setLoading(true);
+    try {
+      const config = PERIOD_CONFIG[selectedPeriod];
+      const params = new URLSearchParams({
+        id: coinId,
+        days: String(config.days),
+        currency: 'usd',
+        precision: 'full',
+      });
+
+      // Only add interval if it's defined (not for yearly/max)
+      if (config.interval) {
+        params.append('interval', config.interval);
+      }
+
+      const response = await fetch(`/api/coins/ohlc?${params}`);
+      if (!response.ok) throw new Error('Failed to fetch OHLC data');
+
+      console.log('response', response);
+
+      const newData = await response.json();
+      setOhlcData(newData);
+    } catch (error) {
+      console.error('Error fetching OHLC data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle period change
+  const handlePeriodChange = (newPeriod: Period) => {
+    if (newPeriod === period) return;
+    setPeriod(newPeriod);
+    fetchOHLCData(newPeriod);
+  };
+
+  // Initialize chart
   useEffect(() => {
     const container = chartContainerRef.current;
     if (!container) return;
 
+    // Show time for shorter periods with hourly interval
+    const showTime = ['daily', 'weekly', 'monthly'].includes(period);
+
     // Initialize chart
     const chart = createChart(container, {
-      ...getChartConfig(height),
+      ...getChartConfig(height, showTime),
       width: container.clientWidth,
     });
 
@@ -63,17 +115,45 @@ export default function CandlestickChart({
       chartRef.current = null;
       candleSeriesRef.current = null;
     };
-  }, [chartData, height]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [height]);
+
+  // Update chart data when chartData or period changes
+  useEffect(() => {
+    if (candleSeriesRef.current && chartRef.current) {
+      candleSeriesRef.current.setData(chartData);
+      chartRef.current.timeScale().fitContent();
+
+      // Update time visibility based on period
+      const showTime = ['daily', 'weekly', 'monthly'].includes(period);
+      chartRef.current.applyOptions({
+        timeScale: {
+          timeVisible: showTime,
+        },
+      });
+    }
+  }, [chartData, period]);
 
   return (
     <div className='candlestick-container'>
       {/* Chart Header */}
       <div className='candlestick-header'>
         <div className='candlestick-button-group'>
-          <button className='candlestick-dropdown-button'>BTC ▾</button>
-          <button className='candlestick-period-button'>Daily</button>
-          <button className='candlestick-period-button-active'>Monthly</button>
-          <button className='candlestick-period-button'>Yearly</button>
+          <p className='candlestick-interval'>Interval:</p>
+          {PERIOD_BUTTONS.map(({ value, label }) => (
+            <button
+              key={value}
+              className={
+                period === value
+                  ? 'candlestick-period-button-active'
+                  : 'candlestick-period-button'
+              }
+              onClick={() => handlePeriodChange(value)}
+              disabled={loading}
+            >
+              {label}
+            </button>
+          ))}
         </div>
       </div>
 

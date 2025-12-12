@@ -29,15 +29,27 @@ export async function getCoinDetails(id: string) {
   return res.json();
 }
 
-export async function getCoinOHLC(id: string, days: number) {
-  const res = await fetch(
-    `${baseUrl}/coins/${id}/ohlc?vs_currency=usd&days=${days}`,
-    {
-      method: 'GET',
-      headers: headerConfig,
-      cache: 'no-store',
-    }
-  );
+export async function getCoinOHLC(
+  id: string,
+  days: number,
+  currency?: string,
+  interval?: 'daily' | 'hourly',
+  precision?: 'full' | string
+) {
+  const currencyParam = currency || 'usd';
+  const params = new URLSearchParams({
+    vs_currency: currencyParam,
+    days: days.toString(),
+  });
+
+  if (interval) params.append('interval', interval);
+  if (precision) params.append('precision', precision);
+
+  const res = await fetch(`${baseUrl}/coins/${id}/ohlc?${params}`, {
+    method: 'GET',
+    headers: headerConfig,
+    cache: 'no-store',
+  });
 
   if (!res.ok) throw new Error('Failed to fetch CoinGecko Demo API data');
   return res.json();

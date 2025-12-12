@@ -21,7 +21,7 @@ import { orderBook } from '@/lib/constants';
 const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
   const coinData = await getCoinDetails(id);
-  const coinOHLCData = await getCoinOHLC(id, 365);
+  const coinOHLCData = await getCoinOHLC(id, 30, 'usd', 'hourly', 'full');
 
   const coin = {
     id: coinData.id,
@@ -48,9 +48,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
 
   const isTrendingUp = coin.priceChangePercentage24h > 0;
 
-  console.log('Fetched coin details:', coinData);
-  console.log('Processed coin details:', coin);
-  console.log('Tickers:', coin.tickers);
+  console.log('coinOHLCData:', coinOHLCData);
 
   return (
     <main className='py-12 container size-full grid grid-cols-1 lg:grid-cols-3 items-center gap-10 justify-center'>
@@ -133,7 +131,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
         {/* Trend Overview */}
         <div className='w-full'>
           <h4 className='text-2xl'>Trend Overview</h4>
-          <CandlestickChart data={coinOHLCData} />
+          <CandlestickChart data={coinOHLCData} coinId={id} />
         </div>
 
         <Separator className='my-8 bg-purple-600' />

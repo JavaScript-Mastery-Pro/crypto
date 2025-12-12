@@ -36,8 +36,8 @@ export const getCandlestickConfig = (): CandlestickSeriesPartialOptions => ({
   wickVisible: true,
 });
 
-export const getChartConfig = (height: number): DeepPartial<ChartOptions> => ({
-  width: 0, 
+export const getChartConfig = (height: number, timeVisible: boolean = true): DeepPartial<ChartOptions> => ({
+  width: 0,
   height,
   layout: {
     background: { type: ColorType.Solid, color: CHART_COLORS.background },
@@ -58,8 +58,8 @@ export const getChartConfig = (height: number): DeepPartial<ChartOptions> => ({
   },
   timeScale: {
     borderColor: CHART_COLORS.border,
-    timeVisible: false,
-    secondsVisible: true,
+    timeVisible,
+    secondsVisible: false,
   },
   handleScroll: true,
   handleScale: true,
@@ -83,6 +83,30 @@ export const getChartConfig = (height: number): DeepPartial<ChartOptions> => ({
       '$' + price.toLocaleString(undefined, { maximumFractionDigits: 2 }),
   },
 });
+
+export const PERIOD_CONFIG: Record<
+  Period,
+  { days: number | string; interval?: 'hourly' | 'daily' }
+> = {
+  daily: { days: 1, interval: 'hourly' },
+  weekly: { days: 7, interval: 'hourly' },
+  monthly: { days: 30, interval: 'hourly' },
+  '3months': { days: 90, interval: 'daily' },
+  '6months': { days: 180, interval: 'daily' },
+  // For 365 and max: no interval param = automatic granularity (4 days per candle)
+  yearly: { days: 365 },
+  max: { days: 'max' },
+};
+
+export const PERIOD_BUTTONS: { value: Period; label: string }[] = [
+  { value: 'daily', label: '1D' },
+  { value: 'weekly', label: '1W' },
+  { value: 'monthly', label: '1M' },
+  { value: '3months', label: '3M' },
+  { value: '6months', label: '6M' },
+  { value: 'yearly', label: '1Y' },
+  { value: 'max', label: 'Max' },
+];
 
 // Test Data
 export  const orderBook = [
