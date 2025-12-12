@@ -1,18 +1,29 @@
-import { clsx, type ClassValue } from "clsx"
-import { CandlestickData, Time } from "lightweight-charts";
-import { twMerge } from "tailwind-merge"
+import { clsx, type ClassValue } from 'clsx';
+import { CandlestickData, Time } from 'lightweight-charts';
+import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
-export function formatPrice(price: number): string {
-  return price.toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })
+export function formatPrice(
+  value: number,
+  currency?: string,
+  showSymbol?: boolean
+) {
+
+  if (showSymbol === undefined || showSymbol === true) {
+    return value.toLocaleString(undefined, {
+      style: 'currency',
+      currency: currency?.toUpperCase() || 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+  } 
+   return value.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
 }
 
 export function formatPercentage(change: number): string {
@@ -24,9 +35,9 @@ export function trendingClasses(value: number) {
   const isTrendingUp = value > 0;
 
   return {
-    textClass: isTrendingUp ? "text-green-400" : "text-red-400",
-    bgClass: isTrendingUp ? "bg-green-500/10" : "bg-red-500/10",
-    iconClass: isTrendingUp ? "icon-up" : "icon-down",
+    textClass: isTrendingUp ? 'text-green-400' : 'text-red-400',
+    bgClass: isTrendingUp ? 'bg-green-500/10' : 'bg-red-500/10',
+    iconClass: isTrendingUp ? 'icon-up' : 'icon-down',
   };
 }
 

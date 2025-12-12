@@ -14,7 +14,6 @@ export default function CandlestickChart({
   data,
   height = 360,
 }: CandlestickChartProps) {
-  // Refs
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const candleSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);

@@ -37,7 +37,7 @@ export const getCandlestickConfig = (): CandlestickSeriesPartialOptions => ({
 });
 
 export const getChartConfig = (height: number): DeepPartial<ChartOptions> => ({
-  width: 0, // Will be set dynamically
+  width: 0, 
   height,
   layout: {
     background: { type: ColorType.Solid, color: CHART_COLORS.background },
@@ -58,9 +58,11 @@ export const getChartConfig = (height: number): DeepPartial<ChartOptions> => ({
   },
   timeScale: {
     borderColor: CHART_COLORS.border,
-    timeVisible: true,
-    secondsVisible: false,
+    timeVisible: false,
+    secondsVisible: true,
   },
+  handleScroll: true,
+  handleScale: true,
   crosshair: {
     mode: 1,
     vertLine: {

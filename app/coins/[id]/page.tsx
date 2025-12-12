@@ -18,16 +18,19 @@ import { Converter } from '@/components/Converter';
 import CandlestickChart from '@/components/CandlestickChart';
 import { orderBook, similarCoins } from '@/lib/constants';
 
-const CoinDetails = async () => {
-  const coinData = await getCoinDetails('ethereum');
-  const coinOHLCData = await getCoinOHLC('ethereum', 365);
+const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
+  const { id } = await params;
+  const coinData = await getCoinDetails(id);
+  const coinOHLCData = await getCoinOHLC(id, 365);
 
   const coin = {
     id: coinData.id,
     name: coinData.name,
     symbol: coinData.symbol,
     image: coinData.image.large,
+    icon: coinData.image.small,
     price: coinData.market_data.current_price.usd,
+    priceList: coinData.market_data.current_price,
     priceChange24h: coinData.market_data.price_change_24h_in_currency.usd,
     priceChangePercentage24h:
       coinData.market_data.price_change_percentage_24h_in_currency.usd,
@@ -110,7 +113,7 @@ const CoinDetails = async () => {
             </div>
             {/* Rank */}
             <div className='text-base flex flex-col gap-2'>
-              <p className='text-purple-100 '>24h Price Change</p>
+              <p className='text-purple-100 '>Price Change (24h)</p>
               <p
                 className={cn('flex gap-1 items-center text-sm font-medium', {
                   'text-green-500': coin.priceChange24h > 0,
@@ -233,7 +236,11 @@ const CoinDetails = async () => {
           <h4 className='text-2xl font-semibold'>
             {coin.symbol.toUpperCase()} Converter
           </h4>
-          <Converter />
+          <Converter
+            symbol={coin.symbol}
+            icon={coin.icon}
+            priceList={coin.priceList}
+          />
         </div>
 
         {/* Similar Coins */}

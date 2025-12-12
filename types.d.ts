@@ -7,3 +7,8 @@ interface CandlestickChartProps {
   height?: number;
 }
 
+interface ConverterProps {
+  symbol: string;
+  icon: string;
+  priceList: Record<string, number>;
+}
