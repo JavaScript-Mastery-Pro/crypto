@@ -1,7 +1,7 @@
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { getCoinDetails, getCoinOHLC } from '@/lib/actions/ coingecko';
-import { cn, formatPercentage, formatPrice } from '@/lib/utils';
+import { cn, formatPercentage, formatPrice, timeAgo } from '@/lib/utils';
 import { ArrowUpRight, TrendingDown, TrendingUp } from 'lucide-react';
 
 import Image from 'next/image';
@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/table';
 import { Converter } from '@/components/Converter';
 import CandlestickChart from '@/components/CandlestickChart';
-import { orderBook, similarCoins } from '@/lib/constants';
+import { orderBook } from '@/lib/constants';
 
 const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
@@ -43,12 +43,14 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
     website: coinData.links.homepage[0],
     explorer: coinData.links.blockchain_site[0],
     communityLink: coinData.links.subreddit_url,
+    tickers: coinData.tickers,
   };
 
   const isTrendingUp = coin.priceChangePercentage24h > 0;
 
   console.log('Fetched coin details:', coinData);
   console.log('Processed coin details:', coin);
+  console.log('Tickers:', coin.tickers);
 
   return (
     <main className='py-12 container size-full grid grid-cols-1 lg:grid-cols-3 items-center gap-10 justify-center'>
@@ -243,49 +245,49 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
           />
         </div>
 
-        {/* Similar Coins */}
+        {/* Recent Trades */}
         <div className='w-full mt-8 space-y-4'>
-          <h4 className='text-2xl'>Similar Coins</h4>
-          <ul className='flex bg-dark-500 py-4 rounded-lg flex-col gap-2'>
-            {similarCoins.map((item) => (
-              <li
-                key={item.name}
-                className='pr-5 pl-1 py-2 flex w-full gap-2 items-center'
-              >
-                <div className='flex w-[45%] items-center gap-2'>
-                  <Image
-                    src={coin.image}
-                    alt={item.name}
-                    width={40}
-                    height={40}
-                  />
-                  <div className='flex flex-col font-medium'>
-                    <p>{item.name}</p>
-                    <span className='text-xs text-purple-100'>
-                      {item.symbol}
-                    </span>
-                  </div>
-                </div>
-                <div
-                  className={cn(
-                    'flex flex-1 gap-1 items-center text-sm font-medium',
-                    {
-                      'text-green-500': coin.priceChangePercentage24h > 0,
-                      'text-red-500': coin.priceChangePercentage24h < 0,
-                    }
-                  )}
-                >
-                  <p>{formatPercentage(coin.priceChangePercentage24h)}</p>
-                  {isTrendingUp ? (
-                    <TrendingUp width={16} height={16} />
-                  ) : (
-                    <TrendingDown width={16} height={16} />
-                  )}
-                </div>
-                <div className='font-semibold'>{formatPrice(30000)}</div>
-              </li>
-            ))}
-          </ul>
+          <h4 className='text-2xl'>Exchange Listings</h4>
+          <Table className='bg-dark-500 rounded-xl'>
+            <TableHeader className='text-purple-100'>
+              <TableRow className='hover:bg-transparent'>
+                <TableHead className='pl-5 py-5 text-purple-100'>
+                  Exchange
+                </TableHead>
+                <TableHead className='text-purple-100'>Pair</TableHead>
+                <TableHead className='text-purple-100'>Price</TableHead>
+                <TableHead className='pr-5 text-purple-100 text-end'>
+                  Last Traded
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {coin.tickers
+                .slice(0, 10)
+                .map((ticker: Ticker, index: number) => (
+                  <TableRow key={index} className='overflow-hidden rounded-lg'>
+                    <TableCell className=' text-green-500 font-bold'>
+                      <Link
+                        href={ticker.trade_url}
+                        target='_blank'
+                        className='py-4 pl-3'
+                      >
+                        {ticker.market.name}
+                      </Link>
+                    </TableCell>
+                    <TableCell className='font-medium py-4'>
+                      {ticker.base} / {ticker.target}
+                    </TableCell>
+                    <TableCell className='font-medium'>
+                      {formatPrice(ticker.converted_last.usd)}
+                    </TableCell>
+                    <TableCell className='pr-5 text-end font-medium'>
+                      {timeAgo(ticker.timestamp)}
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
         </div>
 
         {/* Recent Trades */}

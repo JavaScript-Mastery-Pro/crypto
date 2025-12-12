@@ -12,3 +12,16 @@ interface ConverterProps {
   icon: string;
   priceList: Record<string, number>;
 }
+
+interface Ticker {
+  market: {
+    name: string;
+  };
+  base: string;
+  target: string;
+  converted_last: {
+    usd: number;
+  };
+  timestamp: string;
+  trade_url: string;
+}
