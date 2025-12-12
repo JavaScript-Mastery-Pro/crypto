@@ -262,30 +262,28 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {coin.tickers
-                .slice(0, 10)
-                .map((ticker: Ticker, index: number) => (
-                  <TableRow key={index} className='overflow-hidden rounded-lg'>
-                    <TableCell className=' text-green-500 font-bold'>
-                      <Link
-                        href={ticker.trade_url}
-                        target='_blank'
-                        className='py-4 pl-3'
-                      >
-                        {ticker.market.name}
-                      </Link>
-                    </TableCell>
-                    <TableCell className='font-medium py-4'>
-                      {ticker.base} / {ticker.target}
-                    </TableCell>
-                    <TableCell className='font-medium'>
-                      {formatPrice(ticker.converted_last.usd)}
-                    </TableCell>
-                    <TableCell className='pr-5 text-end font-medium'>
-                      {timeAgo(ticker.timestamp)}
-                    </TableCell>
-                  </TableRow>
-                ))}
+              {coin.tickers.slice(0, 7).map((ticker: Ticker, index: number) => (
+                <TableRow key={index} className='overflow-hidden rounded-lg'>
+                  <TableCell className=' text-green-500 font-bold'>
+                    <Link
+                      href={ticker.trade_url}
+                      target='_blank'
+                      className='py-4 pl-3'
+                    >
+                      {ticker.market.name}
+                    </Link>
+                  </TableCell>
+                  <TableCell className='font-medium py-4 pr-5'>
+                    {ticker.base} / {ticker.target}
+                  </TableCell>
+                  <TableCell className='font-medium'>
+                    {formatPrice(ticker.converted_last.usd)}
+                  </TableCell>
+                  <TableCell className='pr-5 text-end'>
+                    {timeAgo(ticker.timestamp)}
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </div>
