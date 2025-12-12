@@ -116,11 +116,3 @@ export  const orderBook = [
     { price: '0.0295 BTC', amountBTC: '1.5 BTC', amountETH: '$45,000' },
     { price: '0.0290 BTC', amountBTC: '3.0 BTC', amountETH: '$90,000' },
   ];
-
-export  const similarCoins = [
-    { name: 'Bitcoin', symbol: 'BTC', price: 30000 },
-    { name: 'Cardano', symbol: 'ADA', price: 2.15 },
-    { name: 'Solana', symbol: 'SOL', price: 35.5 },
-    { name: 'Ripple', symbol: 'XRP', price: 0.75 },
-    { name: 'Polkadot', symbol: 'DOT', price: 18.2 },
-  ];

@@ -52,8 +52,6 @@ export default function CandlestickChart({
       const response = await fetch(`/api/coins/ohlc?${params}`);
       if (!response.ok) throw new Error('Failed to fetch OHLC data');
 
-      console.log('response', response);
-
       const newData = await response.json();
       setOhlcData(newData);
     } catch (error) {
