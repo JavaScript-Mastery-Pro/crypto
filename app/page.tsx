@@ -1,11 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Separator } from '@/components/ui/separator';
 import {
   getCoinDetails,
   getCoinOHLC,
   getTrendingCoins,
 } from '@/lib/actions/ coingecko';
-import { cn, formatPercentage, formatPrice, timeAgo } from '@/lib/utils';
+import { cn, formatPercentage, formatPrice } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -18,7 +17,8 @@ import {
 } from '@/components/ui/table';
 
 import CandlestickChart from '@/components/CandlestickChart';
-import { orderBook } from '@/lib/constants';
+import CoinCard from '@/components/CoinCard';
+import { popularCoins } from '@/lib/constants';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 
 const Home = async () => {
@@ -33,12 +33,12 @@ const Home = async () => {
   );
 
   return (
-    <main className='py-12 container size-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 items-center lg:gap-10 justify-center'>
-      <section className='w-full h-full xl:col-span-2'>
-        {/* Trend Overview */}
-        <div className='w-full px-2 py-3 bg-dark-500 rounded-xl'>
+    <main className='py-12 container size-full space-y-10'>
+      <section className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 items-center lg:gap-10'>
+        {/* Coin Overview */}
+        <div className='w-full h-full xl:col-span-2 px-2 py-3 bg-dark-500 rounded-xl'>
           <CandlestickChart data={coinOHLCData} coinId={'bitcoin'}>
-            <div className='flex-1 mb-1 flex gap-3'>
+            <div className='flex-1 mb-2 flex gap-3'>
               <Image
                 src={coinData.image.large}
                 alt={coinData.name}
@@ -56,11 +56,9 @@ const Home = async () => {
             </div>
           </CandlestickChart>
         </div>
-      </section>
 
-      <section className='size-full'>
-        {/* Recent Trades */}
-        <div className='w-full  py-3 bg-dark-500 rounded-xl'>
+        {/* Top Movers */}
+        <div className='w-full flex flex-col justify-center h-full py-4 bg-dark-500 rounded-xl'>
           <h4 className='text-2xl px-5'>Top Movers</h4>
           <Table>
             <TableHeader className='text-purple-100'>
@@ -128,6 +126,22 @@ const Home = async () => {
                 })}
             </TableBody>
           </Table>
+        </div>
+      </section>
+
+      {/* Popular Coins Section */}
+      <section className='w-full'>
+        <h2 className='text-3xl font-bold mb-6'>Popular Coins</h2>
+        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
+          {popularCoins.map((coin) => (
+            <CoinCard
+              key={coin.coinId}
+              coinId={coin.coinId}
+              name={coin.name}
+              symbol={coin.symbol}
+              image={coin.image}
+            />
+          ))}
         </div>
       </section>
     </main>

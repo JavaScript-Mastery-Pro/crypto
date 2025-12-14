@@ -251,3 +251,36 @@ export const coins = [
     },
   ];
 
+    // Popular coins data
+   export const popularCoins = [
+      {
+        coinId: 'bitcoin',
+        name: 'Bitcoin',
+        symbol: 'BTC',
+        image:
+          'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
+      },
+      {
+        coinId: 'ethereum',
+        name: 'Ethereum',
+        symbol: 'ETH',
+        image:
+          'https://coin-images.coingecko.com/coins/images/279/large/ethereum.png',
+      },
+      {
+        coinId: 'tether',
+        name: 'Tether',
+        symbol: 'USDT',
+        image:
+          'https://coin-images.coingecko.com/coins/images/325/large/Tether.png',
+      },
+      {
+        coinId: 'binancecoin',
+        name: 'BNB',
+        symbol: 'BNB',
+        image:
+          'https://coin-images.coingecko.com/coins/images/825/large/bnb-icon2_2x.png',
+      },
+    ];
+    
+
