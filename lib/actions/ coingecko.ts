@@ -4,17 +4,32 @@ const baseUrl = process.env.COINGECKO_BASE_URL!;
 const headerConfig = {
   // Demo API Key: x-cg-demo-api-key
   // Pro API Key: x-cg-pro-api-key
+  // 'x-cg-demo-api-key': process.env.COINGECKO_API_KEY!,
   'x-cg-pro-api-key': process.env.COINGECKO_API_KEY!,
 };
 
-export async function getCoinList() {
-  const res = await fetch(`${baseUrl}/coins/list`, {
+export async function getCoinList(page: number = 1, perPage: number = 50) {
+  const params = new URLSearchParams({
+    vs_currency: 'usd',
+    order: 'market_cap_desc',
+    per_page: perPage.toString(),
+    page: page.toString(),
+    sparkline: 'false',
+    locale: 'en',
+    price_change_percentage: '24h',
+  });
+
+  const res = await fetch(`${baseUrl}/coins/markets?${params}`, {
     method: 'GET',
     headers: headerConfig,
     cache: 'no-store',
   });
 
-  if (!res.ok) throw new Error('Failed to fetch CoinGecko Demo API data');
+  if (!res.ok) {
+    const errorText = await res.text();
+    console.error('CoinGecko API Error:', res.status, errorText);
+    throw new Error(`Failed to fetch CoinGecko API data: ${res.status} ${errorText}`);
+  }
   return res.json();
 }
 
@@ -25,7 +40,7 @@ export async function getCoinDetails(id: string) {
     cache: 'no-store',
   });
 
-  if (!res.ok) throw new Error('Failed to fetch CoinGecko Demo API data');
+  if (!res.ok) throw new Error('Failed to fetch CoinGecko API data');
   return res.json();
 }
 
@@ -51,6 +66,6 @@ export async function getCoinOHLC(
     cache: 'no-store',
   });
 
-  if (!res.ok) throw new Error('Failed to fetch CoinGecko Demo API data');
+  if (!res.ok) throw new Error('Failed to fetch CoinGecko API data');
   return res.json();
 }

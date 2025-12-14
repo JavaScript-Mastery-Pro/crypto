@@ -19,6 +19,7 @@ export default function CandlestickChart({
   data,
   coinId,
   height = 360,
+  children,
 }: CandlestickChartProps) {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const chartRef = useRef<IChartApi | null>(null);
@@ -136,8 +137,8 @@ export default function CandlestickChart({
     <div className='candlestick-container'>
       {/* Chart Header */}
       <div className='candlestick-header'>
+        {children}
         <div className='candlestick-button-group'>
-          <p className='candlestick-interval'>Interval:</p>
           {PERIOD_BUTTONS.map(({ value, label }) => (
             <button
               key={value}

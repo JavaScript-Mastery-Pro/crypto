@@ -157,9 +157,13 @@
     @apply px-4 sm:px-12 mx-auto max-w-[1440px];
   }
 
+  .command-input-wrapper {
+    @apply !bg-dark-500;
+  }
+
   /* CandlestickChart Styles */
   .candlestick-container {
-    @apply p-3 rounded-lg bg-dark-500 mt-4;
+    @apply p-3 rounded-lg bg-dark-500;
   }
 
   .candlestick-header {

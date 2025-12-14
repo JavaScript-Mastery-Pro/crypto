@@ -116,3 +116,138 @@ export  const orderBook = [
     { price: '0.0295 BTC', amountBTC: '1.5 BTC', amountETH: '$45,000' },
     { price: '0.0290 BTC', amountBTC: '3.0 BTC', amountETH: '$90,000' },
   ];
+
+
+export const coins = [
+     {
+      name: 'Ethereum',
+      symbol: 'ETH',
+      image:
+        'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
+      market_data: {
+        current_price: { usd: 2000 },
+        market_cap: { usd: 250000000 },
+      },
+      coinData: {
+        market_data: { price_change_percentage_24h_in_currency: { usd: -2.5 } },
+      },
+    },
+    {
+      name: 'Cardano',
+      symbol: 'ADA',
+      image:
+        'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
+      market_data: {
+        current_price: { usd: 30000 },
+        market_cap: { usd: 40000000 },
+      },
+      coinData: {
+        market_data: { price_change_percentage_24h_in_currency: { usd: 1.5 } },
+      },
+    },
+    {
+      name: 'Bitcoin',
+      symbol: 'BTC',
+      image:
+        'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
+      market_data: {
+        current_price: { usd: 30000 },
+        market_cap: { usd: 600000000 },
+      },
+      coinData: {
+        market_data: { price_change_percentage_24h_in_currency: { usd: -1.5 } },
+      },
+    },
+    {
+      name: 'Bitcoin',
+      symbol: 'BTC',
+      image:
+        'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
+      market_data: {
+        current_price: { usd: 30000 },
+        market_cap: { usd: 600000000 },
+      },
+      coinData: {
+        market_data: { price_change_percentage_24h_in_currency: { usd: -1.5 } },
+      },
+    },
+    {
+      name: 'Bitcoin',
+      symbol: 'BTC',
+      image:
+        'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
+      market_data: {
+        current_price: { usd: 30000 },
+        market_cap: { usd: 600000000 },
+      },
+      coinData: {
+        market_data: { price_change_percentage_24h_in_currency: { usd: -1.5 } },
+      },
+    },
+    {
+      name: 'Bitcoin',
+      symbol: 'BTC',
+      image:
+        'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
+      market_data: {
+        current_price: { usd: 30000 },
+        market_cap: { usd: 600000000 },
+      },
+      coinData: {
+        market_data: { price_change_percentage_24h_in_currency: { usd: -1.5 } },
+      },
+    },
+    {
+      name: 'Bitcoin',
+      symbol: 'BTC',
+      image:
+        'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
+      market_data: {
+        current_price: { usd: 30000 },
+        market_cap: { usd: 600000000 },
+      },
+      coinData: {
+        market_data: { price_change_percentage_24h_in_currency: { usd: -1.5 } },
+      },
+    },
+    {
+      name: 'Bitcoin',
+      symbol: 'BTC',
+      image:
+        'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
+      market_data: {
+        current_price: { usd: 30000 },
+        market_cap: { usd: 600000000 },
+      },
+      coinData: {
+        market_data: { price_change_percentage_24h_in_currency: { usd: -1.5 } },
+      },
+    },
+    {
+      name: 'Ethereum',
+      symbol: 'ETH',
+      image:
+        'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
+      market_data: {
+        current_price: { usd: 2000 },
+        market_cap: { usd: 250000000 },
+      },
+      coinData: {
+        market_data: { price_change_percentage_24h_in_currency: { usd: -2.5 } },
+      },
+    },
+    {
+      name: 'Cardano',
+      symbol: 'ADA',
+      image:
+        'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
+      market_data: {
+        current_price: { usd: 1.2 },
+        market_cap: { usd: 40000000 },
+      },
+      coinData: {
+        market_data: { price_change_percentage_24h_in_currency: { usd: 1.5 } },
+      },
+    },
+  ];
+
