@@ -69,3 +69,14 @@ export async function getCoinOHLC(
   if (!res.ok) throw new Error('Failed to fetch CoinGecko API data');
   return res.json();
 }
+
+export async function getTrendingCoins() {
+  const res = await fetch(`${baseUrl}/search/trending`, {
+    method: 'GET',
+    headers: headerConfig,
+    cache: 'no-store',
+  });
+
+  if (!res.ok) throw new Error('Failed to fetch CoinGecko API data');
+  return res.json();
+}

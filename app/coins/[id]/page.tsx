@@ -47,9 +47,6 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
   };
 
   const isTrendingUp = coin.priceChangePercentage24h > 0;
-
-  console.log('coinOHLCData:', coinOHLCData);
-
   return (
     <main className='py-12 container size-full grid grid-cols-1 lg:grid-cols-3 items-center gap-10 justify-center'>
       <section className='w-full lg:col-span-2'>

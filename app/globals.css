@@ -167,11 +167,11 @@
   }
 
   .candlestick-header {
-    @apply flex items-center mb-4 font-semibold text-[#e6eef8] text-[20px];
+    @apply flex flex-col gap-3 xl:flex-row xl:items-center mb-4 font-semibold text-[#e6eef8] text-[20px];
   }
 
   .candlestick-button-group {
-    @apply flex gap-2 items-center;
+    @apply flex gap-1 xl:gap-2 items-center;
   }
 
   .candlestick-interval {
@@ -179,11 +179,11 @@
   }
 
   .candlestick-period-button {
-    @apply rounded-sm border-0 cursor-pointer px-3 py-1.5 text-sm text-purple-100 hover:bg-dark-400 hover:text-white transition-colors duration-200;
+    @apply rounded-sm border-0 cursor-pointer px-2 xl:px-3 py-1.5 text-xs xl:text-sm text-purple-100 hover:bg-dark-400 hover:text-white transition-colors duration-200;
   }
 
   .candlestick-period-button-active {
-    @apply rounded-sm px-3 py-1.5 border-0 cursor-pointer text-sm text-white bg-dark-400 ;
+    @apply rounded-sm px-3 py-1.5 border-0 cursor-pointer text-sm text-gray-900 bg-green-500 ;
   }
 
   .candlestick-chart-container {

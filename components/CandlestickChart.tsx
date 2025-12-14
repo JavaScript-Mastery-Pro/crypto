@@ -137,7 +137,7 @@ export default function CandlestickChart({
     <div className='candlestick-container'>
       {/* Chart Header */}
       <div className='candlestick-header'>
-        {children}
+        <div className='flex-1'>{children}</div>
         <div className='candlestick-button-group'>
           {PERIOD_BUTTONS.map(({ value, label }) => (
             <button

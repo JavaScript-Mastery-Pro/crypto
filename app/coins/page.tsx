@@ -19,7 +19,7 @@ const Coins = async ({
 }) => {
   const params = await searchParams;
   const currentPage = Number(params.page) || 1;
-  const perPage = 10;
+  const perPage = 8;
 
   const coinsData = await getCoinList(currentPage, perPage);
 
@@ -57,10 +57,10 @@ const Coins = async ({
                   <TableCell className='pl-5 !max-w-[80px] py-5 font-medium text-purple-100'>
                     #{coin.market_cap_rank}
                   </TableCell>
-                  <TableCell className='py-5 font-semibold'>
+                  <TableCell className='py-3 font-semibold'>
                     <Link
                       href={`/coins/${coin.id}`}
-                      className='flex items-center gap-3 hover:text-purple-400 transition-colors'
+                      className='flex items-center gap-3 hover:text-green-500 transition-colors'
                     >
                       <Image
                         src={coin.image}
