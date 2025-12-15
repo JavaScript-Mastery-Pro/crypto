@@ -154,7 +154,7 @@
 
 @layer utilities {
   .container {
-    @apply px-4 sm:px-12 mx-auto max-w-[1440px];
+    @apply px-4 sm:px-6 mx-auto max-w-[1440px];
   }
 
   .command-input-wrapper {

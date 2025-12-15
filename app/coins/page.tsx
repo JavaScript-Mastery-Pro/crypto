@@ -8,9 +8,9 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import Image from 'next/image';
-import Link from 'next/link';
 import { cn, formatPercentage, formatPrice } from '@/lib/utils';
 import CoinsPagination from '@/components/CoinsPagination';
+import { ClickableTableRow } from '@/components/ClickableTableRow';
 
 const Coins = async ({
   searchParams,
@@ -50,18 +50,16 @@ const Coins = async ({
             {coinsData.map((coin: CoinMarketData) => {
               const isTrendingUp = coin.price_change_percentage_24h > 0;
               return (
-                <TableRow
+                <ClickableTableRow
                   key={coin.id}
+                  href={`/coins/${coin.id}`}
                   className='text-lg hover:!bg-dark-400/30 !border-purple-600 cursor-pointer'
                 >
                   <TableCell className='pl-5 !max-w-[80px] py-5 font-medium text-purple-100'>
                     #{coin.market_cap_rank}
                   </TableCell>
                   <TableCell className='py-3 font-semibold'>
-                    <Link
-                      href={`/coins/${coin.id}`}
-                      className='flex items-center gap-3 hover:text-green-500 transition-colors'
-                    >
+                    <div className='flex items-center gap-3'>
                       <Image
                         src={coin.image}
                         alt={coin.name}
@@ -71,7 +69,7 @@ const Coins = async ({
                       <p>
                         {coin.name} ({coin.symbol.toUpperCase()})
                       </p>
-                    </Link>
+                    </div>
                   </TableCell>
                   <TableCell className='py-4 font-medium'>
                     {formatPrice(coin.current_price)}
@@ -90,7 +88,7 @@ const Coins = async ({
                   <TableCell className='pr-5 font-medium'>
                     {formatPrice(coin.market_cap)}
                   </TableCell>
-                </TableRow>
+                </ClickableTableRow>
               );
             })}
           </TableBody>
