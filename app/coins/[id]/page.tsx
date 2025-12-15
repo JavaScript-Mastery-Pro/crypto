@@ -1,6 +1,6 @@
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { getCoinDetails, getCoinOHLC } from '@/lib/actions/ coingecko';
+import { getCoinDetails, getCoinOHLC } from '@/lib/ coingecko.actions';
 import { cn, formatPercentage, formatPrice, timeAgo } from '@/lib/utils';
 import { ArrowUpRight, TrendingDown, TrendingUp } from 'lucide-react';
 
@@ -47,6 +47,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
   };
 
   const isTrendingUp = coin.priceChangePercentage24h > 0;
+
   return (
     <main className='py-12 container size-full grid grid-cols-1 lg:grid-cols-3 items-center gap-10 justify-center'>
       <section className='w-full lg:col-span-2'>

@@ -1,4 +1,4 @@
-import { getCoinList } from '@/lib/actions/ coingecko';
+import { getCoinList } from '@/lib/ coingecko.actions';
 import {
   Table,
   TableBody,

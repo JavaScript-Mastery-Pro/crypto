@@ -3,7 +3,7 @@ import {
   getCoinDetails,
   getCoinOHLC,
   getTrendingCoins,
-} from '@/lib/actions/ coingecko';
+} from '@/lib/ coingecko.actions';
 import { cn, formatPercentage, formatPrice } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';

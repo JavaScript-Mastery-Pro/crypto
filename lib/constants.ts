@@ -140,17 +140,17 @@ export const popularCoins = [
       'https://coin-images.coingecko.com/coins/images/279/large/ethereum.png',
   },
   {
-    coinId: 'tether',
-    name: 'Tether',
-    symbol: 'USDT',
+    coinId: 'litecoin',
+    name: 'Litecoin',
+    symbol: 'LTC',
     image:
-      'https://coin-images.coingecko.com/coins/images/325/large/Tether.png',
+      'https://coin-images.coingecko.com/coins/images/2/large/litecoin.png',
   },
   {
-    coinId: 'binancecoin',
-    name: 'BNB',
-    symbol: 'BNB',
+    coinId: 'dogecoin',
+    name: 'Dogecoin',
+    symbol: 'DOGE',
     image:
-      'https://coin-images.coingecko.com/coins/images/825/large/bnb-icon2_2x.png',
+      'https://coin-images.coingecko.com/coins/images/5/large/dogecoin.png',
   },
 ];

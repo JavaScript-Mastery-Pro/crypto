@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-const WS_URL = process.env.NEXT_PUBLIC_COINGECKO_WEBSOCKET_URL || 'wss://stream.coingecko.com/v1';
+const WS_URL =
+  process.env.NEXT_PUBLIC_COINGECKO_WEBSOCKET_URL ||
+  'wss://stream.coingecko.com/v1';
 const API_KEY = process.env.NEXT_PUBLIC_COINGECKO_API_KEY;
 
 export interface LiveCoinPrice {
@@ -24,24 +26,25 @@ export const useLiveCoinPrice = (coinIds: string | string[]) => {
     // Normalize coinIds to array
     const coins = Array.isArray(coinIds) ? coinIds : [coinIds];
 
-    console.log('🚀 Connecting to WebSocket for coins:', coins);
-    console.log('📡 URL:', `${WS_URL}?x_cg_pro_api_key=${API_KEY ? '***' : 'MISSING'}`);
-
     // Establish connection
-    const socket = new WebSocket(API_KEY ? `${WS_URL}?x_cg_pro_api_key=${API_KEY}` : WS_URL);
+    const socket = new WebSocket(
+      API_KEY ? `${WS_URL}?x_cg_pro_api_key=${API_KEY}` : WS_URL
+    );
+
+    console.log('========== Socket', socket);
 
     socket.onopen = () => {
       setConnected(true);
       setError(null);
-      console.log('✅ WebSocket connected');
+      console.log('WebSocket connected');
 
       // Subscribe to CGSimplePrice channel
       const subscribeMessage = {
         command: 'subscribe',
-        identifier: JSON.stringify({ channel: 'CGSimplePrice' })
+        identifier: JSON.stringify({ channel: 'CGSimplePrice' }),
       };
       socket.send(JSON.stringify(subscribeMessage));
-      console.log('📡 Subscribe to CGSimplePrice:', subscribeMessage);
+      console.log('Subscribe to CGSimplePrice:', subscribeMessage);
 
       // Request price data for coins
       const dataMessage = {
@@ -49,47 +52,35 @@ export const useLiveCoinPrice = (coinIds: string | string[]) => {
         identifier: JSON.stringify({ channel: 'CGSimplePrice' }),
         data: JSON.stringify({
           coin_id: coins,
-          action: 'set_tokens'
-        })
+          action: 'set_tokens',
+        }),
       };
       socket.send(JSON.stringify(dataMessage));
-      console.log('🎯 Request prices for:', coins);
+      console.log('Request prices for:', coins);
+      console.log('dataMessage:', dataMessage);
     };
 
     socket.onmessage = (event) => {
       try {
         const msg = JSON.parse(event.data);
+        console.log('Other message:', msg);
 
         // Handle ping/pong
         if (msg.type === 'ping') {
           socket.send(JSON.stringify({ type: 'pong' }));
-          console.log('🏓 Pong sent');
+          console.log('Pong sent');
           return;
         }
 
         // Handle subscription confirmation
         if (msg.type === 'confirm_subscription') {
-          console.log('✅ Subscription confirmed');
-          return;
-        }
-
-        // Handle welcome message
-        if (msg.type === 'welcome') {
-          console.log('👋 Welcome message');
+          console.log('Subscription confirmed');
           return;
         }
 
         // Handle price data (channel C1)
         if (msg.c === 'C1' && msg.i && msg.p !== undefined) {
-          console.log('💰 Price update:', {
-            coin: msg.i,
-            price: msg.p,
-            change24h: msg.pp,
-            marketCap: msg.m,
-            volume: msg.v
-          });
-
-          setPrices(prev => ({
+          setPrices((prev) => ({
             ...prev,
             [msg.i]: {
               coinId: msg.i,
@@ -97,32 +88,30 @@ export const useLiveCoinPrice = (coinIds: string | string[]) => {
               priceChangePercentage24h: msg.pp || 0,
               marketCap: msg.m || 0,
               volume24h: msg.v || 0,
-              lastUpdated: msg.t || Date.now() / 1000
-            }
+              lastUpdated: msg.t || Date.now() / 1000,
+            },
           }));
-        } else {
-          console.log('ℹ️ Other message:', msg);
         }
       } catch (err) {
-        console.error('❌ Error parsing message:', err, event.data);
+        console.error('Error parsing message:', err, event.data);
       }
     };
 
     socket.onerror = (err) => {
-      console.error('❌ WebSocket error:', err);
+      console.error('WebSocket error:', err);
       setConnected(false);
       setError('WebSocket connection error');
     };
 
     socket.onclose = (event) => {
-      console.log('🔌 WebSocket closed:', event.code, event.reason);
+      console.log('WebSocket closed:', event.code, event.reason);
       setConnected(false);
     };
 
     socketRef.current = socket;
 
     return () => {
-      console.log('🧹 Cleaning up WebSocket');
+      console.log('Cleaning up WebSocket');
       socket.close();
     };
   }, [coinIds]);

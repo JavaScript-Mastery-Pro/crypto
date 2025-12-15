@@ -6,18 +6,23 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
-interface CoinCardProps {
+export default function CoinCard({
+  coinId,
+  name,
+  symbol,
+  image,
+}: {
   coinId: string;
   name: string;
   symbol: string;
   image: string;
-}
-
-export default function CoinCard({ coinId, name, symbol, image }: CoinCardProps) {
+}) {
   const { prices, connected } = useLiveCoinPrice(coinId);
   const priceData = prices[coinId];
 
-  const isTrendingUp = priceData ? priceData.priceChangePercentage24h > 0 : false;
+  const isTrendingUp = priceData
+    ? priceData.priceChangePercentage24h > 0
+    : false;
 
   return (
     <Link href={`/coins/${coinId}`}>

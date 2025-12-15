@@ -12,7 +12,7 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { Button } from './ui/button';
-import { searchCoins } from '@/lib/actions/ coingecko';
+import { searchCoins } from '@/lib/ coingecko.actions';
 import { Search as SearchIcon, TrendingUp } from 'lucide-react';
 import { useEffect } from 'react';
 
