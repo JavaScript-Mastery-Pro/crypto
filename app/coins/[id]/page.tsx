@@ -16,7 +16,6 @@ import {
 } from '@/components/ui/table';
 import { Converter } from '@/components/Converter';
 import CandlestickChart from '@/components/CandlestickChart';
-import { orderBook } from '@/lib/constants';
 
 const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
@@ -50,7 +49,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
 
   return (
     <main className='py-12 container size-full grid grid-cols-1 lg:grid-cols-3 items-center gap-10 justify-center'>
-      <section className='w-full lg:col-span-2'>
+      <section className='size-full lg:col-span-2'>
         {/* Coin Details */}
         <div className='space-y-5 w-full'>
           <h3 className='text-3xl font-medium'>{coin.name}</h3>
@@ -195,7 +194,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
         </div>
 
         {/* Order Book */}
-        <div className='w-full mt-8 space-y-4'>
+        {/* <div className='w-full mt-8 space-y-4'>
           <h4 className='text-2xl'>Order Book</h4>
           <Table className='bg-dark-500 rounded-xl'>
             <TableHeader className='text-purple-100'>
@@ -225,7 +224,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
               ))}
             </TableBody>
           </Table>
-        </div>
+        </div> */}
       </section>
 
       <section className='size-full max-lg:mt-8 lg:col-span-1'>
@@ -269,7 +268,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
                       {ticker.market.name}
                     </Link>
                   </TableCell>
-                  <TableCell className='font-medium py-4 pr-5'>
+                  <TableCell className='font-medium truncate max-w-[100px] py-4 pr-5'>
                     {ticker.base} / {ticker.target}
                   </TableCell>
                   <TableCell className='font-medium'>
@@ -285,7 +284,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
         </div>
 
         {/* Recent Trades */}
-        <div className='w-full mt-8 space-y-4'>
+        {/* <div className='w-full mt-8 space-y-4'>
           <h4 className='text-2xl'>Recent Trades</h4>
           <Table className='bg-dark-500 rounded-xl'>
             <TableHeader className='text-purple-100'>
@@ -315,7 +314,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
               ))}
             </TableBody>
           </Table>
-        </div>
+        </div> */}
       </section>
     </main>
   );
