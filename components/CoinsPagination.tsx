@@ -9,6 +9,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import { cn } from '@/lib/utils';
 
 export default function CoinsPagination({
   currentPage,
@@ -88,9 +89,13 @@ export default function CoinsPagination({
               ) : (
                 <PaginationLink
                   onClick={() => handlePageChange(page as number)}
-                  className={`hover:!bg-dark-400 rounded-sm text-base cursor-pointer ${
-                    currentPage === page ? 'bg-purple-600 text-white' : ''
-                  }`}
+                  className={cn(
+                    `hover:!bg-dark-400 rounded-sm text-base cursor-pointer`,
+                    {
+                      '!bg-green-500 text-dark-900 font-semibold':
+                        currentPage === page,
+                    }
+                  )}
                   isActive={currentPage === page}
                 >
                   {page}

@@ -7,10 +7,13 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function formatPrice(
-  value: number,
+  value: number | null | undefined,
   currency?: string,
   showSymbol?: boolean
 ) {
+  if (value === null || value === undefined || isNaN(value)) {
+    return showSymbol !== false ? '$0.00' : '0.00';
+  }
 
   if (showSymbol === undefined || showSymbol === true) {
     return value.toLocaleString(undefined, {
@@ -19,14 +22,17 @@ export function formatPrice(
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
-  } 
+  }
    return value.toLocaleString(undefined, {
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     });
 }
 
-export function formatPercentage(change: number): string {
+export function formatPercentage(change: number | null | undefined): string {
+  if (change === null || change === undefined || isNaN(change)) {
+    return '0.0%';
+  }
   const formattedChange = change.toFixed(1);
   return `${formattedChange}%`;
 }
