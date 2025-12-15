@@ -31,7 +31,7 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header trendingCoins={trendingCoins.coins || []} />
+        <Header trendingCoins={trendingCoins || []} />
         {children}
       </body>
     </html>
