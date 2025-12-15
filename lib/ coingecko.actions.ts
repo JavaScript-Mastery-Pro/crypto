@@ -67,7 +67,6 @@ export async function getTopPoolForToken(
   if (!res.ok) throw new Error('Failed to fetch pool data');
   const data = await res.json();
 
-  // Return the top pool (first one, sorted by liquidity)
   return data.data && data.data.length > 0 ? data.data[0] : null;
 }
 
