@@ -54,9 +54,15 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
         <div className='space-y-5 w-full'>
           <h3 className='text-3xl font-medium'>{coin.name}</h3>
           <div className='flex gap-3 items-center'>
-            <Image src={coin.image} alt={coin.name} width={77} height={77} />
+            <Image
+              src={coin.image}
+              alt={coin.name}
+              width={77}
+              height={77}
+              className='size-[45px] sm:size-[50px] xl:size-[77px]'
+            />
             <div className='flex gap-4'>
-              <h1 className='text-6xl font-semibold'>
+              <h1 className='text-3xl sm:text-5xl xl:text-6xl font-semibold'>
                 {formatPrice(coin.price)}
               </h1>
               <Badge
@@ -73,15 +79,18 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
               </Badge>
             </div>
           </div>
-          <div className='grid grid-cols-3 mt-8 gap-6 w-fit'>
+          <div className='grid grid-cols-3 mt-8 gap-4 sm:gap-6 w-fit'>
             {/* Today */}
             <div className='text-base border-r border-purple-600 flex flex-col gap-2'>
-              <p className='text-purple-100'>Today</p>
+              <p className='text-purple-100 max-sm:text-sm'>Today</p>
               <div
-                className={cn('flex gap-1 items-center text-sm font-medium', {
-                  'text-green-500': coin.priceChangePercentage24h > 0,
-                  'text-red-500': coin.priceChangePercentage24h < 0,
-                })}
+                className={cn(
+                  'flex flex-1 gap-1 items-end text-sm font-medium',
+                  {
+                    'text-green-500': coin.priceChangePercentage24h > 0,
+                    'text-red-500': coin.priceChangePercentage24h < 0,
+                  }
+                )}
               >
                 <p>{formatPercentage(coin.priceChangePercentage24h)}</p>
                 {isTrendingUp ? (
@@ -93,12 +102,15 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
             </div>
             {/* 30 Days */}
             <div className='text-base border-r border-purple-600 flex flex-col gap-2'>
-              <p className='text-purple-100'>30 Days</p>
+              <p className='text-purple-100 max-sm:text-sm'>30 Days</p>
               <div
-                className={cn('flex gap-1 items-center text-sm font-medium', {
-                  'text-green-500': coin.priceChangePercentage30d > 0,
-                  'text-red-500': coin.priceChangePercentage30d < 0,
-                })}
+                className={cn(
+                  'flex gap-1 flex-1 items-end text-sm font-medium',
+                  {
+                    'text-green-500': coin.priceChangePercentage30d > 0,
+                    'text-red-500': coin.priceChangePercentage30d < 0,
+                  }
+                )}
               >
                 <p>{formatPercentage(coin.priceChangePercentage30d)}</p>
                 {isTrendingUp ? (
@@ -110,7 +122,9 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
             </div>
             {/* Rank */}
             <div className='text-base flex flex-col gap-2'>
-              <p className='text-purple-100 '>Price Change (24h)</p>
+              <p className='text-purple-100 max-sm:text-sm'>
+                Price Change (24h)
+              </p>
               <p
                 className={cn('flex gap-1 items-center text-sm font-medium', {
                   'text-green-500': coin.priceChange24h > 0,
@@ -134,9 +148,9 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
         <Separator className='my-8 bg-purple-600' />
 
         {/* Coin Details */}
-        <div className='w-full grid grid-cols-3 gap-5'>
+        <div className='w-full grid sm:grid-cols-3 gap-3 sm:gap-5'>
           <div className='text-base bg-dark-500 p-4 rounded-lg flex flex-col gap-1'>
-            <p className='text-purple-100 '>Market Cap</p>
+            <p className='text-purple-100'>Market Cap</p>
             <p className='text-base font-medium'>
               {formatPrice(coin.marketCap)}
             </p>

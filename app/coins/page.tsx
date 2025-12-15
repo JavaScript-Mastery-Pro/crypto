@@ -19,7 +19,7 @@ const Coins = async ({
 }) => {
   const params = await searchParams;
   const currentPage = Number(params.page) || 1;
-  const perPage = 8;
+  const perPage = 10;
 
   const coinsData = await getCoinList(currentPage, perPage);
 
@@ -34,65 +34,73 @@ const Coins = async ({
 
   return (
     <main className='py-12 container size-full items-center gap-10 justify-center'>
-      <div className='flex flex-col w-full space-y-4'>
+      <div className='flex flex-col w-full space-y-5'>
         <h4 className='text-2xl'>All Coins</h4>
-        <Table className='bg-dark-500 rounded-lg overflow-hidden'>
-          <TableHeader className='bg-dark-400 text-purple-100'>
-            <TableRow className='hover:bg-transparent !border-purple-600 '>
-              <TableHead className='pl-5 py-4 text-purple-100'>Rank</TableHead>
-              <TableHead className='text-purple-100'>Token</TableHead>
-              <TableHead className='text-purple-100'>Price</TableHead>
-              <TableHead className='pr-8 text-purple-100'>24h Change</TableHead>
-              <TableHead className='pr-8 text-purple-100'>Market Cap</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {coinsData.map((coin: CoinMarketData) => {
-              const isTrendingUp = coin.price_change_percentage_24h > 0;
-              return (
-                <ClickableTableRow
-                  key={coin.id}
-                  href={`/coins/${coin.id}`}
-                  className='text-lg hover:!bg-dark-400/30 !border-purple-600 cursor-pointer'
-                >
-                  <TableCell className='pl-5 !max-w-[80px] py-5 font-medium text-purple-100'>
-                    #{coin.market_cap_rank}
-                  </TableCell>
-                  <TableCell className='py-3 font-semibold'>
-                    <div className='flex items-center gap-3'>
-                      <Image
-                        src={coin.image}
-                        alt={coin.name}
-                        width={36}
-                        height={36}
-                      />
-                      <p>
-                        {coin.name} ({coin.symbol.toUpperCase()})
-                      </p>
-                    </div>
-                  </TableCell>
-                  <TableCell className='py-4 font-medium'>
-                    {formatPrice(coin.current_price)}
-                  </TableCell>
-                  <TableCell className='font-medium'>
-                    <span
-                      className={cn('flex gap-1 items-center font-medium', {
-                        'text-green-600': isTrendingUp,
-                        'text-red-500': !isTrendingUp,
-                      })}
-                    >
-                      {isTrendingUp && '+'}
-                      {formatPercentage(coin.price_change_percentage_24h)}
-                    </span>
-                  </TableCell>
-                  <TableCell className='pr-5 font-medium'>
-                    {formatPrice(coin.market_cap)}
-                  </TableCell>
-                </ClickableTableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+        <div className='bg-dark-500 rounded-xl custom-scrollbar max-h-fit overflow-hidden'>
+          <Table>
+            <TableHeader className='bg-dark-400 text-purple-100'>
+              <TableRow className='hover:bg-transparent !border-purple-600 '>
+                <TableHead className='pl-5 py-4 text-purple-100'>
+                  Rank
+                </TableHead>
+                <TableHead className='text-purple-100'>Token</TableHead>
+                <TableHead className='text-purple-100'>Price</TableHead>
+                <TableHead className='pr-8 text-purple-100'>
+                  24h Change
+                </TableHead>
+                <TableHead className='pr-8 text-purple-100'>
+                  Market Cap
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {coinsData.map((coin: CoinMarketData) => {
+                const isTrendingUp = coin.price_change_percentage_24h > 0;
+                return (
+                  <ClickableTableRow
+                    key={coin.id}
+                    href={`/coins/${coin.id}`}
+                    className='text-lg hover:!bg-dark-400/30 !border-purple-600 cursor-pointer'
+                  >
+                    <TableCell className='pl-5 !max-w-[80px] py-5 font-medium text-purple-100'>
+                      #{coin.market_cap_rank}
+                    </TableCell>
+                    <TableCell className='py-3 font-semibold'>
+                      <div className='flex items-center gap-3'>
+                        <Image
+                          src={coin.image}
+                          alt={coin.name}
+                          width={36}
+                          height={36}
+                        />
+                        <p>
+                          {coin.name} ({coin.symbol.toUpperCase()})
+                        </p>
+                      </div>
+                    </TableCell>
+                    <TableCell className='py-4 font-medium'>
+                      {formatPrice(coin.current_price)}
+                    </TableCell>
+                    <TableCell className='font-medium'>
+                      <span
+                        className={cn('flex gap-1 items-center font-medium', {
+                          'text-green-600': isTrendingUp,
+                          'text-red-500': !isTrendingUp,
+                        })}
+                      >
+                        {isTrendingUp && '+'}
+                        {formatPercentage(coin.price_change_percentage_24h)}
+                      </span>
+                    </TableCell>
+                    <TableCell className='pr-5 font-medium'>
+                      {formatPrice(coin.market_cap)}
+                    </TableCell>
+                  </ClickableTableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </div>
 
         <CoinsPagination
           currentPage={currentPage}

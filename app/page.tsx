@@ -32,6 +32,8 @@ const Home = async () => {
     'full' // precision
   );
 
+  console.log('trendingCoins:', trendingCoins);
+
   return (
     <main className='py-6 md:py-12 container size-full space-y-6 md:space-y-6'>
       <section className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 items-start lg:items-center gap-6 xl:gap-10'>
@@ -61,7 +63,7 @@ const Home = async () => {
         {/* Top Movers */}
         <div className='w-full flex flex-col justify-center h-full py-4 bg-dark-500 rounded-xl'>
           <h4 className='text-xl md:text-2xl px-4 md:px-5 mb-2'>Top Movers</h4>
-          <div className='overflow-x-auto'>
+          <div className='bg-dark-500 rounded-xl custom-scrollbar overflow-hidden'>
             <Table>
               <TableHeader className='text-purple-100'>
                 <TableRow className='hover:bg-transparent'>
@@ -105,9 +107,6 @@ const Home = async () => {
                               <p className='text-sm md:text-base'>
                                 {item.name}
                               </p>
-                              <p className='text-purple-100 font-medium text-xs sm:hidden'>
-                                {formatPercentage(item.data.price)}
-                              </p>
                             </div>
                           </Link>
                         </TableCell>
@@ -118,7 +117,11 @@ const Home = async () => {
                               isTrendingUp ? 'text-green-500' : 'text-red-500'
                             )}
                           >
-                            <p>{formatPercentage(item.data.price)}</p>
+                            <p>
+                              {formatPercentage(
+                                item.data.price_change_percentage_24h.usd
+                              )}
+                            </p>
                             {isTrendingUp ? (
                               <TrendingUp width={16} height={16} />
                             ) : (
@@ -126,7 +129,7 @@ const Home = async () => {
                             )}
                           </div>
                         </TableCell>
-                        <TableCell className='font-bold pr-2 md:pr-2 text-sm md:text-base'>
+                        <TableCell className='font-bold pr-5 text-sm max-w-[100px] truncate'>
                           {formatPrice(item.data.price)}
                         </TableCell>
                       </TableRow>

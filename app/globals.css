@@ -210,7 +210,6 @@
 
 /* Table Custom Scrollbar */
 .custom-scrollbar [data-slot='table-container'] {
-  max-height: 600px;
   overflow-y: auto;
 }
 
