@@ -82,3 +82,15 @@ interface SearchCoin {
   thumb: string;
   large: string;
 }
+
+interface LiveCoinPrice {
+  prices: {
+    [key: string]: {
+      price: number;
+      priceChangePercentage24h: number;
+      marketCap: number;
+      volume24h: number;
+    };
+  };
+  connected: boolean;
+}

@@ -17,7 +17,7 @@ export default function CoinCard({
   symbol: string;
   image: string;
 }) {
-  const { prices, connected } = useLiveCoinPrice(coinId);
+  const { prices, connected }: LiveCoinPrice = useLiveCoinPrice([coinId]);
   const priceData = prices[coinId];
 
   const isTrendingUp = priceData
