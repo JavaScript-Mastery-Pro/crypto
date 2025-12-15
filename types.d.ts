@@ -62,3 +62,23 @@ interface CoinMarketData {
   atl_date: string;
   last_updated: string;
 }
+
+interface TrendingCoin {
+  item: {
+    id: string;
+    name: string;
+    symbol: string;
+    market_cap_rank: number;
+    thumb: string;
+    large: string;
+  };
+}
+
+interface SearchCoin {
+  id: string;
+  name: string;
+  symbol: string;
+  market_cap_rank: number | null;
+  thumb: string;
+  large: string;
+}

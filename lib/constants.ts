@@ -1,4 +1,9 @@
-import { CandlestickSeriesPartialOptions, ChartOptions, ColorType, DeepPartial } from "lightweight-charts";
+import {
+  CandlestickSeriesPartialOptions,
+  ChartOptions,
+  ColorType,
+  DeepPartial,
+} from 'lightweight-charts';
 
 export const navItems = [
   {
@@ -26,7 +31,6 @@ const CHART_COLORS = {
   candleDown: '#ffaba6',
 } as const;
 
-
 export const getCandlestickConfig = (): CandlestickSeriesPartialOptions => ({
   upColor: CHART_COLORS.candleUp,
   downColor: CHART_COLORS.candleDown,
@@ -36,7 +40,10 @@ export const getCandlestickConfig = (): CandlestickSeriesPartialOptions => ({
   wickVisible: true,
 });
 
-export const getChartConfig = (height: number, timeVisible: boolean = true): DeepPartial<ChartOptions> => ({
+export const getChartConfig = (
+  height: number,
+  timeVisible: boolean = true
+): DeepPartial<ChartOptions> => ({
   width: 0,
   height,
   layout: {
@@ -109,178 +116,41 @@ export const PERIOD_BUTTONS: { value: Period; label: string }[] = [
 ];
 
 // Test Data
-export  const orderBook = [
-    { price: '0.031 BTC', amountBTC: '0.5 BTC', amountETH: '$15,000' },
-    { price: '0.0305 BTC', amountBTC: '1.0 BTC', amountETH: '$30,000' },
-    { price: '0.0300 BTC', amountBTC: '2.0 BTC', amountETH: '$60,000' },
-    { price: '0.0295 BTC', amountBTC: '1.5 BTC', amountETH: '$45,000' },
-    { price: '0.0290 BTC', amountBTC: '3.0 BTC', amountETH: '$90,000' },
-  ];
+export const orderBook = [
+  { price: '0.031 BTC', amountBTC: '0.5 BTC', amountETH: '$15,000' },
+  { price: '0.0305 BTC', amountBTC: '1.0 BTC', amountETH: '$30,000' },
+  { price: '0.0300 BTC', amountBTC: '2.0 BTC', amountETH: '$60,000' },
+  { price: '0.0295 BTC', amountBTC: '1.5 BTC', amountETH: '$45,000' },
+  { price: '0.0290 BTC', amountBTC: '3.0 BTC', amountETH: '$90,000' },
+];
 
-
-export const coins = [
-     {
-      name: 'Ethereum',
-      symbol: 'ETH',
-      image:
-        'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
-      market_data: {
-        current_price: { usd: 2000 },
-        market_cap: { usd: 250000000 },
-      },
-      coinData: {
-        market_data: { price_change_percentage_24h_in_currency: { usd: -2.5 } },
-      },
-    },
-    {
-      name: 'Cardano',
-      symbol: 'ADA',
-      image:
-        'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
-      market_data: {
-        current_price: { usd: 30000 },
-        market_cap: { usd: 40000000 },
-      },
-      coinData: {
-        market_data: { price_change_percentage_24h_in_currency: { usd: 1.5 } },
-      },
-    },
-    {
-      name: 'Bitcoin',
-      symbol: 'BTC',
-      image:
-        'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
-      market_data: {
-        current_price: { usd: 30000 },
-        market_cap: { usd: 600000000 },
-      },
-      coinData: {
-        market_data: { price_change_percentage_24h_in_currency: { usd: -1.5 } },
-      },
-    },
-    {
-      name: 'Bitcoin',
-      symbol: 'BTC',
-      image:
-        'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
-      market_data: {
-        current_price: { usd: 30000 },
-        market_cap: { usd: 600000000 },
-      },
-      coinData: {
-        market_data: { price_change_percentage_24h_in_currency: { usd: -1.5 } },
-      },
-    },
-    {
-      name: 'Bitcoin',
-      symbol: 'BTC',
-      image:
-        'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
-      market_data: {
-        current_price: { usd: 30000 },
-        market_cap: { usd: 600000000 },
-      },
-      coinData: {
-        market_data: { price_change_percentage_24h_in_currency: { usd: -1.5 } },
-      },
-    },
-    {
-      name: 'Bitcoin',
-      symbol: 'BTC',
-      image:
-        'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
-      market_data: {
-        current_price: { usd: 30000 },
-        market_cap: { usd: 600000000 },
-      },
-      coinData: {
-        market_data: { price_change_percentage_24h_in_currency: { usd: -1.5 } },
-      },
-    },
-    {
-      name: 'Bitcoin',
-      symbol: 'BTC',
-      image:
-        'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
-      market_data: {
-        current_price: { usd: 30000 },
-        market_cap: { usd: 600000000 },
-      },
-      coinData: {
-        market_data: { price_change_percentage_24h_in_currency: { usd: -1.5 } },
-      },
-    },
-    {
-      name: 'Bitcoin',
-      symbol: 'BTC',
-      image:
-        'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
-      market_data: {
-        current_price: { usd: 30000 },
-        market_cap: { usd: 600000000 },
-      },
-      coinData: {
-        market_data: { price_change_percentage_24h_in_currency: { usd: -1.5 } },
-      },
-    },
-    {
-      name: 'Ethereum',
-      symbol: 'ETH',
-      image:
-        'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
-      market_data: {
-        current_price: { usd: 2000 },
-        market_cap: { usd: 250000000 },
-      },
-      coinData: {
-        market_data: { price_change_percentage_24h_in_currency: { usd: -2.5 } },
-      },
-    },
-    {
-      name: 'Cardano',
-      symbol: 'ADA',
-      image:
-        'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
-      market_data: {
-        current_price: { usd: 1.2 },
-        market_cap: { usd: 40000000 },
-      },
-      coinData: {
-        market_data: { price_change_percentage_24h_in_currency: { usd: 1.5 } },
-      },
-    },
-  ];
-
-    // Popular coins data
-   export const popularCoins = [
-      {
-        coinId: 'bitcoin',
-        name: 'Bitcoin',
-        symbol: 'BTC',
-        image:
-          'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
-      },
-      {
-        coinId: 'ethereum',
-        name: 'Ethereum',
-        symbol: 'ETH',
-        image:
-          'https://coin-images.coingecko.com/coins/images/279/large/ethereum.png',
-      },
-      {
-        coinId: 'tether',
-        name: 'Tether',
-        symbol: 'USDT',
-        image:
-          'https://coin-images.coingecko.com/coins/images/325/large/Tether.png',
-      },
-      {
-        coinId: 'binancecoin',
-        name: 'BNB',
-        symbol: 'BNB',
-        image:
-          'https://coin-images.coingecko.com/coins/images/825/large/bnb-icon2_2x.png',
-      },
-    ];
-    
-
+// Popular coins data
+export const popularCoins = [
+  {
+    coinId: 'bitcoin',
+    name: 'Bitcoin',
+    symbol: 'BTC',
+    image: 'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
+  },
+  {
+    coinId: 'ethereum',
+    name: 'Ethereum',
+    symbol: 'ETH',
+    image:
+      'https://coin-images.coingecko.com/coins/images/279/large/ethereum.png',
+  },
+  {
+    coinId: 'tether',
+    name: 'Tether',
+    symbol: 'USDT',
+    image:
+      'https://coin-images.coingecko.com/coins/images/325/large/Tether.png',
+  },
+  {
+    coinId: 'binancecoin',
+    name: 'BNB',
+    symbol: 'BNB',
+    image:
+      'https://coin-images.coingecko.com/coins/images/825/large/bnb-icon2_2x.png',
+  },
+];

@@ -35,7 +35,7 @@ const Coins = async ({
   return (
     <main className='py-12 container size-full items-center gap-10 justify-center'>
       <div className='flex flex-col w-full space-y-4'>
-        <h4 className='text-2xl'>All Tokens</h4>
+        <h4 className='text-2xl'>All Coins</h4>
         <Table className='bg-dark-500 rounded-lg overflow-hidden'>
           <TableHeader className='bg-dark-400 text-purple-100'>
             <TableRow className='hover:bg-transparent !border-purple-600 '>

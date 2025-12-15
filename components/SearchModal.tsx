@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import Image from 'next/image';
-
+import { useRouter } from 'next/navigation';
 import {
   CommandDialog,
   CommandEmpty,
@@ -10,19 +10,49 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-  CommandSeparator,
 } from '@/components/ui/command';
 import { Button } from './ui/button';
-import { coins } from '@/lib/constants';
-import { cn, formatPercentage, formatPrice } from '@/lib/utils';
-import { TrendingDown, TrendingUp } from 'lucide-react';
+import { searchCoins } from '@/lib/actions/ coingecko';
+import { Search as SearchIcon, TrendingUp } from 'lucide-react';
+import { useEffect } from 'react';
 
-export const SearchModal = () => {
+export const SearchModal = ({
+  initialTrendingCoins = [],
+}: {
+  initialTrendingCoins: TrendingCoin[];
+}) => {
+  const router = useRouter();
   const [open, setOpen] = React.useState(false);
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const [searchResults, setSearchResults] = React.useState<SearchCoin[]>([]);
+  const [isLoading, setIsLoading] = React.useState(false);
 
-  React.useEffect(() => {
+  // Debounced search 300ms
+  useEffect(() => {
+    const timer = setTimeout(async () => {
+      if (searchQuery.trim().length > 0) {
+        setIsLoading(true);
+        try {
+          const results = await searchCoins(searchQuery);
+          setSearchResults(results);
+        } catch (error) {
+          console.error('Search error:', error);
+          setSearchResults([]);
+        }
+      } else {
+        setSearchResults([]);
+      }
+
+      setIsLoading(false);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Keyboard shortcut
+  useEffect(() => {
     const down = (e: KeyboardEvent) => {
-      if (e.key === 'j' && (e.metaKey || e.ctrlKey)) {
+      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
         setOpen((open) => !open);
       }
@@ -32,14 +62,24 @@ export const SearchModal = () => {
     return () => document.removeEventListener('keydown', down);
   }, []);
 
+  const handleSelect = (coinId: string) => {
+    setOpen(false);
+    setSearchQuery('');
+    router.push(`/coins/${coinId}`);
+  };
+
   return (
     <>
       <Button
         variant='ghost'
         onClick={() => setOpen(true)}
-        className='px-6 hover:!bg-transparent font-medium transition-all h-full cursor-pointer text-base text-purple-100'
+        className='px-6 hover:!bg-transparent font-medium transition-all h-full cursor-pointer text-base text-purple-100 flex items-center gap-2'
       >
+        <SearchIcon size={18} />
         Search
+        <kbd className='ml-2 pointer-events-none hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100'>
+          <span className='text-xs'>⌘</span>K
+        </kbd>
       </Button>
       <CommandDialog
         open={open}
@@ -50,68 +90,94 @@ export const SearchModal = () => {
           <CommandInput
             className='placeholder:text-purple-100'
             placeholder='Search for a token by name or symbol...'
+            value={searchQuery}
+            onValueChange={setSearchQuery}
           />
         </div>
-        <CommandList className='bg-dark-500'>
-          <CommandEmpty>No results found.</CommandEmpty>
-
-          <CommandGroup heading='Trending coins' className='bg-dark-500'>
-            {coins.map((coin, index) => {
-              const isTrendingUp =
-                coin.coinData.market_data
-                  .price_change_percentage_24h_in_currency.usd > 0;
-
-              return (
+        <CommandList className='bg-dark-500 max-h-[400px]'>
+          {isLoading ? (
+            <div className='py-6 text-center text-sm text-gray-400'>
+              Searching...
+            </div>
+          ) : searchQuery.trim().length === 0 ? (
+            // Show trending coins when no search query
+            initialTrendingCoins.length > 0 ? (
+              <CommandGroup
+                heading={
+                  <div className='flex items-center gap-2 text-purple-100'>
+                    <TrendingUp size={16} />
+                    Trending Coins
+                  </div>
+                }
+                className='bg-dark-500'
+              >
+                {initialTrendingCoins.slice(0, 8).map((trendingCoin) => {
+                  const coin = trendingCoin.item;
+                  return (
+                    <CommandItem
+                      key={coin.id}
+                      value={coin.id}
+                      onSelect={() => handleSelect(coin.id)}
+                      className='grid grid-cols-[auto_1fr_auto] gap-4 items-center data-[selected=true]:bg-dark-400 transition-all cursor-pointer hover:!bg-dark-400/50 py-3'
+                    >
+                      <Image
+                        src={coin.thumb}
+                        alt={coin.name}
+                        width={32}
+                        height={32}
+                        className='rounded-full'
+                      />
+                      <div className='flex flex-col'>
+                        <p className='font-semibold'>{coin.name}</p>
+                        <p className='text-sm text-purple-100 uppercase'>
+                          {coin.symbol}
+                        </p>
+                      </div>
+                      <span className='text-xs text-gray-400'>
+                        #{coin.market_cap_rank}
+                      </span>
+                    </CommandItem>
+                  );
+                })}
+              </CommandGroup>
+            ) : (
+              <div className='py-6 text-center text-sm text-gray-400'>
+                Type to search for coins...
+              </div>
+            )
+          ) : searchResults.length === 0 ? (
+            <CommandEmpty>No coins found.</CommandEmpty>
+          ) : (
+            <CommandGroup heading='Search Results' className='bg-dark-500'>
+              {searchResults.slice(0, 10).map((coin) => (
                 <CommandItem
-                  key={index}
-                  className='grid grid-cols-4 gap-2 data-[selected=true]:bg-dark-500 transition-all cursor-pointer hover:!bg-dark-400/50'
+                  key={coin.id}
+                  value={coin.id}
+                  onSelect={() => handleSelect(coin.id)}
+                  className='grid grid-cols-[auto_1fr_auto] gap-4 items-center data-[selected=true]:bg-dark-400 transition-all cursor-pointer hover:!bg-dark-400/50 py-3'
                 >
-                  <div className='flex col-span-2 items-center gap-3'>
-                    <Image
-                      src={coin.image}
-                      alt={coin.name}
-                      width={30}
-                      height={30}
-                    />
-                    <p>
-                      {coin.name} ({coin.symbol.toUpperCase()})
+                  <Image
+                    src={coin.thumb}
+                    alt={coin.name}
+                    width={32}
+                    height={32}
+                    className='rounded-full'
+                  />
+                  <div className='flex flex-col'>
+                    <p className='font-semibold'>{coin.name}</p>
+                    <p className='text-sm text-purple-100 uppercase'>
+                      {coin.symbol}
                     </p>
                   </div>
-                  <p className='text-right'>
-                    {formatPrice(coin.market_data.current_price.usd)}
-                  </p>
-
-                  <div
-                    className={cn(
-                      'flex max-w-[100px] gap-1 items-center justify-end text-sm font-medium',
-                      isTrendingUp ? 'text-green-500' : 'text-red-500'
-                    )}
-                  >
-                    <p>
-                      {formatPercentage(
-                        coin.coinData.market_data
-                          .price_change_percentage_24h_in_currency.usd
-                      )}
-                    </p>
-                    {isTrendingUp ? (
-                      <TrendingUp
-                        width={16}
-                        height={16}
-                        className='text-green-500'
-                      />
-                    ) : (
-                      <TrendingDown
-                        width={16}
-                        height={16}
-                        className='text-red-500'
-                      />
-                    )}
-                  </div>
+                  {coin.market_cap_rank && (
+                    <span className='text-xs text-gray-400'>
+                      #{coin.market_cap_rank}
+                    </span>
+                  )}
                 </CommandItem>
-              );
-            })}
-          </CommandGroup>
-          <CommandSeparator />
+              ))}
+            </CommandGroup>
+          )}
         </CommandList>
       </CommandDialog>
     </>

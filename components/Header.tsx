@@ -4,11 +4,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Button } from './ui/button';
 import { navItems } from '@/lib/constants';
 import { SearchModal } from './SearchModal';
 
-export const Header = () => {
+export const Header = ({
+  trendingCoins = [],
+}: {
+  trendingCoins: TrendingCoin[];
+}) => {
   const pathname = usePathname();
 
   return (
@@ -28,7 +31,12 @@ export const Header = () => {
             const isActive = pathname === item.href;
 
             if (item.label === 'Search') {
-              return <SearchModal key={item.label} />;
+              return (
+                <SearchModal
+                  key={item.label}
+                  initialTrendingCoins={trendingCoins}
+                />
+              );
             }
 
             return (
