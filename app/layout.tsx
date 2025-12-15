@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/Header';
-import { getTrendingCoins } from '@/lib/ coingecko.actions';
+import { getTrendingCoins, searchCoins } from '@/lib/ coingecko.actions';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -25,6 +25,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const trendingCoins = await getTrendingCoins();
+  // const trendingCoins = await searchCoins('');
 
   return (
     <html lang='en' className='dark'>

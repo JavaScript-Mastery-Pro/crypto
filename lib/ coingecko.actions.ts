@@ -117,11 +117,15 @@ export async function searchCoins(query: string): Promise<SearchCoin[]> {
     if (priceRes.ok) {
       const priceData = await priceRes.json();
 
+      console.log('===priceData', priceData);
+
       // Create a map of coin prices
       const priceMap = new Map<string, { price: number }>(
         priceData.map((coin: CoinMarketData) => [
           coin.id,
-          { price: coin.current_price }
+          { price: coin.current_price,
+            price_change_percentage_24h: coin.price_change_percentage_24h
+           }
         ])
       );
 

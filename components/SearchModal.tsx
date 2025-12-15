@@ -15,7 +15,7 @@ import { Button } from './ui/button';
 import { searchCoins } from '@/lib/ coingecko.actions';
 import { Search as SearchIcon, TrendingUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { formatPrice } from '@/lib/utils';
+import { cn, formatPercentage, formatPrice } from '@/lib/utils';
 
 export const SearchModal = ({
   initialTrendingCoins = [],
@@ -85,7 +85,7 @@ export const SearchModal = ({
       <CommandDialog
         open={open}
         onOpenChange={setOpen}
-        className='!bg-dark-400 !max-w-2xl'
+        className='!bg-dark-400 max-w-sm sm:max-w-md md:max-w-2xl mx-auto'
       >
         <div className='bg-dark-500'>
           <CommandInput
@@ -120,26 +120,43 @@ export const SearchModal = ({
                       key={coin.id}
                       value={coin.id}
                       onSelect={() => handleSelect(coin.id)}
-                      className='grid grid-cols-[auto_1fr_auto] gap-4 items-center data-[selected=true]:bg-dark-400 transition-all cursor-pointer hover:!bg-dark-400/50 py-3'
+                      className='grid grid-cols-4 gap-4 items-center data-[selected=true]:bg-dark-400 transition-all cursor-pointer hover:!bg-dark-400/50 py-3'
                     >
-                      <Image
-                        src={coin.thumb}
-                        alt={coin.name}
-                        width={32}
-                        height={32}
-                        className='rounded-full'
-                      />
-                      <div className='flex flex-col'>
-                        <p className='font-bold'>{coin.name}</p>
-                        <p className='text-sm text-purple-100 uppercase'>
-                          {coin.symbol}
-                        </p>
+                      <div className='flex gap-2 items-center col-span-2'>
+                        <Image
+                          src={coin.thumb}
+                          alt={coin.name}
+                          width={32}
+                          height={32}
+                          className='size-9 rounded-full'
+                        />
+                        <div className='flex flex-col'>
+                          <p className='font-bold'>{coin.name}</p>
+                          <p className='text-sm text-purple-100 uppercase'>
+                            {coin.symbol}
+                          </p>
+                        </div>
                       </div>
-                      {coin.data?.price && (
-                        <span className='font-semibold text-green-500'>
-                          {formatPrice(coin.data.price)}
-                        </span>
-                      )}
+
+                      <span className='font-semibold text-sm lg:text-base'>
+                        {formatPrice(coin.data.price)}
+                      </span>
+
+                      <p
+                        className={cn(
+                          'flex gap-1 text-sm lg:text-base items-center font-medium',
+                          {
+                            'text-green-500':
+                              coin.data.price_change_percentage_24h.usd > 0,
+                            'text-red-500':
+                              coin.data.price_change_percentage_24h.usd < 0,
+                          }
+                        )}
+                      >
+                        {formatPercentage(
+                          coin.data.price_change_percentage_24h.usd
+                        )}
+                      </p>
                     </CommandItem>
                   );
                 })}
@@ -152,34 +169,60 @@ export const SearchModal = ({
           ) : searchResults.length === 0 ? (
             <CommandEmpty>No coins found.</CommandEmpty>
           ) : (
-            <CommandGroup heading='Search Results' className='bg-dark-500'>
-              {searchResults.slice(0, 10).map((coin) => (
-                <CommandItem
-                  key={coin.id}
-                  value={coin.id}
-                  onSelect={() => handleSelect(coin.id)}
-                  className='grid grid-cols-[auto_1fr_auto] gap-4 items-center data-[selected=true]:bg-dark-400 transition-all cursor-pointer hover:!bg-dark-400/50 py-3'
-                >
-                  <Image
-                    src={coin.thumb}
-                    alt={coin.name}
-                    width={32}
-                    height={32}
-                    className='rounded-full'
-                  />
-                  <div className='flex flex-col'>
-                    <p className='font-semibold'>{coin.name}</p>
-                    <p className='text-sm text-purple-100 uppercase'>
-                      {coin.symbol}
+            <CommandGroup
+              heading={
+                <p className='flex items-center gap-2 text-purple-100'>
+                  Search Results
+                </p>
+              }
+              className='bg-dark-500 text-purple-100'
+            >
+              {searchResults.slice(0, 10).map((coin) => {
+                return (
+                  <CommandItem
+                    key={coin.id}
+                    value={coin.id}
+                    onSelect={() => handleSelect(coin.id)}
+                    className='grid grid-cols-4 gap-4 items-center data-[selected=true]:bg-dark-400 transition-all cursor-pointer hover:!bg-dark-400/50 py-3'
+                  >
+                    <div className='flex gap-2 items-center col-span-2'>
+                      <Image
+                        src={coin.thumb}
+                        alt={coin.name}
+                        width={32}
+                        height={32}
+                        className='size-9 rounded-full'
+                      />
+                      <div className='flex flex-col'>
+                        <p className='font-bold'>{coin.name}</p>
+                        <p className='text-sm text-purple-100 uppercase'>
+                          {coin.symbol}
+                        </p>
+                      </div>
+                    </div>
+
+                    {coin.data?.price && (
+                      <span className='font-semibold text-sm lg:text-base'>
+                        {formatPrice(coin.data.price)}
+                      </span>
+                    )}
+
+                    <p
+                      className={cn(
+                        'flex gap-1 text-sm lg:text-base items-center font-medium',
+                        {
+                          'text-green-500':
+                            coin.data?.price_change_percentage_24h > 0,
+                          'text-red-500':
+                            coin.data?.price_change_percentage_24h < 0,
+                        }
+                      )}
+                    >
+                      {formatPercentage(coin.data?.price_change_percentage_24h)}
                     </p>
-                  </div>
-                  {coin.data?.price && (
-                    <span className='font-semibold text-green-500'>
-                      {formatPrice(coin.data.price)}
-                    </span>
-                  )}
-                </CommandItem>
-              ))}
+                  </CommandItem>
+                );
+              })}
             </CommandGroup>
           )}
         </CommandList>

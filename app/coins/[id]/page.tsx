@@ -148,7 +148,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
         <Separator className='my-8 bg-purple-600' />
 
         {/* Coin Details */}
-        <div className='w-full grid sm:grid-cols-3 gap-3 sm:gap-5'>
+        <div className='w-full grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-5'>
           <div className='text-base bg-dark-500 p-4 rounded-lg flex flex-col gap-1'>
             <p className='text-purple-100'>Market Cap</p>
             <p className='text-base font-medium'>
