@@ -65,12 +65,15 @@ interface CoinMarketData {
 
 interface TrendingCoin {
   item: {
-    id: string;
+    coin_id: string;
     name: string;
     symbol: string;
     market_cap_rank: number;
     thumb: string;
     large: string;
+    data: {
+      price: number;
+    };
   };
 }
 
@@ -81,6 +84,9 @@ interface SearchCoin {
   market_cap_rank: number | null;
   thumb: string;
   large: string;
+  data?: {
+    price?: number;
+  };
 }
 
 interface LiveCoinPrice {

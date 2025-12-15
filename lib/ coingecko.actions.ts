@@ -86,7 +86,7 @@ export async function getTrendingCoins() {
   return data.coins || [];
 }
 
-export async function searchCoins(query: string) {
+export async function searchCoins(query: string): Promise<SearchCoin[]> {
   if (!query || query.trim().length === 0) {
     return [];
   }
@@ -99,5 +99,48 @@ export async function searchCoins(query: string) {
   if (!res.ok) throw new Error('Failed to fetch search data');
 
   const data = await res.json();
-  return data.coins || [];
+  const coins = data.coins || [];
+
+  // Get price data for the search results (limit to first 10)
+  const coinIds = coins.slice(0, 10).map((coin: SearchCoin) => coin.id);
+
+  if (coinIds.length === 0) return [];
+
+  try {
+    const priceParams = new URLSearchParams({
+      vs_currency: 'usd',
+      ids: coinIds.join(','),
+      order: 'market_cap_desc',
+      per_page: '10',
+      page: '1',
+      sparkline: 'false',
+    });
+
+    const priceRes = await fetch(
+      `${baseUrl}/coins/markets?${priceParams}`,
+      header
+    );
+
+    if (priceRes.ok) {
+      const priceData = await priceRes.json();
+
+      // Create a map of coin prices
+      const priceMap = new Map<string, { price: number }>(
+        priceData.map((coin: CoinMarketData) => [
+          coin.id,
+          { price: coin.current_price }
+        ])
+      );
+
+      // Enrich search results with price data
+      return coins.slice(0, 10).map((coin: SearchCoin) => ({
+        ...coin,
+        data: priceMap.get(coin.id) || undefined,
+      }));
+    }
+  } catch (error) {
+    console.error('Failed to fetch price data for search results:', error);
+  }
+
+  return coins.slice(0, 10);
 }

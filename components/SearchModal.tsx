@@ -14,7 +14,8 @@ import {
 import { Button } from './ui/button';
 import { searchCoins } from '@/lib/ coingecko.actions';
 import { Search as SearchIcon, TrendingUp } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { formatPrice } from '@/lib/utils';
 
 export const SearchModal = ({
   initialTrendingCoins = [],
@@ -22,10 +23,10 @@ export const SearchModal = ({
   initialTrendingCoins: TrendingCoin[];
 }) => {
   const router = useRouter();
-  const [open, setOpen] = React.useState(false);
-  const [searchQuery, setSearchQuery] = React.useState('');
-  const [searchResults, setSearchResults] = React.useState<SearchCoin[]>([]);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<SearchCoin[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Debounced search 300ms
   useEffect(() => {
@@ -77,7 +78,7 @@ export const SearchModal = ({
       >
         <SearchIcon size={18} />
         Search
-        <kbd className='ml-2 pointer-events-none hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100'>
+        <kbd className='pointer-events-none hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100'>
           <span className='text-xs'>⌘</span>K
         </kbd>
       </Button>
@@ -113,11 +114,12 @@ export const SearchModal = ({
               >
                 {initialTrendingCoins.slice(0, 8).map((trendingCoin) => {
                   const coin = trendingCoin.item;
+
                   return (
                     <CommandItem
-                      key={coin.id}
-                      value={coin.id}
-                      onSelect={() => handleSelect(coin.id)}
+                      key={coin.coin_id}
+                      value={coin.coin_id}
+                      onSelect={() => handleSelect(coin.coin_id)}
                       className='grid grid-cols-[auto_1fr_auto] gap-4 items-center data-[selected=true]:bg-dark-400 transition-all cursor-pointer hover:!bg-dark-400/50 py-3'
                     >
                       <Image
@@ -128,14 +130,16 @@ export const SearchModal = ({
                         className='rounded-full'
                       />
                       <div className='flex flex-col'>
-                        <p className='font-semibold'>{coin.name}</p>
+                        <p className='font-bold'>{coin.name}</p>
                         <p className='text-sm text-purple-100 uppercase'>
                           {coin.symbol}
                         </p>
                       </div>
-                      <span className='text-xs text-gray-400'>
-                        #{coin.market_cap_rank}
-                      </span>
+                      {coin.data?.price && (
+                        <span className='font-semibold text-green-500'>
+                          {formatPrice(coin.data.price)}
+                        </span>
+                      )}
                     </CommandItem>
                   );
                 })}
@@ -169,9 +173,9 @@ export const SearchModal = ({
                       {coin.symbol}
                     </p>
                   </div>
-                  {coin.market_cap_rank && (
-                    <span className='text-xs text-gray-400'>
-                      #{coin.market_cap_rank}
+                  {coin.data?.price && (
+                    <span className='font-semibold text-green-500'>
+                      {formatPrice(coin.data.price)}
                     </span>
                   )}
                 </CommandItem>
