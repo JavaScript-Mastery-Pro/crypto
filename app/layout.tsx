@@ -26,8 +26,6 @@ export default async function RootLayout({
 }>) {
   const trendingCoins = await getTrendingCoins();
 
-  console.log('===== Trending Coins in RootLayout:', trendingCoins);
-
   return (
     <html lang='en' className='dark'>
       <body
