@@ -5,32 +5,11 @@ import { formatPrice, formatPercentage } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 
 export default function LivePriceDisplay({ coinId }: { coinId: string }) {
-  const { prices, connected, error } = useLiveCoinPrice(coinId);
+  const { prices, connected } = useLiveCoinPrice(coinId);
   const priceData = prices[coinId];
 
-  if (error) {
-    return (
-      <div className='text-sm text-red-500'>
-        Error: {error}
-      </div>
-    );
-  }
-
-  if (!connected) {
-    return (
-      <div className='text-sm text-gray-400'>
-        ○ Connecting...
-      </div>
-    );
-  }
-
-  if (!priceData) {
-    return (
-      <div className='text-sm text-gray-400'>
-        ● Waiting for data...
-      </div>
-    );
-  }
+  console.log('======Websocket connected', connected);
+  console.log('======Websocket prices', prices);
 
   const isTrendingUp = priceData.priceChangePercentage24h > 0;
 
@@ -38,7 +17,9 @@ export default function LivePriceDisplay({ coinId }: { coinId: string }) {
     <div className='space-y-2'>
       <div className='flex items-center gap-3'>
         <span className='text-sm text-green-500'>● Live</span>
-        <span className='text-2xl font-bold'>{formatPrice(priceData.price)}</span>
+        <span className='text-2xl font-bold'>
+          {formatPrice(priceData.price)}
+        </span>
         <span
           className={cn('text-sm font-medium', {
             'text-green-600': isTrendingUp,
