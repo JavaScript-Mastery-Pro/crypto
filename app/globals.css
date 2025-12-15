@@ -1,6 +1,5 @@
-
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -44,17 +43,17 @@
   --radius-xl: calc(var(--radius) + 4px);
 
   /* Brand colors */
-    --color-dark-900: var(--dark-900);
-    --color-dark-700: var(--dark-700);
-    --color-dark-500: var(--dark-500);
-    --color-dark-400: var(--dark-400);
-    --color-purple-600: var(--purple-600);
-    --color-purple-100: var(--purple-100);
-    --color-green-500: var(--green-500);
-    --color-green-400: var(--green-400);
-    --color-green-300: var(--green-300);
-    --color-red-500: var(--red-500);
-    --color-yellow-500: var(--yellow-500);
+  --color-dark-900: var(--dark-900);
+  --color-dark-700: var(--dark-700);
+  --color-dark-500: var(--dark-500);
+  --color-dark-400: var(--dark-400);
+  --color-purple-600: var(--purple-600);
+  --color-purple-100: var(--purple-100);
+  --color-green-500: var(--green-500);
+  --color-green-400: var(--green-400);
+  --color-green-300: var(--green-300);
+  --color-red-500: var(--red-500);
+  --color-yellow-500: var(--yellow-500);
 }
 
 :root {
@@ -90,7 +89,6 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-
 }
 
 .dark {
@@ -126,21 +124,21 @@
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
 
-      /* Brand colors */
+  /* Brand colors */
   --dark-900: #000510;
-  --dark-700: #0F1316;
-  --dark-500: #1A2027;
-  --dark-400: #1E2833;
+  --dark-700: #0f1316;
+  --dark-500: #1a2027;
+  --dark-400: #1e2833;
 
-  --purple-600: #1B254B;
-  --purple-100: #A3AED0;
+  --purple-600: #1b254b;
+  --purple-100: #a3aed0;
 
-  --green-500: #76DA44;
-  --green-400: #2EBE7B;
-  --green-300: #99E39E;
-  
-  --red-500: #FF685F;
-  --yellow-500: #DABE44;
+  --green-500: #76da44;
+  --green-400: #2ebe7b;
+  --green-300: #99e39e;
+
+  --red-500: #ff685f;
+  --yellow-500: #dabe44;
 }
 
 @layer base {
@@ -175,7 +173,7 @@
   }
 
   .candlestick-interval {
-    @apply rounded-sm px-3 py-1.5 border-0 text-sm bg-dark-500 text-white/60 ;
+    @apply rounded-sm px-3 py-1.5 border-0 text-sm bg-dark-500 text-white/60;
   }
 
   .candlestick-period-button {
@@ -183,10 +181,53 @@
   }
 
   .candlestick-period-button-active {
-    @apply rounded-sm px-3 py-1.5 border-0 cursor-pointer text-sm text-gray-900 bg-green-500 ;
+    @apply rounded-sm px-3 py-1.5 border-0 cursor-pointer text-sm text-gray-900 bg-green-500;
   }
 
   .candlestick-chart-container {
     @apply w-full min-h-[200px];
   }
+}
+
+/* Custom Scrollbar Styles */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #1e2833;
+  border-radius: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #171a34;
+}
+
+/* Table Custom Scrollbar */
+.custom-scrollbar [data-slot='table-container'] {
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+.custom-scrollbar [data-slot='table-container']::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+
+.custom-scrollbar [data-slot='table-container']::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar [data-slot='table-container']::-webkit-scrollbar-thumb {
+  background: #1e2833;
+  border-radius: 8px;
+}
+
+.custom-scrollbar [data-slot='table-container']::-webkit-scrollbar-thumb:hover {
+  background: #171a34;
 }

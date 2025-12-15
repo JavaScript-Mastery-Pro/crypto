@@ -65,7 +65,7 @@ interface CoinMarketData {
 
 interface TrendingCoin {
   item: {
-    coin_id: string;
+    id: string;
     name: string;
     symbol: string;
     market_cap_rank: number;

@@ -48,8 +48,8 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
   const isTrendingUp = coin.priceChangePercentage24h > 0;
 
   return (
-    <main className='py-12 container size-full grid grid-cols-1 lg:grid-cols-3 items-center gap-10 justify-center'>
-      <section className='size-full lg:col-span-2'>
+    <main className='py-12 container size-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 items-center gap-6 xl:gap-10 justify-center'>
+      <section className='size-full xl:col-span-2'>
         {/* Coin Details */}
         <div className='space-y-5 w-full'>
           <h3 className='text-3xl font-medium'>{coin.name}</h3>
@@ -127,7 +127,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
 
         {/* Trend Overview */}
         <div className='w-full'>
-          <h4 className='text-2xl'>Trend Overview</h4>
+          <h4 className='text-2xl mb-4'>Trend Overview</h4>
           <CandlestickChart data={coinOHLCData} coinId={id} />
         </div>
 
@@ -243,44 +243,51 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
         {/* Recent Trades */}
         <div className='w-full mt-8 space-y-4'>
           <h4 className='text-2xl'>Exchange Listings</h4>
-          <Table className='bg-dark-500 rounded-xl'>
-            <TableHeader className='text-purple-100'>
-              <TableRow className='hover:bg-transparent'>
-                <TableHead className='pl-5 py-5 text-purple-100'>
-                  Exchange
-                </TableHead>
-                <TableHead className='text-purple-100'>Pair</TableHead>
-                <TableHead className='text-purple-100'>Price</TableHead>
-                <TableHead className='pr-5 text-purple-100 text-end'>
-                  Last Traded
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {coin.tickers.slice(0, 7).map((ticker: Ticker, index: number) => (
-                <TableRow key={index} className='overflow-hidden rounded-lg'>
-                  <TableCell className=' text-green-500 font-bold'>
-                    <Link
-                      href={ticker.trade_url}
-                      target='_blank'
-                      className='py-4 pl-3'
-                    >
-                      {ticker.market.name}
-                    </Link>
-                  </TableCell>
-                  <TableCell className='font-medium truncate max-w-[100px] py-4 pr-5'>
-                    {ticker.base} / {ticker.target}
-                  </TableCell>
-                  <TableCell className='font-medium'>
-                    {formatPrice(ticker.converted_last.usd)}
-                  </TableCell>
-                  <TableCell className='pr-5 text-end'>
-                    {timeAgo(ticker.timestamp)}
-                  </TableCell>
+          <div className='custom-scrollbar bg-dark-500 rounded-xl overflow-hidden'>
+            <Table>
+              <TableHeader className='text-purple-100'>
+                <TableRow className='hover:bg-transparent'>
+                  <TableHead className='pl-5 py-5 text-purple-100'>
+                    Exchange
+                  </TableHead>
+                  <TableHead className='text-purple-100'>Pair</TableHead>
+                  <TableHead className='text-purple-100'>Price</TableHead>
+                  <TableHead className='pr-5 text-purple-100 text-end'>
+                    Last Traded
+                  </TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {coin.tickers
+                  .slice(0, 7)
+                  .map((ticker: Ticker, index: number) => (
+                    <TableRow
+                      key={index}
+                      className='overflow-hidden rounded-lg'
+                    >
+                      <TableCell className=' text-green-500 font-bold'>
+                        <Link
+                          href={ticker.trade_url}
+                          target='_blank'
+                          className='py-4 pl-3 block max-w-[110px] truncate'
+                        >
+                          {ticker.market.name}
+                        </Link>
+                      </TableCell>
+                      <TableCell className='font-medium truncate max-w-[100px] py-4 pr-5'>
+                        {ticker.base} / {ticker.target}
+                      </TableCell>
+                      <TableCell className='font-medium'>
+                        {formatPrice(ticker.converted_last.usd)}
+                      </TableCell>
+                      <TableCell className='pr-5 text-end'>
+                        {timeAgo(ticker.timestamp)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
+            </Table>
+          </div>
         </div>
 
         {/* Recent Trades */}

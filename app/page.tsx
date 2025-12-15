@@ -34,7 +34,7 @@ const Home = async () => {
 
   return (
     <main className='py-6 md:py-12 container size-full space-y-6 md:space-y-6'>
-      <section className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 items-start lg:items-center gap-6'>
+      <section className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 items-start lg:items-center gap-6 xl:gap-10'>
         {/* Coin Overview */}
         <div className='w-full h-full xl:col-span-2 px-2 py-3 bg-dark-500 rounded-xl'>
           <CandlestickChart data={coinOHLCData} coinId={'bitcoin'}>
@@ -137,7 +137,7 @@ const Home = async () => {
           </div>
         </div>
       </section>
-
+      {/* 
       <section className='w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6'>
         {popularCoins.map((coin) => (
           <CoinCard
@@ -148,7 +148,7 @@ const Home = async () => {
             image={coin.image}
           />
         ))}
-      </section>
+      </section> */}
     </main>
   );
 };

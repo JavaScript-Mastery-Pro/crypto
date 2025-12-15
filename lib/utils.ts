@@ -69,10 +69,10 @@ export function timeAgo(date: string | number | Date): string {
   const weeks = Math.floor(days / 7);
 
   if (seconds < 60) return 'just now';
-  if (minutes < 60) return `${minutes} min ago`;
-  if (hours < 24) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
-  if (days < 7) return `${days} day${days > 1 ? 's' : ''} ago`;
-  if (weeks < 4) return `${weeks} week${weeks > 1 ? 's' : ''} ago`;
+  if (minutes < 60) return `${minutes} min`;
+  if (hours < 24) return `${hours} hour${hours > 1 ? 's' : ''}`;
+  if (days < 7) return `${days} day${days > 1 ? 's' : ''}`;
+  if (weeks < 4) return `${weeks} week${weeks > 1 ? 's' : ''}`;
 
   // Format date as YYYY-MM-DD
   return past.toISOString().split('T')[0];

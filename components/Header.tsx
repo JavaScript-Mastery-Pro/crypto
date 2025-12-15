@@ -47,6 +47,7 @@ export const Header = ({
                   'px-6 py-5 flex items-center transition-all hover:text-white font-medium h-full text-purple-100 cursor-pointer',
                   {
                     'text-white': isActive,
+                    'max-sm:hidden': item.label === 'Home',
                   }
                 )}
               >

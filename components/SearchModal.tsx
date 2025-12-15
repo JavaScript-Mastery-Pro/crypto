@@ -95,7 +95,7 @@ export const SearchModal = ({
             onValueChange={setSearchQuery}
           />
         </div>
-        <CommandList className='bg-dark-500 max-h-[400px]'>
+        <CommandList className='bg-dark-500 max-h-[400px] custom-scrollbar'>
           {isLoading ? (
             <div className='py-6 text-center text-sm text-gray-400'>
               Searching...
@@ -117,9 +117,9 @@ export const SearchModal = ({
 
                   return (
                     <CommandItem
-                      key={coin.coin_id}
-                      value={coin.coin_id}
-                      onSelect={() => handleSelect(coin.coin_id)}
+                      key={coin.id}
+                      value={coin.id}
+                      onSelect={() => handleSelect(coin.id)}
                       className='grid grid-cols-[auto_1fr_auto] gap-4 items-center data-[selected=true]:bg-dark-400 transition-all cursor-pointer hover:!bg-dark-400/50 py-3'
                     >
                       <Image
