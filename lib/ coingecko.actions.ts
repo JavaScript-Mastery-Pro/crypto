@@ -22,13 +22,7 @@ export async function getCoinList(page: number = 1, perPage: number = 50) {
 
   const res = await fetch(`${baseUrl}/coins/markets?${params}`, header);
 
-  if (!res.ok) {
-    const errorText = await res.text();
-    console.error('CoinGecko API Error:', res.status, errorText);
-    throw new Error(
-      `Failed to fetch CoinGecko API data: ${res.status} ${errorText}`
-    );
-  }
+  if (!res.ok) throw new Error('Failed to fetch CoinGecko API data');
   return res.json();
 }
 
