@@ -288,7 +288,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
                           {ticker.market.name}
                         </Link>
                       </TableCell>
-                      <TableCell className='font-medium truncate max-w-[100px] py-4 pr-5'>
+                      <TableCell className='font-medium truncate max-w-[100%] py-4 pr-5'>
                         {ticker.base} / {ticker.target}
                       </TableCell>
                       <TableCell className='font-medium'>

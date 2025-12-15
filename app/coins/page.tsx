@@ -73,7 +73,7 @@ const Coins = async ({
                           width={36}
                           height={36}
                         />
-                        <p>
+                        <p className='max-w-[100%] truncate'>
                           {coin.name} ({coin.symbol.toUpperCase()})
                         </p>
                       </div>

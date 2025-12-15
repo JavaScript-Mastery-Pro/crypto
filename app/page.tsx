@@ -70,7 +70,7 @@ const Home = async () => {
                   <TableHead className='pl-4 md:pl-5 py-3 text-purple-100'>
                     Name
                   </TableHead>
-                  <TableHead className='text-purple-100 hidden sm:table-cell'>
+                  <TableHead className='text-purple-100 table-cell'>
                     24h Change
                   </TableHead>
                   <TableHead className='pr-4 md:pr-5 text-purple-100'>
@@ -110,7 +110,7 @@ const Home = async () => {
                             </div>
                           </Link>
                         </TableCell>
-                        <TableCell className='font-medium py-4 pr-3 md:pr-5 hidden sm:table-cell'>
+                        <TableCell className='font-medium py-4 pr-3 md:pr-5 table-cell'>
                           <div
                             className={cn(
                               'flex gap-1 items-center text-sm font-medium',
@@ -129,7 +129,7 @@ const Home = async () => {
                             )}
                           </div>
                         </TableCell>
-                        <TableCell className='font-bold pr-5 text-sm max-w-[100px] truncate'>
+                        <TableCell className='font-bold pr-5 text-sm max-w-[100%] truncate'>
                           {formatPrice(item.data.price)}
                         </TableCell>
                       </TableRow>
