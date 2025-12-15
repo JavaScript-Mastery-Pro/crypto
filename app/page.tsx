@@ -137,8 +137,8 @@ const Home = async () => {
           </div>
         </div>
       </section>
-      {/* 
-      <section className='w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6'>
+
+      {/* <section className='w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6'>
         {popularCoins.map((coin) => (
           <CoinCard
             key={coin.coinId}
