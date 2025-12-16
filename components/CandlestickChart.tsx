@@ -38,22 +38,18 @@ export default function CandlestickChart({
     setLoading(true);
     try {
       const config = PERIOD_CONFIG[selectedPeriod];
-      const params = new URLSearchParams({
-        id: coinId,
-        days: String(config.days),
-        currency: 'usd',
-        precision: 'full',
-      });
 
-      // Only add interval if it's defined (not for yearly/max)
-      if (config.interval) {
-        params.append('interval', config.interval);
-      }
+      // Dynamically import the server action
+      const { getCoinOHLC } = await import('@/lib/ coingecko.actions');
 
-      const response = await fetch(`/api/coins/ohlc?${params}`);
-      if (!response.ok) throw new Error('Failed to fetch OHLC data');
+      const newData = await getCoinOHLC(
+        coinId,
+        config.days,
+        'usd',
+        config.interval,
+        'full'
+      );
 
-      const newData = await response.json();
       setOhlcData(newData);
     } catch (error) {
       console.error('Error fetching OHLC data:', error);

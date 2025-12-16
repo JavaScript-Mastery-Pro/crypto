@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 type OHLCData = [number, number, number, number, number];
 
 interface CandlestickChartProps {
@@ -74,7 +75,7 @@ interface TrendingCoin {
     data: {
       price: number;
       price_change_percentage_24h: {
-        usd: number
+        usd: number;
       };
     };
   };
@@ -104,3 +105,52 @@ interface LiveCoinPrice {
   };
   connected: boolean;
 }
+
+interface UseCoinGeckoSocketProps {
+  channel: string;
+  onReady: (socket: WebSocket) => void;
+  onData: (message: any) => void;
+}
+
+interface CGSimplePriceMessage {
+  c: string;
+  i: string;
+  m: number;
+  p: number;
+  pp: number;
+  t: number;
+  v: number;
+}
+
+interface ChartSectionProps {
+  coinData: {
+    image: { large: string };
+    name: string;
+    symbol: string;
+    market_data: {
+      current_price: { usd: number };
+    };
+  };
+  coinOHLCData: OHLCData[];
+  coinId: string;
+}
+
+interface CoinPriceData {
+  coinId: string;
+  price: number;
+  priceChangePercentage24h: number;
+  marketCap: number;
+  volume24h: number;
+  lastUpdated: number;
+}
+
+interface PricesMap {
+  [coinId: string]: CoinPriceData;
+}
+
+
+type UseCoinGeckoSocketProps = {
+  channel: string;
+  onReady: (socket: WebSocket) => void;
+  onData: (data: any) => void;
+};

@@ -1,11 +1,11 @@
 'use client';
 
-import { useLiveCoinPrice } from '@/hooks/useLiveCoinPrice';
+import { useCoinPrice } from '@/hooks/useCoinPrice';
 import { formatPrice, formatPercentage } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 
 export default function LivePriceDisplay({ coinId }: { coinId: string }) {
-  const { prices, connected } = useLiveCoinPrice([coinId]) as LiveCoinPrice;
+  const { prices, connected } = useCoinPrice([coinId]) as LiveCoinPrice;
   const priceData = prices[coinId];
 
   console.log('======Websocket connected', connected);

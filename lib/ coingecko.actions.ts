@@ -35,7 +35,7 @@ export async function getCoinDetails(id: string) {
 
 export async function getCoinOHLC(
   id: string,
-  days: number,
+  days: number | string,
   currency?: string,
   interval?: 'daily' | 'hourly',
   precision?: 'full' | string
@@ -80,9 +80,7 @@ export async function getTrendingCoins() {
 }
 
 export async function searchCoins(query: string): Promise<SearchCoin[]> {
-  if (!query || query.trim().length === 0) {
-    return [];
-  }
+  if (!query || query.trim().length === 0) return [];
 
   const res = await fetch(
     `${baseUrl}/search?query=${encodeURIComponent(query)}`,
@@ -116,8 +114,6 @@ export async function searchCoins(query: string): Promise<SearchCoin[]> {
 
     if (priceRes.ok) {
       const priceData = await priceRes.json();
-
-      console.log('===priceData', priceData);
 
       // Create a map of coin prices
       const priceMap = new Map<string, { price: number }>(

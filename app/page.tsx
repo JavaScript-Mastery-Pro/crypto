@@ -16,14 +16,14 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import CandlestickChart from '@/components/CandlestickChart';
+import ChartSection from '@/components/ChartSection';
 import CoinCard from '@/components/CoinCard';
 import { popularCoins } from '@/lib/constants';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 
 const Home = async () => {
-  const coinData = await getCoinDetails('bitcoin');
   const trendingCoins = await getTrendingCoins();
+  const coinData = await getCoinDetails('bitcoin');
   const coinOHLCData = await getCoinOHLC(
     'bitcoin',
     30, // days
@@ -32,33 +32,15 @@ const Home = async () => {
     'full' // precision
   );
 
-  console.log('trendingCoins:', trendingCoins);
-
   return (
     <main className='py-6 md:py-12 container size-full space-y-6 md:space-y-6'>
-      <section className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 items-start lg:items-center gap-6 xl:gap-10'>
+      <section className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 items-start lg:items-center gap-6'>
         {/* Coin Overview */}
-        <div className='w-full h-full xl:col-span-2 px-2 py-3 bg-dark-500 rounded-xl'>
-          <CandlestickChart data={coinOHLCData} coinId={'bitcoin'}>
-            <div className='flex-1 mb-2 flex gap-2 md:gap-3'>
-              <Image
-                src={coinData.image.large}
-                alt={coinData.name}
-                width={56}
-                height={56}
-                className='w-10 h-10 md:w-14 md:h-14'
-              />
-              <div className='flex flex-col'>
-                <p className='flex text-purple-100 text-xs md:text-sm w-fit'>
-                  {coinData.name} / {coinData.symbol.toUpperCase()}
-                </p>
-                <h1 className='text-xl md:text-2xl font-semibold'>
-                  {formatPrice(coinData.market_data.current_price.usd)}
-                </h1>
-              </div>
-            </div>
-          </CandlestickChart>
-        </div>
+        <ChartSection
+          coinData={coinData}
+          coinOHLCData={coinOHLCData}
+          coinId='bitcoin'
+        />
 
         {/* Top Movers */}
         <div className='w-full flex flex-col justify-center h-full py-4 bg-dark-500 rounded-xl'>
@@ -141,7 +123,7 @@ const Home = async () => {
         </div>
       </section>
 
-      {/* <section className='w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6'>
+      <section className='w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6'>
         {popularCoins.map((coin) => (
           <CoinCard
             key={coin.coinId}
@@ -151,7 +133,7 @@ const Home = async () => {
             image={coin.image}
           />
         ))}
-      </section> */}
+      </section>
     </main>
   );
 };
