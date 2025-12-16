@@ -148,9 +148,30 @@ interface PricesMap {
   [coinId: string]: CoinPriceData;
 }
 
-
 type UseCoinGeckoSocketProps = {
   channel: string;
   onReady: (socket: WebSocket) => void;
   onData: (data: any) => void;
 };
+
+interface TopGainersLosers {
+  id: string;
+  name: string;
+  symbol: string;
+  image: string;
+  price: number;
+  priceChangePercentage24h: number;
+  volume24: number;
+  rank: number;
+}
+
+interface TopGainersLosersResponse {
+  id: string;
+  name: string;
+  symbol: string;
+  image: string;
+  usd: number;
+  usd_24h_change: number;
+  usd_24h_vol: number;
+  market_cap_rank: number;
+}

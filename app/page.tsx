@@ -2,6 +2,7 @@
 import {
   getCoinDetails,
   getCoinOHLC,
+  getTopGainersLosers,
   getTrendingCoins,
 } from '@/lib/ coingecko.actions';
 import { cn, formatPercentage, formatPrice } from '@/lib/utils';
@@ -20,9 +21,11 @@ import ChartSection from '@/components/ChartSection';
 // import CoinCard from '@/components/CoinCard';
 // import { popularCoins } from '@/lib/constants';
 import { TrendingDown, TrendingUp } from 'lucide-react';
+import CoinCard from '@/components/CoinCard';
 
 const Home = async () => {
   const trendingCoins = await getTrendingCoins();
+  const topGainersLosers = await getTopGainersLosers();
   const coinData = await getCoinDetails('bitcoin');
   const coinOHLCData = await getCoinOHLC(
     'bitcoin',
@@ -31,6 +34,8 @@ const Home = async () => {
     'hourly', // interval
     'full' // precision
   );
+
+  console.log('===topGainersLosers', topGainersLosers);
 
   return (
     <main className='py-6 md:py-12 container size-full space-y-6 md:space-y-6'>
@@ -45,7 +50,7 @@ const Home = async () => {
         {/* Top Movers */}
         <div className='w-full flex flex-col justify-center h-full py-4 bg-dark-500 rounded-xl'>
           <h4 className='text-xl md:text-2xl px-4 md:px-5 mb-2'>Top Movers</h4>
-          <div className='bg-dark-500 rounded-xl custom-scrollbar overflow-hidden'>
+          <div className='bg-dark-500 custom-scrollbar overflow-hidden'>
             <Table>
               <TableHeader className='text-purple-100'>
                 <TableRow className='hover:bg-transparent'>
@@ -76,7 +81,7 @@ const Home = async () => {
                         <TableCell className='font-bold'>
                           <Link
                             href={`/coins/${item.id}`}
-                            className='pl-1 md:pl-2 py-1 flex items-center gap-2 md:gap-3'
+                            className='pl-1 md:pl-2 py-1 md:py-2 xl:py-1 flex items-center gap-2 md:gap-3'
                           >
                             <Image
                               src={item.large}
@@ -123,17 +128,44 @@ const Home = async () => {
         </div>
       </section>
 
-      {/* <section className='w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6'>
-        {popularCoins.map((coin) => (
-          <CoinCard
-            key={coin.coinId}
-            coinId={coin.coinId}
-            name={coin.name}
-            symbol={coin.symbol}
-            image={coin.image}
-          />
-        ))}
-      </section> */}
+      <section className='space-y-6 mt-5'>
+        <h4 className='text-xl md:text-2xl'>Top Gainers</h4>
+        <div className='w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6'>
+          {topGainersLosers.top_gainers.map(
+            (coin: TopGainersLosersResponse) => (
+              <CoinCard
+                key={coin.id}
+                id={coin.id}
+                name={coin.name}
+                symbol={coin.symbol}
+                image={coin.image}
+                price={coin.usd}
+                priceChangePercentage24h={coin.usd_24h_change}
+                volume24={coin.usd_24h_vol}
+                rank={coin.market_cap_rank}
+              />
+            )
+          )}
+        </div>
+      </section>
+      <section className='space-y-6 mt-8'>
+        <h4 className='text-xl md:text-2xl'>Top Losers</h4>
+        <div className='w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6'>
+          {topGainersLosers.top_losers.map((coin: TopGainersLosersResponse) => (
+            <CoinCard
+              key={coin.id}
+              id={coin.id}
+              name={coin.name}
+              symbol={coin.symbol}
+              image={coin.image}
+              price={coin.usd}
+              priceChangePercentage24h={coin.usd_24h_change}
+              volume24={coin.usd_24h_vol}
+              rank={coin.market_cap_rank}
+            />
+          ))}
+        </div>
+      </section>
     </main>
   );
 };

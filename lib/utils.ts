@@ -8,8 +8,9 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatPrice(
   value: number | null | undefined,
+  digits?: number,
   currency?: string,
-  showSymbol?: boolean
+  showSymbol?: boolean,
 ) {
   if (value === null || value === undefined || isNaN(value)) {
     return showSymbol !== false ? '$0.00' : '0.00';
@@ -19,13 +20,13 @@ export function formatPrice(
     return value.toLocaleString(undefined, {
       style: 'currency',
       currency: currency?.toUpperCase() || 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
+      minimumFractionDigits: digits ?? 2,
+      maximumFractionDigits: digits ?? 2,
     });
   }
    return value.toLocaleString(undefined, {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
+      minimumFractionDigits: digits ?? 2,
+      maximumFractionDigits: digits ?? 2,
     });
 }
 

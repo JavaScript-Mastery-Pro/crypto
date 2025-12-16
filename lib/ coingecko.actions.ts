@@ -55,21 +55,6 @@ export async function getCoinOHLC(
   return res.json();
 }
 
-export async function getTopPoolForToken(
-  network: string,
-  tokenAddress: string
-) {
-  const res = await fetch(
-    `${baseUrl}/onchain/networks/${network}/tokens/${tokenAddress}/pools`,
-    header
-  );
-
-  if (!res.ok) throw new Error('Failed to fetch pool data');
-  const data = await res.json();
-
-  return data.data && data.data.length > 0 ? data.data[0] : null;
-}
-
 export async function getTrendingCoins() {
   const res = await fetch(`${baseUrl}/search/trending`, header);
 
@@ -77,6 +62,15 @@ export async function getTrendingCoins() {
 
   const data = await res.json();
   return data.coins || [];
+}
+
+export async function getTopGainersLosers() {
+  const res = await fetch(`${baseUrl}/coins/top_gainers_losers?vs_currency=usd`, header);
+
+  if (!res.ok) throw new Error('Failed to fetch top gainers/losers');
+
+  const data = await res.json();
+  return { top_gainers: data.top_gainers.slice(0,4) || [], top_losers: data.top_losers.slice(0,4) || [] };
 }
 
 export async function searchCoins(query: string): Promise<SearchCoin[]> {

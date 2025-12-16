@@ -19,7 +19,7 @@ export const Header = ({
       <div className='container flex justify-between items-center h-full'>
         <Link href='/'>
           <Image
-            src='/assets/images/logo.svg'
+            src='/assets/logo.svg'
             alt='CoinPulse Logo'
             width={132}
             height={40}

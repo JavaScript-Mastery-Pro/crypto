@@ -41,7 +41,7 @@ export const Converter = ({ symbol, icon, priceList }: ConverterProps) => {
         <div className='relative flex justify-center items-center my-4'>
           <div className='h-[1px] z-10 w-full bg-dark-400 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ' />
           <Image
-            src='/assets/icons/converter.svg'
+            src='/assets/converter.svg'
             alt='converter'
             width={32}
             height={32}
@@ -52,7 +52,7 @@ export const Converter = ({ symbol, icon, priceList }: ConverterProps) => {
 
       <div className='bg-dark-400 h-12 w-full rounded-md flex items-center justify-between py-4 pl-4'>
         <p className='text-base font-medium'>
-          {formatPrice(convertedPrice, currency, false)}
+          {formatPrice(convertedPrice, 2, currency, false)}
         </p>
         <Select value={currency} onValueChange={setCurrency}>
           <SelectTrigger
