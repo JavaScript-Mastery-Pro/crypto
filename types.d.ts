@@ -151,7 +151,7 @@ interface PriceData {
 interface TradeData {
   price?: number;
   timestamp?: number;
-  type?: string
+  type?: string;
   amount?: number;
   value?: number;
 }
@@ -203,14 +203,17 @@ interface LiveDataProps {
     id: string;
     address: string;
     name: string;
+    network: string;
   };
   coin: {
     name: string;
     image: string;
+    description: string;
     priceChangePercentage24h: number;
     priceChangePercentage30d: number;
     priceChange24h: number;
     price: number;
   };
   coinOHLCData: OHLCData[];
+  children?: React.ReactNode;
 }

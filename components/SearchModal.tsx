@@ -194,7 +194,7 @@ export const SearchModal = ({
                         className='size-9 rounded-full'
                       />
                       <div className='flex flex-col'>
-                        <p className='font-bold'>{coin.name}</p>
+                        <p className='font-bold text-white'>{coin.name}</p>
                         <p className='text-sm text-purple-100 uppercase'>
                           {coin.symbol}
                         </p>

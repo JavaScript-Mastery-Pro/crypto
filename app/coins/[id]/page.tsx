@@ -23,7 +23,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
   const coinOHLCData = await getCoinOHLC(id, 30, 'usd', 'hourly', 'full');
   const pool = await fetchPools(id);
 
-  console.log('coinOHLCData', coinOHLCData);
+  console.log('pool Data:', pool);
 
   const coin = {
     id: coinData.id,
@@ -40,7 +40,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
       coinData.market_data.price_change_percentage_30d_in_currency.usd,
     marketCap: coinData.market_data.market_cap.usd,
     marketCapRank: coinData.market_cap_rank,
-    description: coinData.description.en, //
+    description: coinData.description.en,
     totalVolume: coinData.market_data.total_volume.usd,
     website: coinData.links.homepage[0],
     explorer: coinData.links.blockchain_site[0],
@@ -56,12 +56,62 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
           coinId={id}
           pool={pool}
           coin={coin}
-        />
+        >
+          {/* Exchange Listings */}
+          <div className='w-full mt-8 space-y-4'>
+            <h4 className='text-2xl'>Exchange Listings</h4>
+            <div className='custom-scrollbar bg-dark-500 rounded-xl overflow-hidden'>
+              <Table>
+                <TableHeader className='text-purple-100'>
+                  <TableRow className='hover:bg-transparent'>
+                    <TableHead className='pl-5 py-5 text-purple-100'>
+                      Exchange
+                    </TableHead>
+                    <TableHead className='text-purple-100'>Pair</TableHead>
+                    <TableHead className='text-purple-100'>Price</TableHead>
+                    <TableHead className='pr-5 text-purple-100 text-end'>
+                      Last Traded
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {coin.tickers
+                    .slice(0, 7)
+                    .map((ticker: Ticker, index: number) => (
+                      <TableRow
+                        key={index}
+                        className='overflow-hidden rounded-lg'
+                      >
+                        <TableCell className=' text-green-500 font-bold'>
+                          <Link
+                            href={ticker.trade_url}
+                            target='_blank'
+                            className='py-4 pl-3 block max-w-[110px] truncate'
+                          >
+                            {ticker.market.name}
+                          </Link>
+                        </TableCell>
+                        <TableCell className='font-medium truncate max-w-[100%] py-4 pr-5'>
+                          {ticker.base} / {ticker.target}
+                        </TableCell>
+                        <TableCell className='font-medium'>
+                          {formatPrice(ticker.converted_last.usd)}
+                        </TableCell>
+                        <TableCell className='pr-5 text-end'>
+                          {timeAgo(ticker.timestamp)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                </TableBody>
+              </Table>
+            </div>
+          </div>
+        </LiveDataWrapper>
       </section>
 
       <section className='size-full max-lg:mt-8 lg:col-span-1'>
         {/* Converter */}
-        <div className='w-full space-y-4'>
+        <div className='w-full space-y-5'>
           <h4 className='text-2xl font-semibold'>
             {coin.symbol.toUpperCase()} Converter
           </h4>
@@ -134,55 +184,9 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
           </div>
         </div>
 
-        {/* Recent Trades */}
-        <div className='w-full mt-8 space-y-4'>
-          <h4 className='text-2xl'>Exchange Listings</h4>
-          <div className='custom-scrollbar bg-dark-500 rounded-xl overflow-hidden'>
-            <Table>
-              <TableHeader className='text-purple-100'>
-                <TableRow className='hover:bg-transparent'>
-                  <TableHead className='pl-5 py-5 text-purple-100'>
-                    Exchange
-                  </TableHead>
-                  <TableHead className='text-purple-100'>Pair</TableHead>
-                  <TableHead className='text-purple-100'>Price</TableHead>
-                  <TableHead className='pr-5 text-purple-100 text-end'>
-                    Last Traded
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {coin.tickers
-                  .slice(0, 7)
-                  .map((ticker: Ticker, index: number) => (
-                    <TableRow
-                      key={index}
-                      className='overflow-hidden rounded-lg'
-                    >
-                      <TableCell className=' text-green-500 font-bold'>
-                        <Link
-                          href={ticker.trade_url}
-                          target='_blank'
-                          className='py-4 pl-3 block max-w-[110px] truncate'
-                        >
-                          {ticker.market.name}
-                        </Link>
-                      </TableCell>
-                      <TableCell className='font-medium truncate max-w-[100%] py-4 pr-5'>
-                        {ticker.base} / {ticker.target}
-                      </TableCell>
-                      <TableCell className='font-medium'>
-                        {formatPrice(ticker.converted_last.usd)}
-                      </TableCell>
-                      <TableCell className='pr-5 text-end'>
-                        {timeAgo(ticker.timestamp)}
-                      </TableCell>
-                    </TableRow>
-                  ))}
-              </TableBody>
-            </Table>
-          </div>
-        </div>
+        <p className='mt-8 text-sm font-sans text-purple-50 leading-[30px]'>
+          {coin.description}
+        </p>
       </section>
     </main>
   );

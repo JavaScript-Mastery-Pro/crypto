@@ -65,12 +65,18 @@ export async function getTrendingCoins() {
 }
 
 export async function getTopGainersLosers() {
-  const res = await fetch(`${baseUrl}/coins/top_gainers_losers?vs_currency=usd`, header);
+  const res = await fetch(
+    `${baseUrl}/coins/top_gainers_losers?vs_currency=usd`,
+    header
+  );
 
   if (!res.ok) throw new Error('Failed to fetch top gainers/losers');
 
   const data = await res.json();
-  return { top_gainers: data.top_gainers.slice(0,4) || [], top_losers: data.top_losers.slice(0,4) || [] };
+  return {
+    top_gainers: data.top_gainers.slice(0, 4) || [],
+    top_losers: data.top_losers.slice(0, 4) || [],
+  };
 }
 
 export async function searchCoins(query: string): Promise<SearchCoin[]> {
@@ -113,9 +119,10 @@ export async function searchCoins(query: string): Promise<SearchCoin[]> {
       const priceMap = new Map<string, { price: number }>(
         priceData.map((coin: CoinMarketData) => [
           coin.id,
-          { price: coin.current_price,
-            price_change_percentage_24h: coin.price_change_percentage_24h
-           }
+          {
+            price: coin.current_price,
+            price_change_percentage_24h: coin.price_change_percentage_24h,
+          },
         ])
       );
 
@@ -132,27 +139,32 @@ export async function searchCoins(query: string): Promise<SearchCoin[]> {
   return coins.slice(0, 10);
 }
 
-export async function fetchPools(id: string): Promise<{id: string;address: string; name: string}> {
+export async function fetchPools(
+  id: string
+): Promise<{ id: string; address: string; name: string; network: string }> {
   try {
     // Fetch onchain data for the coin which includes pool information
     const res = await fetch(
       `${baseUrl}/onchain/search/pools?query=${encodeURIComponent(id)}`,
       header
     );
- 
+
     if (!res.ok) {
       console.warn(`No pool data found for ${id}`);
-      return {id: '', address: '', name: ''};
+      return { id: '', address: '', name: '', network: '' };
     }
 
     const data = await res.json();
+    const pool = data.data[0];
 
-       console.log('>>>>>Fetched pool data:', data);
-       const pool = data.data[0];
-
-    return {id: pool.id as string, address: pool.attributes.address as string, name: pool.attributes.name as string}
+    return {
+      id: pool.id as string,
+      address: pool.attributes.address as string,
+      name: pool.attributes.name as string,
+      network: pool.id.split('_')[0] as string,
+    };
   } catch (error) {
     console.error('Failed to fetch pools', error);
-    return {id: '', address: '', name: ''};
+    return { id: '', address: '', name: '', network: '' };
   }
 }

@@ -13,7 +13,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import CoinHeader from './CoinHeader';
 import { Separator } from './ui/separator';
 import CandlestickChart from './CandlestickChart';
-import { timeAgo } from '@/lib/utils';
+import { formatPrice, formatTime, timeAgo } from '@/lib/utils';
 
 const WS_BASE = `${process.env.NEXT_PUBLIC_COINGECKO_WEBSOCKET_URL}?x_cg_pro_api_key=${process.env.NEXT_PUBLIC_COINGECKO_API_KEY}`;
 
@@ -22,21 +22,18 @@ export default function LiveDataWrapper({
   pool,
   coin,
   coinOHLCData,
+  children,
 }: LiveDataProps) {
   const wsRef = useRef<WebSocket | null>(null);
   const subscribed = useRef<Set<string>>(new Set());
 
   const [price, setPrice] = useState<ExtendedPriceData | null>(null);
-  const [trades, setTrades] = useState<TradeData[] | null>(null);
+  const [trades, setTrades] = useState<TradeData[]>([]);
   const [ohlcv, setOhlcv] = useState<OHLCData[]>(coinOHLCData);
   const [isWsReady, setIsWsReady] = useState(false);
 
   // Track where historical data ends and live data begins
   const historicalDataLength = useRef(coinOHLCData.length);
-
-  console.log('price', price);
-  console.log('trades', trades);
-  console.log('ohlcv', ohlcv);
 
   const handleMessage = useCallback((event: MessageEvent) => {
     const ws = wsRef.current;
@@ -66,15 +63,19 @@ export default function LiveDataWrapper({
     }
 
     if (msg.c === 'G2') {
-      setTrades([
-        {
-          price: msg.pu,
-          value: msg.vo,
-          timestamp: msg.t,
-          type: msg.ty,
-          amount: msg.to,
-        },
-      ]);
+      const newTrade: TradeData = {
+        price: msg.pu,
+        value: msg.vo,
+        timestamp: (msg.t ?? 0) * 1000, // Convert to milliseconds
+        type: msg.ty,
+        amount: msg.to,
+      };
+
+      setTrades((prev) => {
+        // Prepend new trade to beginning (most recent first)
+        const allTrades = [newTrade, ...prev];
+        return allTrades.slice(0, 10);
+      });
     }
 
     if (msg.ch === 'G3') {
@@ -161,8 +162,8 @@ export default function LiveDataWrapper({
     let active = true;
     (async () => {
       setPrice(null);
-      setTrades(null);
-      // Reset to historical data only (clear live data)
+      // Reset to empty (clear live data)
+      setTrades([]);
       setOhlcv(coinOHLCData);
       historicalDataLength.current = coinOHLCData.length;
 
@@ -216,39 +217,59 @@ export default function LiveDataWrapper({
       <Separator className='my-8 bg-purple-600' />
 
       {/* Recent Trades */}
-      <div className='w-full mt-8 space-y-4'>
+      <div className='w-full my-8 space-y-4'>
         <h4 className='text-2xl'>Recent Trades</h4>
-        <Table className='bg-dark-500 rounded-xl'>
-          <TableHeader className='text-purple-100'>
-            <TableRow className='hover:bg-transparent'>
-              <TableHead className='pl-5 py-5 text-purple-100'>
-                Amount
-              </TableHead>
-              <TableHead className='text-purple-100'>Price</TableHead>
-              <TableHead className='pr-8 text-purple-100'>Value</TableHead>
-              <TableHead className='pr-8 text-purple-100'>Buy/Sell</TableHead>
-              <TableHead className='pr-8 text-purple-100'>Time</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {trades?.map((trade, index) => (
-              <TableRow key={index}>
-                <TableCell className='pl-5 py-4 font-medium'>
-                  {trade.amount}
-                </TableCell>
-                <TableCell className='font-medium'>{trade.price}</TableCell>
-                <TableCell className='font-medium'>{trade.value}</TableCell>
-                <TableCell className='font-medium'>
-                  {trade.type === 'b' ? 'Buy' : 'Sell'}
-                </TableCell>
-                <TableCell className='pr-5'>
-                  {trade.timestamp && timeAgo(trade.timestamp)}
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+        <div className='custom-scrollbar bg-dark-500 rounded-xl overflow-hidden'>
+          {trades.length > 0 ? (
+            <Table className='bg-dark-500'>
+              <TableHeader className='text-purple-100'>
+                <TableRow className='hover:bg-transparent'>
+                  <TableHead className='pl-5 text-purple-100'>Price</TableHead>
+                  <TableHead className='py-5 text-purple-100'>Amount</TableHead>
+                  <TableHead className='pr-8 text-purple-100'>Value</TableHead>
+                  <TableHead className='pr-8 text-purple-100'>
+                    Buy/Sell
+                  </TableHead>
+                  <TableHead className='pr-8 text-purple-100'>Time</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {trades?.map((trade, index) => (
+                  <TableRow key={index}>
+                    <TableCell className='pl-5 py-5 font-medium'>
+                      {trade.price ? formatPrice(trade.price) : '-'}
+                    </TableCell>
+                    <TableCell className='py-4 font-medium'>
+                      {trade.amount?.toFixed(4) ?? '-'}
+                    </TableCell>
+                    <TableCell className='font-medium'>
+                      {trade.value ? formatPrice(trade.value) : '-'}
+                    </TableCell>
+                    <TableCell className='font-medium'>
+                      <span
+                        className={
+                          trade.type === 'b' ? 'text-green-500' : 'text-red-500'
+                        }
+                      >
+                        {trade.type === 'b' ? 'Buy' : 'Sell'}
+                      </span>
+                    </TableCell>
+                    <TableCell className='pr-5'>
+                      {trade.timestamp ? timeAgo(trade.timestamp) : '-'}
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          ) : (
+            <div className='text-center p-10 text-purple-100/50'>
+              No recent trades
+            </div>
+          )}
+        </div>
       </div>
+
+      {children}
     </section>
   );
 }

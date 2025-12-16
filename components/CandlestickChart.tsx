@@ -40,14 +40,10 @@ export default function CandlestickChart({
   // Memoize converted data to avoid recalculating on every render
   const chartData = useMemo(() => convertOHLCData(activeData), [activeData]);
 
-  console.log('CandlestickChart chartData:', chartData);
-  // Fetch OHLC data
   const fetchOHLCData = async (selectedPeriod: Period) => {
     setLoading(true);
     try {
       const config = PERIOD_CONFIG[selectedPeriod];
-
-      // Dynamically import the server action
 
       const newData = await getCoinOHLC(
         coinId,
