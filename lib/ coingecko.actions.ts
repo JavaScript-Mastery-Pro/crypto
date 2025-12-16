@@ -131,3 +131,28 @@ export async function searchCoins(query: string): Promise<SearchCoin[]> {
 
   return coins.slice(0, 10);
 }
+
+export async function fetchPools(id: string): Promise<{id: string;address: string; name: string}> {
+  try {
+    // Fetch onchain data for the coin which includes pool information
+    const res = await fetch(
+      `${baseUrl}/onchain/search/pools?query=${encodeURIComponent(id)}`,
+      header
+    );
+ 
+    if (!res.ok) {
+      console.warn(`No pool data found for ${id}`);
+      return {id: '', address: '', name: ''};
+    }
+
+    const data = await res.json();
+
+       console.log('>>>>>Fetched pool data:', data);
+       const pool = data.data[0];
+
+    return {id: pool.id as string, address: pool.attributes.address as string, name: pool.attributes.name as string}
+  } catch (error) {
+    console.error('Failed to fetch pools', error);
+    return {id: '', address: '', name: ''};
+  }
+}

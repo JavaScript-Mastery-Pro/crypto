@@ -14,25 +14,33 @@ import {
   PERIOD_CONFIG,
 } from '@/lib/constants';
 import { convertOHLCData } from '@/lib/utils';
+const { getCoinOHLC } = await import('@/lib/ coingecko.actions');
 
 export default function CandlestickChart({
   data,
   coinId,
   height = 360,
   children,
+  mode = 'historical',
 }: CandlestickChartProps) {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const candleSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
-  const [period, setPeriod] = useState<Period>('monthly');
+  const [period, setPeriod] = useState<Period>(
+    mode === 'live' ? 'daily' : 'monthly'
+  );
   const [ohlcData, setOhlcData] = useState<OHLCData[]>(data);
   const [loading, setLoading] = useState(false);
 
-  // Memoize converted data to avoid recalculating on every render
-  const chartData = useMemo(() => convertOHLCData(ohlcData), [ohlcData]);
+  // In live mode, use data prop directly; in historical mode, use state
+  const activeData = mode === 'live' ? data : ohlcData;
 
+  // Memoize converted data to avoid recalculating on every render
+  const chartData = useMemo(() => convertOHLCData(activeData), [activeData]);
+
+  console.log('CandlestickChart chartData:', chartData);
   // Fetch OHLC data
   const fetchOHLCData = async (selectedPeriod: Period) => {
     setLoading(true);
@@ -40,7 +48,6 @@ export default function CandlestickChart({
       const config = PERIOD_CONFIG[selectedPeriod];
 
       // Dynamically import the server action
-      const { getCoinOHLC } = await import('@/lib/ coingecko.actions');
 
       const newData = await getCoinOHLC(
         coinId,
@@ -58,9 +65,9 @@ export default function CandlestickChart({
     }
   };
 
-  // Handle period change
+  // Handle period change (only in historical mode)
   const handlePeriodChange = (newPeriod: Period) => {
-    if (newPeriod === period) return;
+    if (mode === 'live' || newPeriod === period) return;
     setPeriod(newPeriod);
     fetchOHLCData(newPeriod);
   };
@@ -115,7 +122,9 @@ export default function CandlestickChart({
 
   // Update chart data when chartData or period changes
   useEffect(() => {
-    if (candleSeriesRef.current && chartRef.current) {
+    if (candleSeriesRef.current && chartRef.current && chartData.length > 0) {
+      // For both modes, use setData() to update the chart
+      // The lightweight-charts library will handle smooth updates automatically
       candleSeriesRef.current.setData(chartData);
       chartRef.current.timeScale().fitContent();
 
@@ -127,29 +136,32 @@ export default function CandlestickChart({
         },
       });
     }
-  }, [chartData, period]);
+  }, [chartData, period, mode]);
 
   return (
     <div className='candlestick-container'>
       {/* Chart Header */}
       <div className='candlestick-header'>
         <div className='flex-1'>{children}</div>
-        <div className='candlestick-button-group'>
-          {PERIOD_BUTTONS.map(({ value, label }) => (
-            <button
-              key={value}
-              className={
-                period === value
-                  ? 'candlestick-period-button-active'
-                  : 'candlestick-period-button'
-              }
-              onClick={() => handlePeriodChange(value)}
-              disabled={loading}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
+        {/* Only show period buttons in historical mode */}
+        {mode === 'historical' && (
+          <div className='candlestick-button-group'>
+            {PERIOD_BUTTONS.map(({ value, label }) => (
+              <button
+                key={value}
+                className={
+                  period === value
+                    ? 'candlestick-period-button-active'
+                    : 'candlestick-period-button'
+                }
+                onClick={() => handlePeriodChange(value)}
+                disabled={loading}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Chart Container */}

@@ -5,6 +5,7 @@ interface CandlestickChartProps {
   coinId: string;
   height?: number;
   children?: React.ReactNode;
+  mode?: 'historical' | 'live';
 }
 
 interface ConverterProps {
@@ -141,4 +142,75 @@ interface TopGainersLosersResponse {
   usd_24h_change: number;
   usd_24h_vol: number;
   market_cap_rank: number;
+}
+
+interface PriceData {
+  usd: number;
+}
+
+interface TradeData {
+  price?: number;
+  timestamp?: number;
+  type?: string
+  amount?: number;
+  value?: number;
+}
+
+interface OHLCVData {
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+  volume: number;
+  time: number;
+}
+
+interface ExtendedPriceData {
+  usd: number;
+  coin?: string;
+  price?: number;
+  change24h?: number;
+  marketCap?: number;
+  volume24h?: number;
+  timestamp?: number;
+}
+
+interface WebSocketMessage {
+  type?: string;
+  c?: string;
+  ch?: string;
+  i?: string;
+  p?: number;
+  pp?: number;
+  pu?: number;
+  m?: number;
+  v?: number;
+  vo?: number;
+  o?: number;
+  h?: number;
+  l?: number;
+  t?: number;
+  to?: number;
+  ty?: string;
+  channel?: string;
+  data?: TradeData | OHLCVData;
+  identifier?: string;
+}
+
+interface LiveDataProps {
+  coinId: string;
+  pool: {
+    id: string;
+    address: string;
+    name: string;
+  };
+  coin: {
+    name: string;
+    image: string;
+    priceChangePercentage24h: number;
+    priceChangePercentage30d: number;
+    priceChange24h: number;
+    price: number;
+  };
+  coinOHLCData: OHLCData[];
 }

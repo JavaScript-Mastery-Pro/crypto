@@ -100,7 +100,6 @@ export const PERIOD_CONFIG: Record<
   monthly: { days: 30, interval: 'hourly' },
   '3months': { days: 90, interval: 'daily' },
   '6months': { days: 180, interval: 'daily' },
-  // For 365 and max: no interval param = automatic granularity (4 days per candle)
   yearly: { days: 365 },
   max: { days: 'max' },
 };

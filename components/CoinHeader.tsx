@@ -7,29 +7,29 @@ import Image from 'next/image';
 import { Badge } from './ui/badge';
 
 interface LiveCoinHeaderProps {
-  coinId: string;
   name: string;
   image: string;
+  livePrice?: number;
+  livePriceChangePercentage24h: number;
+  priceChangePercentage30d: number;
+  priceChange24h: number;
 }
 
-export default function LiveCoinHeader({
-  coinId,
+export default function CoinHeader({
+  livePriceChangePercentage24h,
+  priceChangePercentage30d,
   name,
   image,
+  livePrice,
+  priceChange24h,
 }: LiveCoinHeaderProps) {
-  const { prices } = useCoinPrice([coinId]);
-  const priceData = prices[coinId];
-
-  const isTrendingUp = priceData
-    ? priceData.priceChangePercentage24h > 0
-    : false;
+  const isTrendingUp = livePriceChangePercentage24h > 0;
 
   return (
     <div className='space-y-5 w-full'>
-      <h3 className='text-3xl font-medium'>{name}</h3>
-
-      {priceData ? (
-        <>
+      {name ? (
+        <div className='space-y-5 w-full'>
+          <h3 className='text-3xl font-medium'>{name}</h3>
           <div className='flex gap-3 items-center'>
             <Image
               src={image}
@@ -40,7 +40,7 @@ export default function LiveCoinHeader({
             />
             <div className='flex gap-4'>
               <h1 className='text-3xl sm:text-5xl xl:text-6xl font-semibold'>
-                {formatPrice(priceData.price)}
+                {formatPrice(livePrice)}
               </h1>
               <Badge
                 className={cn(
@@ -50,26 +50,25 @@ export default function LiveCoinHeader({
                     : 'bg-red-500/20 text-red-500'
                 )}
               >
-                {formatPercentage(priceData.priceChangePercentage24h)}
+                {formatPercentage(livePriceChangePercentage24h)}
                 {isTrendingUp ? <TrendingUp /> : <TrendingDown />}
                 (24h)
               </Badge>
             </div>
           </div>
-          <div className='flex flex-wrap mt-8 gap-6 w-full'>
-            {/* Today */}
-            <div className='text-base max-sm:mr-5 sm:border-r border-purple-600 sm:flex-1 flex flex-col gap-2'>
+          <div className='grid grid-cols-3 mt-8 gap-4 sm:gap-6 w-fit'>
+            <div className='text-base border-r border-purple-600 flex flex-col gap-2'>
               <p className='text-purple-100 max-sm:text-sm'>Today</p>
               <div
                 className={cn(
                   'flex flex-1 gap-1 items-end text-sm font-medium',
                   {
-                    'text-green-500': priceData.priceChangePercentage24h > 0,
-                    'text-red-500': priceData.priceChangePercentage24h < 0,
+                    'text-green-500': livePriceChangePercentage24h > 0,
+                    'text-red-500': livePriceChangePercentage24h < 0,
                   }
                 )}
               >
-                <p>{formatPercentage(priceData.priceChangePercentage24h)}</p>
+                <p>{formatPercentage(livePriceChangePercentage24h)}</p>
                 {isTrendingUp ? (
                   <TrendingUp width={16} height={16} />
                 ) : (
@@ -77,25 +76,44 @@ export default function LiveCoinHeader({
                 )}
               </div>
             </div>
-            {/* Market Cap */}
-            <div className='text-base sm:border-r border-purple-600 sm:pr-8 sm:flex-1 flex flex-col gap-2'>
-              <p className='text-purple-100 max-sm:text-sm'>Market Cap</p>
-              <p className='flex gap-1 flex-1 items-end text-sm font-medium'>
-                {formatPrice(priceData.marketCap)}
-              </p>
+
+            <div className='text-base border-r border-purple-600 flex flex-col gap-2'>
+              <p className='text-purple-100 max-sm:text-sm'>30 Days</p>
+              <div
+                className={cn(
+                  'flex gap-1 flex-1 items-end text-sm font-medium',
+                  {
+                    'text-green-500': priceChangePercentage30d > 0,
+                    'text-red-500': priceChangePercentage30d < 0,
+                  }
+                )}
+              >
+                <p>{formatPercentage(priceChangePercentage30d)}</p>
+                {isTrendingUp ? (
+                  <TrendingUp width={16} height={16} />
+                ) : (
+                  <TrendingDown width={16} height={16} />
+                )}
+              </div>
             </div>
-            {/* Volume 24h */}
-            <div className='text-base flex flex-col gap-2 flex-1'>
-              <p className='text-purple-100 max-sm:text-sm'>Volume 24h</p>
-              <p className='flex gap-1 items-center text-sm font-medium'>
-                {formatPrice(priceData.volume24h)}
+
+            <div className='text-base flex flex-col gap-2'>
+              <p className='text-purple-100 max-sm:text-sm'>
+                Price Change (24h)
+              </p>
+              <p
+                className={cn('flex gap-1 items-center text-sm font-medium', {
+                  'text-green-500': priceChange24h > 0,
+                  'text-red-500': priceChange24h < 0,
+                })}
+              >
+                {formatPrice(priceChange24h)}
               </p>
             </div>
           </div>
-        </>
+        </div>
       ) : (
         <>
-          {/* Loading Skeleton */}
           <div className='flex gap-3 items-center'>
             <div className='size-[45px] sm:size-[50px] xl:size-[77px] bg-dark-400/50 rounded-full animate-pulse' />
             <div className='flex gap-4'>
@@ -104,7 +122,6 @@ export default function LiveCoinHeader({
             </div>
           </div>
           <div className='grid grid-cols-3 mt-8 gap-4 sm:gap-6 w-fit'>
-            {/* Skeleton items */}
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
