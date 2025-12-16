@@ -120,7 +120,6 @@ export default function CandlestickChart({
   useEffect(() => {
     if (candleSeriesRef.current && chartRef.current && chartData.length > 0) {
       // For both modes, use setData() to update the chart
-      // The lightweight-charts library will handle smooth updates automatically
       candleSeriesRef.current.setData(chartData);
       chartRef.current.timeScale().fitContent();
 
@@ -136,7 +135,6 @@ export default function CandlestickChart({
 
   return (
     <div className='candlestick-container'>
-      {/* Chart Header */}
       <div className='candlestick-header'>
         <div className='flex-1'>{children}</div>
         {/* Only show period buttons in historical mode */}

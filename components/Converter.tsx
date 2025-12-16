@@ -14,7 +14,7 @@ import { formatPrice } from '@/lib/utils';
 
 export const Converter = ({ symbol, icon, priceList }: ConverterProps) => {
   const [currency, setCurrency] = useState('usd');
-  const [amount, setAmount] = useState('1');
+  const [amount, setAmount] = useState('10');
 
   // Calculate converted price
   const convertedPrice = (parseFloat(amount) || 0) * (priceList[currency] || 0);
@@ -65,7 +65,7 @@ export const Converter = ({ symbol, icon, priceList }: ConverterProps) => {
               </span>
             </SelectValue>
           </SelectTrigger>
-          <SelectContent className='bg-dark-400'>
+          <SelectContent className='bg-dark-400 max-h-[500px]'>
             {Object.keys(priceList).map((currencyCode) => (
               <SelectItem
                 key={currencyCode}

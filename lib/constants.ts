@@ -122,34 +122,3 @@ export const orderBook = [
   { price: '0.0295 BTC', amountBTC: '1.5 BTC', amountETH: '$45,000' },
   { price: '0.0290 BTC', amountBTC: '3.0 BTC', amountETH: '$90,000' },
 ];
-
-// Popular coins data
-export const popularCoins = [
-  {
-    coinId: 'bitcoin',
-    name: 'Bitcoin',
-    symbol: 'BTC',
-    image: 'https://coin-images.coingecko.com/coins/images/1/large/bitcoin.png',
-  },
-  {
-    coinId: 'ethereum',
-    name: 'Ethereum',
-    symbol: 'ETH',
-    image:
-      'https://coin-images.coingecko.com/coins/images/279/large/ethereum.png',
-  },
-  {
-    coinId: 'litecoin',
-    name: 'Litecoin',
-    symbol: 'LTC',
-    image:
-      'https://coin-images.coingecko.com/coins/images/2/large/litecoin.png',
-  },
-  {
-    coinId: 'dogecoin',
-    name: 'Dogecoin',
-    symbol: 'DOGE',
-    image:
-      'https://coin-images.coingecko.com/coins/images/5/large/dogecoin.png',
-  },
-];

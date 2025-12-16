@@ -25,7 +25,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const trendingCoins = await getTrendingCoins();
-  // const trendingCoins = await searchCoins('');
 
   return (
     <html lang='en' className='dark'>

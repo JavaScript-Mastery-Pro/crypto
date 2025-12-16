@@ -34,8 +34,8 @@ const Home = async () => {
   );
 
   return (
-    <main className='py-6 md:py-12 container size-full space-y-6 md:space-y-6'>
-      <section className='grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 items-start lg:items-center gap-6'>
+    <main className='main-container'>
+      <section className='home-grid'>
         {/* Coin Overview */}
         <ChartSection
           coinData={coinData}
@@ -44,21 +44,17 @@ const Home = async () => {
         />
 
         {/* Top Movers */}
-        <div className='w-full flex flex-col justify-center h-full py-4 bg-dark-500 rounded-xl'>
-          <h4 className='text-xl md:text-2xl px-4 md:px-5 mb-2'>Top Movers</h4>
-          <div className='bg-dark-500 custom-scrollbar overflow-hidden'>
+        <div className='top-movers-container'>
+          <h4 className='section-title-spacing'>Top Movers</h4>
+          <div className='table-scrollbar-container custom-scrollbar'>
             <Table>
-              <TableHeader className='text-purple-100'>
+              <TableHeader className='table-header-cell'>
                 <TableRow className='hover:bg-transparent'>
-                  <TableHead className='pl-4 md:pl-5 py-3 text-purple-100'>
-                    Name
-                  </TableHead>
-                  <TableHead className='text-purple-100 table-cell'>
+                  <TableHead className='table-head-left'>Name</TableHead>
+                  <TableHead className='table-header-cell table-cell'>
                     24h Change
                   </TableHead>
-                  <TableHead className='pr-4 md:pr-5 text-purple-100'>
-                    Price
-                  </TableHead>
+                  <TableHead className='table-head-right'>Price</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -70,21 +66,18 @@ const Home = async () => {
                       item.data.price_change_percentage_24h.usd > 0;
 
                     return (
-                      <TableRow
-                        key={index}
-                        className='overflow-hidden border-none hover:!bg-dark-400 rounded-lg'
-                      >
+                      <TableRow key={index} className='table-row-hover'>
                         <TableCell className='font-bold'>
                           <Link
                             href={`/coins/${item.id}`}
-                            className='pl-1 md:pl-2 py-1 md:py-2 xl:py-1 flex items-center gap-2 md:gap-3'
+                            className='coin-link'
                           >
                             <Image
                               src={item.large}
                               alt={item.name}
                               width={36}
                               height={36}
-                              className='rounded-full w-8 h-8 md:w-9 md:h-9'
+                              className='coin-image'
                             />
                             <div>
                               <p className='text-sm md:text-base'>
@@ -93,10 +86,10 @@ const Home = async () => {
                             </div>
                           </Link>
                         </TableCell>
-                        <TableCell className='font-medium py-4 pr-3 md:pr-5 table-cell'>
+                        <TableCell className='table-cell-change'>
                           <div
                             className={cn(
-                              'flex gap-1 items-center text-sm font-medium',
+                              'price-change-indicator',
                               isTrendingUp ? 'text-green-500' : 'text-red-500'
                             )}
                           >
@@ -112,7 +105,7 @@ const Home = async () => {
                             )}
                           </div>
                         </TableCell>
-                        <TableCell className='font-bold pr-5 text-sm max-w-[100%] truncate'>
+                        <TableCell className='table-cell-price'>
                           {formatPrice(item.data.price)}
                         </TableCell>
                       </TableRow>
@@ -124,9 +117,10 @@ const Home = async () => {
         </div>
       </section>
 
+      {/* Top Gainers / Losers */}
       <section className='space-y-6 mt-5'>
-        <h4 className='text-xl md:text-2xl'>Top Gainers</h4>
-        <div className='w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6'>
+        <h4 className='section-title'>Top Gainers</h4>
+        <div className='card-grid'>
           {topGainersLosers.top_gainers.map(
             (coin: TopGainersLosersResponse) => (
               <CoinCard
@@ -144,9 +138,10 @@ const Home = async () => {
           )}
         </div>
       </section>
+
       <section className='space-y-6 mt-8'>
-        <h4 className='text-xl md:text-2xl'>Top Losers</h4>
-        <div className='w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6'>
+        <h4 className='section-title'>Top Losers</h4>
+        <div className='card-grid'>
           {topGainersLosers.top_losers.map((coin: TopGainersLosersResponse) => (
             <CoinCard
               key={coin.id}

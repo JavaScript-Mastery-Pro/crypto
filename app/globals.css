@@ -187,6 +187,71 @@
   .candlestick-chart-container {
     @apply w-full min-h-[200px];
   }
+
+  /* Home Page Utilities */
+  .section-title {
+    @apply text-xl md:text-2xl;
+  }
+
+  .card-grid {
+    @apply w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6;
+  }
+
+  .table-header-cell {
+    @apply text-purple-100;
+  }
+
+  .table-row-hover {
+    @apply overflow-hidden border-none hover:!bg-dark-400 rounded-lg;
+  }
+
+  .coin-link {
+    @apply pl-1 md:pl-2 py-1 md:py-2 xl:py-1 flex items-center gap-2 md:gap-3;
+  }
+
+  .coin-image {
+    @apply rounded-full w-8 h-8 md:w-9 md:h-9;
+  }
+
+  .price-change-indicator {
+    @apply flex gap-1 items-center text-sm font-medium;
+  }
+
+  .top-movers-container {
+    @apply w-full flex flex-col justify-center h-full py-4 bg-dark-500 rounded-xl;
+  }
+
+  .main-container {
+    @apply py-6 md:py-12 mx-auto px-4 sm:px-6 max-w-[1440px] w-full space-y-6 md:space-y-6;
+  }
+
+  .home-grid {
+    @apply grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 items-start lg:items-center gap-6;
+  }
+
+  .section-title-spacing {
+    @apply text-xl md:text-2xl px-4 md:px-5 mb-2;
+  }
+
+  .table-scrollbar-container {
+    @apply bg-dark-500 overflow-hidden;
+  }
+
+  .table-head-left {
+    @apply pl-4 md:pl-5 py-3 text-purple-100;
+  }
+
+  .table-head-right {
+    @apply pr-4 md:pr-5 text-purple-100;
+  }
+
+  .table-cell-change {
+    @apply font-medium py-4 pr-3 md:pr-5;
+  }
+
+  .table-cell-price {
+    @apply font-bold pr-5 text-sm max-w-[100%] truncate;
+  }
 }
 
 /* Custom Scrollbar Styles */

@@ -1,19 +1,9 @@
 'use client';
 
-import { useCoinPrice } from '@/hooks/useCoinPrice';
 import { cn, formatPercentage, formatPrice } from '@/lib/utils';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 import Image from 'next/image';
 import { Badge } from './ui/badge';
-
-interface LiveCoinHeaderProps {
-  name: string;
-  image: string;
-  livePrice?: number;
-  livePriceChangePercentage24h: number;
-  priceChangePercentage30d: number;
-  priceChange24h: number;
-}
 
 export default function CoinHeader({
   livePriceChangePercentage24h,

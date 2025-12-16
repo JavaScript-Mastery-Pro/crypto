@@ -23,8 +23,6 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
   const coinOHLCData = await getCoinOHLC(id, 30, 'usd', 'hourly', 'full');
   const pool = await fetchPools(id);
 
-  console.log('pool Data:', pool);
-
   const coin = {
     id: coinData.id,
     name: coinData.name,

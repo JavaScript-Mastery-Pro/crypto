@@ -156,14 +156,6 @@ interface TradeData {
   value?: number;
 }
 
-interface OHLCVData {
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-  volume: number;
-  time: number;
-}
 
 interface ExtendedPriceData {
   usd: number;
@@ -193,7 +185,6 @@ interface WebSocketMessage {
   to?: number;
   ty?: string;
   channel?: string;
-  data?: TradeData | OHLCVData;
   identifier?: string;
 }
 
@@ -216,4 +207,19 @@ interface LiveDataProps {
   };
   coinOHLCData: OHLCData[];
   children?: React.ReactNode;
+}
+
+interface ClickableTableRowProps {
+  href: string;
+  children: ReactNode;
+  className?: string;
+}
+
+interface LiveCoinHeaderProps {
+  name: string;
+  image: string;
+  livePrice?: number;
+  livePriceChangePercentage24h: number;
+  priceChangePercentage30d: number;
+  priceChange24h: number;
 }

@@ -48,21 +48,6 @@ export function trendingClasses(value: number) {
   };
 }
 
-export function formatTime(timestamp: number | string) {
-  let ts = Number(timestamp);
-
-  // normalize to milliseconds
-  if (ts > 1e15) ts /= 1000;
-  if (ts > 1e12) ts /= 1000;
-
-  return new Date(ts).toLocaleTimeString(undefined, {
-    hour: 'numeric',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: true,
-  });
-}
-
 export const convertOHLCData = (rawData: OHLCData[]): CandlestickData[] => {
   return rawData.map(([timestampMs, open, high, low, close]) => ({
     time: Math.floor(timestampMs / 1000) as Time,
