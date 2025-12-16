@@ -17,8 +17,8 @@ import {
 } from '@/components/ui/table';
 
 import ChartSection from '@/components/ChartSection';
-import CoinCard from '@/components/CoinCard';
-import { popularCoins } from '@/lib/constants';
+// import CoinCard from '@/components/CoinCard';
+// import { popularCoins } from '@/lib/constants';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 
 const Home = async () => {
@@ -123,7 +123,7 @@ const Home = async () => {
         </div>
       </section>
 
-      <section className='w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6'>
+      {/* <section className='w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6'>
         {popularCoins.map((coin) => (
           <CoinCard
             key={coin.coinId}
@@ -133,7 +133,7 @@ const Home = async () => {
             image={coin.image}
           />
         ))}
-      </section>
+      </section> */}
     </main>
   );
 };

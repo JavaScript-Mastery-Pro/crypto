@@ -1,8 +1,10 @@
+import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { getCoinDetails, getCoinOHLC } from '@/lib/ coingecko.actions';
-import { formatPrice, timeAgo } from '@/lib/utils';
-import { ArrowUpRight } from 'lucide-react';
+import { cn, formatPercentage, formatPrice, timeAgo } from '@/lib/utils';
+import { ArrowUpRight, TrendingDown, TrendingUp } from 'lucide-react';
 
+import Image from 'next/image';
 import Link from 'next/link';
 import {
   Table,
@@ -44,11 +46,97 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
     tickers: coinData.tickers,
   };
 
+  const isTrendingUp = coin.priceChangePercentage24h > 0;
+
   return (
     <main className='py-12 container size-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 items-center gap-6 xl:gap-10 justify-center'>
       <section className='size-full xl:col-span-2'>
-        {/* Coin Details - Live */}
-        <LiveCoinHeader coinId={coin.id} name={coin.name} image={coin.image} />
+        {/* Coin Details */}
+        <div className='space-y-5 w-full'>
+          <h3 className='text-3xl font-medium'>{coin.name}</h3>
+          <div className='flex gap-3 items-center'>
+            <Image
+              src={coin.image}
+              alt={coin.name}
+              width={77}
+              height={77}
+              className='size-[45px] sm:size-[50px] xl:size-[77px]'
+            />
+            <div className='flex gap-4'>
+              <h1 className='text-3xl sm:text-5xl xl:text-6xl font-semibold'>
+                {formatPrice(coin.price)}
+              </h1>
+              <Badge
+                className={cn(
+                  'font-medium mt-2 h-fit py-1 flex items-center gap-1',
+                  isTrendingUp
+                    ? 'bg-green-500/20 text-green-600'
+                    : 'bg-red-500/20 text-red-500'
+                )}
+              >
+                {formatPercentage(coin.priceChangePercentage24h)}
+                {isTrendingUp ? <TrendingUp /> : <TrendingDown />}
+                (24h)
+              </Badge>
+            </div>
+          </div>
+          <div className='grid grid-cols-3 mt-8 gap-4 sm:gap-6 w-fit'>
+            {/* Today */}
+            <div className='text-base border-r border-purple-600 flex flex-col gap-2'>
+              <p className='text-purple-100 max-sm:text-sm'>Today</p>
+              <div
+                className={cn(
+                  'flex flex-1 gap-1 items-end text-sm font-medium',
+                  {
+                    'text-green-500': coin.priceChangePercentage24h > 0,
+                    'text-red-500': coin.priceChangePercentage24h < 0,
+                  }
+                )}
+              >
+                <p>{formatPercentage(coin.priceChangePercentage24h)}</p>
+                {isTrendingUp ? (
+                  <TrendingUp width={16} height={16} />
+                ) : (
+                  <TrendingDown width={16} height={16} />
+                )}
+              </div>
+            </div>
+            {/* 30 Days */}
+            <div className='text-base border-r border-purple-600 flex flex-col gap-2'>
+              <p className='text-purple-100 max-sm:text-sm'>30 Days</p>
+              <div
+                className={cn(
+                  'flex gap-1 flex-1 items-end text-sm font-medium',
+                  {
+                    'text-green-500': coin.priceChangePercentage30d > 0,
+                    'text-red-500': coin.priceChangePercentage30d < 0,
+                  }
+                )}
+              >
+                <p>{formatPercentage(coin.priceChangePercentage30d)}</p>
+                {isTrendingUp ? (
+                  <TrendingUp width={16} height={16} />
+                ) : (
+                  <TrendingDown width={16} height={16} />
+                )}
+              </div>
+            </div>
+            {/* Rank */}
+            <div className='text-base flex flex-col gap-2'>
+              <p className='text-purple-100 max-sm:text-sm'>
+                Price Change (24h)
+              </p>
+              <p
+                className={cn('flex gap-1 items-center text-sm font-medium', {
+                  'text-green-500': coin.priceChange24h > 0,
+                  'text-red-500': coin.priceChange24h < 0,
+                })}
+              >
+                {formatPrice(coin.priceChange24h)}
+              </p>
+            </div>
+          </div>
+        </div>
 
         <Separator className='my-8 bg-purple-600' />
 
