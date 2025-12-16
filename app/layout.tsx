@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/Header';
-import { getTrendingCoins } from '@/lib/ coingecko.actions';
+import { getTrendingCoins } from '@/lib/coingecko.actions';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',

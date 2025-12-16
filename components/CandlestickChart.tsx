@@ -14,7 +14,7 @@ import {
   PERIOD_CONFIG,
 } from '@/lib/constants';
 import { convertOHLCData } from '@/lib/utils';
-const { getCoinOHLC } = await import('@/lib/ coingecko.actions');
+const { getCoinOHLC } = await import('@/lib/coingecko.actions');
 
 export default function CandlestickChart({
   data,

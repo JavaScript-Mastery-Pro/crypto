@@ -1,4 +1,4 @@
-import { getCoinList } from '@/lib/ coingecko.actions';
+import { getCoinList } from '@/lib/coingecko.actions';
 import {
   Table,
   TableBody,
@@ -33,24 +33,18 @@ const Coins = async ({
     currentPage >= 100 ? Math.ceil(currentPage / 100) * 100 + 100 : 100;
 
   return (
-    <main className='py-12 container size-full items-center gap-10 justify-center'>
+    <main className='coins-main'>
       <div className='flex flex-col w-full space-y-5'>
         <h4 className='text-2xl'>All Coins</h4>
-        <div className='bg-dark-500 rounded-xl custom-scrollbar max-h-fit overflow-hidden'>
+        <div className='custom-scrollbar coins-container'>
           <Table>
-            <TableHeader className='bg-dark-400 text-purple-100'>
-              <TableRow className='hover:bg-transparent !border-purple-600 '>
-                <TableHead className='pl-5 py-4 text-purple-100'>
-                  Rank
-                </TableHead>
+            <TableHeader className='coins-header'>
+              <TableRow className='coins-header-row'>
+                <TableHead className='coins-header-left'>Rank</TableHead>
                 <TableHead className='text-purple-100'>Token</TableHead>
                 <TableHead className='text-purple-100'>Price</TableHead>
-                <TableHead className='pr-8 text-purple-100'>
-                  24h Change
-                </TableHead>
-                <TableHead className='pr-8 text-purple-100'>
-                  Market Cap
-                </TableHead>
+                <TableHead className='coins-header-right'>24h Change</TableHead>
+                <TableHead className='coins-header-right'>Market Cap</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -60,13 +54,13 @@ const Coins = async ({
                   <ClickableTableRow
                     key={coin.id}
                     href={`/coins/${coin.id}`}
-                    className='text-lg hover:!bg-dark-400/30 !border-purple-600 cursor-pointer'
+                    className='coins-row'
                   >
-                    <TableCell className='pl-5 !max-w-[80px] py-5 font-medium text-purple-100'>
+                    <TableCell className='coins-rank'>
                       #{coin.market_cap_rank}
                     </TableCell>
-                    <TableCell className='py-3 font-semibold'>
-                      <div className='flex items-center gap-3'>
+                    <TableCell className='coins-token'>
+                      <div className='coins-token-info'>
                         <Image
                           src={coin.image}
                           alt={coin.name}
@@ -78,12 +72,12 @@ const Coins = async ({
                         </p>
                       </div>
                     </TableCell>
-                    <TableCell className='py-4 font-medium'>
+                    <TableCell className='coins-price'>
                       {formatPrice(coin.current_price)}
                     </TableCell>
                     <TableCell className='font-medium'>
                       <span
-                        className={cn('flex gap-1 items-center font-medium', {
+                        className={cn('coins-change', {
                           'text-green-600': isTrendingUp,
                           'text-red-500': !isTrendingUp,
                         })}
@@ -92,7 +86,7 @@ const Coins = async ({
                         {formatPercentage(coin.price_change_percentage_24h)}
                       </span>
                     </TableCell>
-                    <TableCell className='pr-5 font-medium'>
+                    <TableCell className='coins-market-cap'>
                       {formatPrice(coin.market_cap)}
                     </TableCell>
                   </ClickableTableRow>

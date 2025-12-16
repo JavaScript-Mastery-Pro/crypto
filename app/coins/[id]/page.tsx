@@ -2,7 +2,7 @@ import {
   getCoinDetails,
   getCoinOHLC,
   fetchPools,
-} from '@/lib/ coingecko.actions';
+} from '@/lib/coingecko.actions';
 import { formatPrice, timeAgo } from '@/lib/utils';
 import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
@@ -47,7 +47,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
   };
 
   return (
-    <main className='py-12 container size-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 items-center gap-6 xl:gap-10 justify-center'>
+    <main className='coin-details-main'>
       <section className='size-full xl:col-span-2'>
         <LiveDataWrapper
           coinOHLCData={coinOHLCData}
@@ -58,16 +58,16 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
           {/* Exchange Listings */}
           <div className='w-full mt-8 space-y-4'>
             <h4 className='text-2xl'>Exchange Listings</h4>
-            <div className='custom-scrollbar bg-dark-500 rounded-xl overflow-hidden'>
+            <div className='custom-scrollbar exchange-container'>
               <Table>
                 <TableHeader className='text-purple-100'>
                   <TableRow className='hover:bg-transparent'>
-                    <TableHead className='pl-5 py-5 text-purple-100'>
+                    <TableHead className='exchange-header-left'>
                       Exchange
                     </TableHead>
                     <TableHead className='text-purple-100'>Pair</TableHead>
                     <TableHead className='text-purple-100'>Price</TableHead>
-                    <TableHead className='pr-5 text-purple-100 text-end'>
+                    <TableHead className='exchange-header-right'>
                       Last Traded
                     </TableHead>
                   </TableRow>
@@ -84,18 +84,18 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
                           <Link
                             href={ticker.trade_url}
                             target='_blank'
-                            className='py-4 pl-3 block max-w-[110px] truncate'
+                            className='exchange-link'
                           >
                             {ticker.market.name}
                           </Link>
                         </TableCell>
-                        <TableCell className='font-medium truncate max-w-[100%] py-4 pr-5'>
+                        <TableCell className='exchange-pair'>
                           {ticker.base} / {ticker.target}
                         </TableCell>
                         <TableCell className='font-medium'>
                           {formatPrice(ticker.converted_last.usd)}
                         </TableCell>
-                        <TableCell className='pr-5 text-end'>
+                        <TableCell className='exchange-timestamp'>
                           {timeAgo(ticker.timestamp)}
                         </TableCell>
                       </TableRow>
@@ -110,7 +110,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
       <section className='size-full max-lg:mt-8 lg:col-span-1'>
         {/* Converter */}
         <div className='w-full space-y-5'>
-          <h4 className='text-2xl font-semibold'>
+          <h4 className='converter-title'>
             {coin.symbol.toUpperCase()} Converter
           </h4>
           <Converter
@@ -123,27 +123,27 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
         {/* Coin Details */}
         <div className='w-full mt-8 space-y-4'>
           <h4 className='text-2xl'>Coin Details</h4>
-          <div className='rounded-lg  grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2  gap-3 sm:gap-5'>
-            <div className='text-base bg-dark-500 px-5 py-6 rounded-lg flex flex-col gap-3'>
+          <div className='coin-details-grid'>
+            <div className='detail-card'>
               <p className='text-purple-100'>Market Cap</p>
               <p className='text-base font-medium'>
                 {formatPrice(coin.marketCap)}
               </p>
             </div>
-            <div className='text-base bg-dark-500 px-5 py-6 rounded-lg flex flex-col gap-3'>
+            <div className='detail-card'>
               <p className='text-purple-100 '>Market Cap Rank</p>
               <p className='text-base font-bold'># {coin.marketCapRank}</p>
             </div>
-            <div className='text-base bg-dark-500 px-5 py-6 rounded-lg flex flex-col gap-3'>
+            <div className='detail-card'>
               <p className='text-purple-100 '>Total Volume</p>
               <p className='text-base font-medium'>
                 {formatPrice(coin.totalVolume)}
               </p>
             </div>
-            <div className='text-base bg-dark-500 px-5 py-6 rounded-lg flex flex-col gap-3'>
+            <div className='detail-card'>
               <p className='text-purple-100 '>Website</p>
               {coin.website ? (
-                <div className='flex items-center text-green-500 gap-1'>
+                <div className='detail-link'>
                   <Link href={coin.website} target='_blank'>
                     Website
                   </Link>
@@ -153,10 +153,10 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
                 '-'
               )}
             </div>
-            <div className='text-base bg-dark-500 px-5 py-6 rounded-lg flex flex-col gap-3'>
+            <div className='detail-card'>
               <p className='text-purple-100 '>Explorer</p>
               {coin.explorer ? (
-                <div className='flex items-center text-green-500 gap-1'>
+                <div className='detail-link'>
                   <Link href={coin.explorer} target='_blank'>
                     Explorer
                   </Link>
@@ -166,10 +166,10 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
                 '-'
               )}
             </div>
-            <div className='text-base bg-dark-500 px-5 py-6 rounded-lg flex flex-col gap-3'>
+            <div className='detail-card'>
               <p className='text-purple-100 '>Community Link</p>
               {coin.communityLink ? (
-                <div className='flex items-center text-green-500 gap-1'>
+                <div className='detail-link'>
                   <Link href={coin.communityLink} target='_blank'>
                     Community
                   </Link>
@@ -182,9 +182,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
           </div>
         </div>
 
-        <p className='mt-8 text-sm font-sans text-purple-50 leading-[30px]'>
-          {coin.description}
-        </p>
+        <p className='coin-description'>{coin.description}</p>
       </section>
     </main>
   );

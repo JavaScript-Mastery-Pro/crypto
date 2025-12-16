@@ -20,57 +20,57 @@ export const Converter = ({ symbol, icon, priceList }: ConverterProps) => {
   const convertedPrice = (parseFloat(amount) || 0) * (priceList[currency] || 0);
 
   return (
-    <div className='space-y-2 bg-dark-500 px-5 py-7 rounded-lg '>
-      <div className='bg-dark-400 h-12 w-full rounded-md flex items-center justify-between py-4 pr-4'>
+    <div className='converter-container'>
+      <div className='converter-input-wrapper'>
         <Input
           type='number'
           placeholder='Amount'
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
-          className='flex-1 !text-lg border-none font-medium !bg-dark-400 focus-visible:ring-0 shadow-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
+          className='converter-input'
         />
-        <div className='flex items-center gap-1'>
+        <div className='converter-coin-info'>
           <Image src={icon} alt={symbol} width={20} height={20} />
-          <p className='font-semibold text-base text-purple-100'>
+          <p className='converter-coin-symbol'>
             {symbol.toUpperCase()}
           </p>
         </div>
       </div>
 
       <div>
-        <div className='relative flex justify-center items-center my-4'>
-          <div className='h-[1px] z-10 w-full bg-dark-400 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ' />
+        <div className='converter-divider-wrapper'>
+          <div className='converter-divider-line' />
           <Image
             src='/assets/converter.svg'
             alt='converter'
             width={32}
             height={32}
-            className='size-8 z-20 bg-dark-400 rounded-full p-2 text-green-500'
+            className='converter-icon'
           />
         </div>
       </div>
 
-      <div className='bg-dark-400 h-12 w-full rounded-md flex items-center justify-between py-4 pl-4'>
+      <div className='converter-output-wrapper'>
         <p className='text-base font-medium'>
           {formatPrice(convertedPrice, 2, currency, false)}
         </p>
         <Select value={currency} onValueChange={setCurrency}>
           <SelectTrigger
-            className='w-fit border-none cursor-pointer !h-12 !bg-dark-400 hover:!bg-dark-400 focus-visible:!ring-0'
+            className='converter-select-trigger'
             value={currency}
           >
             <SelectValue placeholder='Select' className='flex gap-2'>
-              <span className='font-semibold text-sm text-purple-100'>
+              <span className='converter-currency'>
                 {currency.toUpperCase()}
               </span>
             </SelectValue>
           </SelectTrigger>
-          <SelectContent className='bg-dark-400 max-h-[500px]'>
+          <SelectContent className='converter-select-content'>
             {Object.keys(priceList).map((currencyCode) => (
               <SelectItem
                 key={currencyCode}
                 value={currencyCode}
-                className='cursor-pointer hover:!bg-dark-500'
+                className='converter-select-item'
               >
                 {currencyCode.toUpperCase()}
               </SelectItem>

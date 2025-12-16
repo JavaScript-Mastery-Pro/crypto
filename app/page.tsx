@@ -4,7 +4,7 @@ import {
   getCoinOHLC,
   getTopGainersLosers,
   getTrendingCoins,
-} from '@/lib/ coingecko.actions';
+} from '@/lib/coingecko.actions';
 import { cn, formatPercentage, formatPrice } from '@/lib/utils';
 import Image from 'next/image';
 import Link from 'next/link';

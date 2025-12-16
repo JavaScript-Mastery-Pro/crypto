@@ -16,25 +16,25 @@ export default function CoinHeader({
   const isTrendingUp = livePriceChangePercentage24h > 0;
 
   return (
-    <div className='space-y-5 w-full'>
+    <div className='coin-header-container'>
       {name ? (
-        <div className='space-y-5 w-full'>
+        <div className='coin-header-container'>
           <h3 className='text-3xl font-medium'>{name}</h3>
-          <div className='flex gap-3 items-center'>
+          <div className='coin-header-info'>
             <Image
               src={image}
               alt={name}
               width={77}
               height={77}
-              className='size-[45px] sm:size-[50px] xl:size-[77px]'
+              className='coin-header-image'
             />
             <div className='flex gap-4'>
-              <h1 className='text-3xl sm:text-5xl xl:text-6xl font-semibold'>
+              <h1 className='coin-header-price'>
                 {formatPrice(livePrice)}
               </h1>
               <Badge
                 className={cn(
-                  'font-medium mt-2 h-fit py-1 flex items-center gap-1',
+                  'coin-header-badge',
                   isTrendingUp
                     ? 'bg-green-500/20 text-green-600'
                     : 'bg-red-500/20 text-red-500'
@@ -46,12 +46,12 @@ export default function CoinHeader({
               </Badge>
             </div>
           </div>
-          <div className='grid grid-cols-3 mt-8 gap-4 sm:gap-6 w-fit'>
-            <div className='text-base border-r border-purple-600 flex flex-col gap-2'>
-              <p className='text-purple-100 max-sm:text-sm'>Today</p>
+          <div className='coin-header-stats'>
+            <div className='coin-header-stat'>
+              <p className='coin-header-stat-label'>Today</p>
               <div
                 className={cn(
-                  'flex flex-1 gap-1 items-end text-sm font-medium',
+                  'coin-header-stat-value',
                   {
                     'text-green-500': livePriceChangePercentage24h > 0,
                     'text-red-500': livePriceChangePercentage24h < 0,
@@ -67,11 +67,11 @@ export default function CoinHeader({
               </div>
             </div>
 
-            <div className='text-base border-r border-purple-600 flex flex-col gap-2'>
-              <p className='text-purple-100 max-sm:text-sm'>30 Days</p>
+            <div className='coin-header-stat'>
+              <p className='coin-header-stat-label'>30 Days</p>
               <div
                 className={cn(
-                  'flex gap-1 flex-1 items-end text-sm font-medium',
+                  'coin-header-stat-value-30d',
                   {
                     'text-green-500': priceChangePercentage30d > 0,
                     'text-red-500': priceChangePercentage30d < 0,
@@ -88,11 +88,11 @@ export default function CoinHeader({
             </div>
 
             <div className='text-base flex flex-col gap-2'>
-              <p className='text-purple-100 max-sm:text-sm'>
+              <p className='coin-header-stat-label'>
                 Price Change (24h)
               </p>
               <p
-                className={cn('flex gap-1 items-center text-sm font-medium', {
+                className={cn('coin-header-stat-price', {
                   'text-green-500': priceChange24h > 0,
                   'text-red-500': priceChange24h < 0,
                 })}
@@ -104,14 +104,14 @@ export default function CoinHeader({
         </div>
       ) : (
         <>
-          <div className='flex gap-3 items-center'>
-            <div className='size-[45px] sm:size-[50px] xl:size-[77px] bg-dark-400/50 rounded-full animate-pulse' />
+          <div className='coin-header-info'>
+            <div className='coin-header-skeleton-image' />
             <div className='flex gap-4'>
-              <div className='h-12 sm:h-16 xl:h-20 w-48 sm:w-64 xl:w-80 bg-dark-400/50 rounded animate-pulse' />
-              <div className='h-10 w-32 bg-dark-400/50 rounded-full animate-pulse mt-2' />
+              <div className='coin-header-skeleton-price' />
+              <div className='coin-header-skeleton-badge' />
             </div>
           </div>
-          <div className='grid grid-cols-3 mt-8 gap-4 sm:gap-6 w-fit'>
+          <div className='coin-header-stats'>
             {[1, 2, 3].map((i) => (
               <div
                 key={i}
@@ -120,10 +120,10 @@ export default function CoinHeader({
                   i < 3 && 'border-r border-purple-600'
                 )}
               >
-                <p className='text-purple-100 max-sm:text-sm'>
+                <p className='coin-header-stat-label'>
                   {i === 1 ? 'Today' : i === 2 ? 'Market Cap' : 'Volume 24h'}
                 </p>
-                <div className='h-5 w-24 bg-dark-400/50 rounded animate-pulse' />
+                <div className='coin-header-skeleton-stat' />
               </div>
             ))}
           </div>

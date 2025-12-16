@@ -11,7 +11,7 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { Button } from './ui/button';
-import { searchCoins } from '@/lib/ coingecko.actions';
+import { searchCoins } from '@/lib/coingecko.actions';
 import { Search as SearchIcon, TrendingUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { cn, formatPercentage, formatPrice } from '@/lib/utils';
@@ -73,18 +73,20 @@ export const SearchModal = ({
       <Button
         variant='ghost'
         onClick={() => setOpen(true)}
-        className='px-6 hover:!bg-transparent font-medium transition-all h-full cursor-pointer text-base text-purple-100 flex items-center gap-2'
+        className='search-button'
       >
         <SearchIcon size={18} />
         Search
-        <kbd className='pointer-events-none hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100'>
+        <kbd className='search-kbd'>
           <span className='text-xs'>⌘</span>K
         </kbd>
       </Button>
+
+      {/* Dialog */}
       <CommandDialog
         open={open}
         onOpenChange={setOpen}
-        className='!bg-dark-400 max-w-sm sm:max-w-md md:max-w-2xl mx-auto'
+        className='search-dialog'
       >
         <div className='bg-dark-500'>
           <CommandInput
@@ -94,17 +96,22 @@ export const SearchModal = ({
             onValueChange={setSearchQuery}
           />
         </div>
-        <CommandList className='bg-dark-500 max-h-[400px] custom-scrollbar'>
-          {isLoading ? (
-            <div className='py-6 text-center text-sm text-gray-400'>
-              Searching...
-            </div>
-          ) : searchQuery.trim().length === 0 ? (
-            // Show trending coins when no search query
-            initialTrendingCoins.length > 0 ? (
+
+        <CommandList className='custom-scrollbar search-list'>
+          {isLoading && <div className='search-empty'>Searching...</div>}
+
+          {!isLoading &&
+            searchQuery.trim().length === 0 &&
+            initialTrendingCoins.length === 0 && (
+              <div className='search-empty'>Type to search for coins...</div>
+            )}
+
+          {!isLoading &&
+            searchQuery.trim().length === 0 &&
+            initialTrendingCoins.length > 0 && (
               <CommandGroup
                 heading={
-                  <div className='flex items-center gap-2 text-purple-100'>
+                  <div className='search-heading'>
                     <TrendingUp size={16} />
                     Trending Coins
                   </div>
@@ -119,38 +126,33 @@ export const SearchModal = ({
                       key={coin.id}
                       value={coin.id}
                       onSelect={() => handleSelect(coin.id)}
-                      className='grid grid-cols-4 gap-4 items-center data-[selected=true]:bg-dark-400 transition-all cursor-pointer hover:!bg-dark-400/50 py-3'
+                      className='search-item'
                     >
-                      <div className='flex gap-2 items-center col-span-2'>
+                      <div className='search-coin-info'>
                         <Image
                           src={coin.thumb}
                           alt={coin.name}
                           width={32}
                           height={32}
-                          className='size-9 rounded-full'
+                          className='search-coin-image'
                         />
                         <div className='flex flex-col'>
                           <p className='font-bold'>{coin.name}</p>
-                          <p className='text-sm text-purple-100 uppercase'>
-                            {coin.symbol}
-                          </p>
+                          <p className='search-coin-symbol'>{coin.symbol}</p>
                         </div>
                       </div>
 
-                      <span className='font-semibold text-sm lg:text-base'>
+                      <span className='search-coin-price'>
                         {formatPrice(coin.data.price)}
                       </span>
 
                       <p
-                        className={cn(
-                          'flex gap-1 text-sm lg:text-base items-center font-medium',
-                          {
-                            'text-green-500':
-                              coin.data.price_change_percentage_24h.usd > 0,
-                            'text-red-500':
-                              coin.data.price_change_percentage_24h.usd < 0,
-                          }
-                        )}
+                        className={cn('search-coin-change', {
+                          'text-green-500':
+                            coin.data.price_change_percentage_24h.usd > 0,
+                          'text-red-500':
+                            coin.data.price_change_percentage_24h.usd < 0,
+                        })}
                       >
                         {formatPercentage(
                           coin.data.price_change_percentage_24h.usd
@@ -160,70 +162,66 @@ export const SearchModal = ({
                   );
                 })}
               </CommandGroup>
-            ) : (
-              <div className='py-6 text-center text-sm text-gray-400'>
-                Type to search for coins...
-              </div>
-            )
-          ) : searchResults.length === 0 ? (
-            <CommandEmpty>No coins found.</CommandEmpty>
-          ) : (
-            <CommandGroup
-              heading={
-                <p className='flex items-center gap-2 text-purple-100'>
-                  Search Results
-                </p>
-              }
-              className='bg-dark-500 text-purple-100'
-            >
-              {searchResults.slice(0, 10).map((coin) => {
-                return (
-                  <CommandItem
-                    key={coin.id}
-                    value={coin.id}
-                    onSelect={() => handleSelect(coin.id)}
-                    className='grid grid-cols-4 gap-4 items-center data-[selected=true]:bg-dark-400 transition-all cursor-pointer hover:!bg-dark-400/50 py-3'
-                  >
-                    <div className='flex gap-2 items-center col-span-2'>
-                      <Image
-                        src={coin.thumb}
-                        alt={coin.name}
-                        width={32}
-                        height={32}
-                        className='size-9 rounded-full'
-                      />
-                      <div className='flex flex-col'>
-                        <p className='font-bold text-white'>{coin.name}</p>
-                        <p className='text-sm text-purple-100 uppercase'>
-                          {coin.symbol}
-                        </p>
+            )}
+
+          {!isLoading &&
+            searchQuery.trim().length > 0 &&
+            searchResults.length === 0 && (
+              <CommandEmpty>No coins found.</CommandEmpty>
+            )}
+
+          {!isLoading &&
+            searchQuery.trim().length > 0 &&
+            searchResults.length > 0 && (
+              <CommandGroup
+                heading={<p className='search-heading'>Search Results</p>}
+                className='search-group'
+              >
+                {searchResults.slice(0, 10).map((coin) => {
+                  return (
+                    <CommandItem
+                      key={coin.id}
+                      value={coin.id}
+                      onSelect={() => handleSelect(coin.id)}
+                      className='search-item'
+                    >
+                      <div className='search-coin-info'>
+                        <Image
+                          src={coin.thumb}
+                          alt={coin.name}
+                          width={32}
+                          height={32}
+                          className='search-coin-image'
+                        />
+                        <div className='flex flex-col'>
+                          <p className='font-bold text-white'>{coin.name}</p>
+                          <p className='search-coin-symbol'>{coin.symbol}</p>
+                        </div>
                       </div>
-                    </div>
 
-                    {coin.data?.price && (
-                      <span className='font-semibold text-sm lg:text-base'>
-                        {formatPrice(coin.data.price)}
-                      </span>
-                    )}
+                      {coin.data?.price && (
+                        <span className='search-coin-price'>
+                          {formatPrice(coin.data.price)}
+                        </span>
+                      )}
 
-                    <p
-                      className={cn(
-                        'flex gap-1 text-sm lg:text-base items-center font-medium',
-                        {
+                      <p
+                        className={cn('search-coin-change', {
                           'text-green-500':
                             coin.data?.price_change_percentage_24h > 0,
                           'text-red-500':
                             coin.data?.price_change_percentage_24h < 0,
-                        }
-                      )}
-                    >
-                      {formatPercentage(coin.data?.price_change_percentage_24h)}
-                    </p>
-                  </CommandItem>
-                );
-              })}
-            </CommandGroup>
-          )}
+                        })}
+                      >
+                        {formatPercentage(
+                          coin.data?.price_change_percentage_24h
+                        )}
+                      </p>
+                    </CommandItem>
+                  );
+                })}
+              </CommandGroup>
+            )}
         </CommandList>
       </CommandDialog>
     </>
