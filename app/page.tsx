@@ -18,8 +18,6 @@ import {
 } from '@/components/ui/table';
 
 import ChartSection from '@/components/ChartSection';
-// import CoinCard from '@/components/CoinCard';
-// import { popularCoins } from '@/lib/constants';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 import CoinCard from '@/components/CoinCard';
 
@@ -29,13 +27,11 @@ const Home = async () => {
   const coinData = await getCoinDetails('bitcoin');
   const coinOHLCData = await getCoinOHLC(
     'bitcoin',
-    30, // days
-    'usd', // vs_currency
-    'hourly', // interval
-    'full' // precision
+    30,
+    'usd',
+    'hourly',
+    'full'
   );
-
-  console.log('===topGainersLosers', topGainersLosers);
 
   return (
     <main className='py-6 md:py-12 container size-full space-y-6 md:space-y-6'>

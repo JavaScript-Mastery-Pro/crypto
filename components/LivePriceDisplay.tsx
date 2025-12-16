@@ -5,11 +5,12 @@ import { formatPrice, formatPercentage } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 
 export default function LivePriceDisplay({ coinId }: { coinId: string }) {
-  const { prices, connected } = useCoinPrice([coinId]) as LiveCoinPrice;
+  const { prices } = useCoinPrice([coinId]);
   const priceData = prices[coinId];
 
-  console.log('======Websocket connected', connected);
-  console.log('======Websocket prices', prices);
+  if (!priceData) {
+    return <div className='text-sm text-gray-400'>Loading...</div>;
+  }
 
   const isTrendingUp = priceData.priceChangePercentage24h > 0;
 

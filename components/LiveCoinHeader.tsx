@@ -17,7 +17,7 @@ export default function LiveCoinHeader({
   name,
   image,
 }: LiveCoinHeaderProps) {
-  const { prices, connected } = useCoinPrice([coinId]);
+  const { prices } = useCoinPrice([coinId]);
   const priceData = prices[coinId];
 
   const isTrendingUp = priceData

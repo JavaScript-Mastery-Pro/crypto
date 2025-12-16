@@ -1,46 +1,35 @@
-import { useState } from 'react';
-import { useCoinGeckoSocket } from './useCoinGeckoSocket';
-
-type PriceInfo = {
-  coinId: string;
-  price: number;
-  priceChangePercentage24h: number;
-  marketCap: number;
-  volume24h: number;
-  lastUpdated: number;
-};
-
-type PricesMap = Record<string, PriceInfo>;
+import { useEffect, useState } from 'react';
+// import { subscribe } from '@/lib/websocket';
 
 export const useCoinPrice = (coinIds: string[]) => {
   const [prices, setPrices] = useState<PricesMap>({});
-  const [connected, setConnected] = useState(false);
+  const coinIdsKey = coinIds.join(',');
 
-  useCoinGeckoSocket({
-    channel: 'CGSimplePrice',
-    subscribeParams: coinIds,
-    subscribeMessage: (coins) => ({
-      command: 'message',
-      identifier: JSON.stringify({ channel: 'CGSimplePrice' }),
-      data: JSON.stringify({ action: 'set_tokens', coin_id: coins }),
-    }),
-    onReady: () => setConnected(true),
-    onData: (msg) => {
-      if (msg.c === 'C1' && msg.i && msg.p !== undefined) {
-        setPrices((prev) => ({
-          ...prev,
-          [msg.i]: {
-            coinId: msg.i,
-            price: msg.p,
-            priceChangePercentage24h: msg.pp || 0,
-            marketCap: msg.m || 0,
-            volume24h: msg.v || 0,
-            lastUpdated: msg.t || Date.now() / 1000,
-          },
-        }));
-      }
-    },
+  useEffect(() => {
+    const cleanupFunctions: (() => void)[] = [];
+
+    // Subscribe to each coin
+    // coinIds.forEach((coinId) => {
+    //   const cleanup = subscribe(coinId, (allPrices) => {
+    //     setPrices(allPrices);
+    //   });
+    //   cleanupFunctions.push(cleanup);
+    // });
+
+    // Cleanup all subscriptions
+    return () => {
+      cleanupFunctions.forEach((cleanup) => cleanup());
+    };
+     
+  }, [coinIdsKey]); // Use string key to avoid array reference changes
+
+  // Filter prices to only include requested coins
+  const filteredPrices: PricesMap = {};
+  coinIds.forEach((coinId) => {
+    if (prices[coinId]) {
+      filteredPrices[coinId] = prices[coinId];
+    }
   });
 
-  return { prices, connected };
+  return { prices: filteredPrices };
 };
