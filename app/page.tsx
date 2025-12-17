@@ -143,7 +143,7 @@ const Home = async () => {
                     <TableCell className='pl-5 font-bold'>
                       {category.name}
                     </TableCell>
-                    <TableCell className='flex'>
+                    <TableCell className='flex gap-1 mr-5'>
                       {category.top_3_coins.map((coin: string) => (
                         <Image
                           key={coin}
@@ -151,7 +151,7 @@ const Home = async () => {
                           alt='Coin image'
                           width={28}
                           height={28}
-                          className='mr-2 rounded-full py-2'
+                          className='rounded-full py-2'
                         />
                       ))}
                     </TableCell>
