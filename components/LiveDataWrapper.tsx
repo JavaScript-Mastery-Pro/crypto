@@ -44,7 +44,7 @@ export default function LiveDataWrapper({
 
       {/* Trend Overview */}
       <div className='w-full'>
-        <h4 className='text-2xl mb-4'>Trend Overview</h4>
+        <h4 className='section-title'>Trend Overview</h4>
         <CandlestickChart data={ohlcv} coinId={coinId} mode='live' />
       </div>
 
@@ -52,8 +52,8 @@ export default function LiveDataWrapper({
 
       {/* Recent Trades */}
       <div className='w-full my-8 space-y-4'>
-        <h4 className='text-2xl'>Recent Trades</h4>
-        <div className='custom-scrollbar bg-dark-500 rounded-xl overflow-hidden'>
+        <h4 className='section-title'>Recent Trades</h4>
+        <div className='custom-scrollbar bg-dark-500 mt-5 rounded-xl overflow-hidden'>
           {trades.length > 0 ? (
             <Table className='bg-dark-500'>
               <TableHeader className='text-purple-100'>
@@ -69,7 +69,7 @@ export default function LiveDataWrapper({
               </TableHeader>
               <TableBody>
                 {trades?.map((trade, index) => (
-                  <TableRow key={index}>
+                  <TableRow key={index} className='hover:bg-transparent'>
                     <TableCell className='pl-5 py-5 font-medium'>
                       {trade.price ? formatPrice(trade.price) : '-'}
                     </TableCell>

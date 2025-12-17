@@ -27,8 +27,8 @@ const CHART_COLORS = {
   border: '#1a2332',
   crosshairVertical: '#ffffff40',
   crosshairHorizontal: '#ffffff20',
-  candleUp: '#b9f6c0',
-  candleDown: '#ffaba6',
+  candleUp: '#158A6E',
+  candleDown: '#EB1C36',
 } as const;
 
 export const getCandlestickConfig = (): CandlestickSeriesPartialOptions => ({

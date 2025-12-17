@@ -26,6 +26,18 @@ export async function getCoinList(page: number = 1, perPage: number = 50) {
   return res.json();
 }
 
+export async function getCategories() {
+  const res = await fetch(
+    `${baseUrl}/coins/categories`,
+    header
+  );
+
+  if (!res.ok) throw new Error('Failed to fetch top gainers/losers');
+
+  const data = await res.json();
+  return data.slice(0, 10) || [];
+}
+
 export async function getCoinDetails(id: string) {
   const res = await fetch(`${baseUrl}/coins/${id}`, header);
 
@@ -126,7 +138,6 @@ export async function searchCoins(query: string): Promise<SearchCoin[]> {
         ])
       );
 
-      // Enrich search results with price data
       return coins.slice(0, 10).map((coin: SearchCoin) => ({
         ...coin,
         data: priceMap.get(coin.id) || undefined,

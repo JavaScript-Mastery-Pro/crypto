@@ -2,10 +2,11 @@ import {
   getCoinDetails,
   getCoinOHLC,
   fetchPools,
+  getTopGainersLosers,
 } from '@/lib/coingecko.actions';
 import { formatPrice, timeAgo } from '@/lib/utils';
-import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
+import CoinDetailCard from '@/components/CoinDetailCard';
 import {
   Table,
   TableBody,
@@ -16,10 +17,12 @@ import {
 } from '@/components/ui/table';
 import { Converter } from '@/components/Converter';
 import LiveDataWrapper from '@/components/LiveDataWrapper';
+import CoinCard from '@/components/CoinCard';
 
 const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
   const coinData = await getCoinDetails(id);
+  const topGainersLosers = await getTopGainersLosers();
   const coinOHLCData = await getCoinOHLC(id, 30, 'usd', 'hourly', 'full');
   const pool = await fetchPools(id);
 
@@ -57,8 +60,8 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
         >
           {/* Exchange Listings */}
           <div className='w-full mt-8 space-y-4'>
-            <h4 className='text-2xl'>Exchange Listings</h4>
-            <div className='custom-scrollbar exchange-container'>
+            <h4 className='section-title'>Exchange Listings</h4>
+            <div className='custom-scrollbar mt-5 exchange-container'>
               <Table>
                 <TableHeader className='text-purple-100'>
                   <TableRow className='hover:bg-transparent'>
@@ -78,7 +81,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
                     .map((ticker: Ticker, index: number) => (
                       <TableRow
                         key={index}
-                        className='overflow-hidden rounded-lg'
+                        className='overflow-hidden rounded-lg hover:!bg-dark-400/30'
                       >
                         <TableCell className=' text-green-500 font-bold'>
                           <Link
@@ -90,7 +93,13 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
                           </Link>
                         </TableCell>
                         <TableCell className='exchange-pair'>
-                          {ticker.base} / {ticker.target}
+                          <p className='truncate max-w-[100px]'>
+                            {ticker.base}
+                          </p>
+                          /
+                          <p className='truncate max-w-[100px] ml-2'>
+                            {ticker.target}
+                          </p>
                         </TableCell>
                         <TableCell className='font-medium'>
                           {formatPrice(ticker.converted_last.usd)}
@@ -122,67 +131,72 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
 
         {/* Coin Details */}
         <div className='w-full mt-8 space-y-4'>
-          <h4 className='text-2xl'>Coin Details</h4>
+          <h4 className='section-title pb-3'>Coin Details</h4>
           <div className='coin-details-grid'>
-            <div className='detail-card'>
-              <p className='text-purple-100'>Market Cap</p>
-              <p className='text-base font-medium'>
-                {formatPrice(coin.marketCap)}
-              </p>
-            </div>
-            <div className='detail-card'>
-              <p className='text-purple-100 '>Market Cap Rank</p>
-              <p className='text-base font-bold'># {coin.marketCapRank}</p>
-            </div>
-            <div className='detail-card'>
-              <p className='text-purple-100 '>Total Volume</p>
-              <p className='text-base font-medium'>
-                {formatPrice(coin.totalVolume)}
-              </p>
-            </div>
-            <div className='detail-card'>
-              <p className='text-purple-100 '>Website</p>
-              {coin.website ? (
-                <div className='detail-link'>
-                  <Link href={coin.website} target='_blank'>
-                    Website
-                  </Link>
-                  <ArrowUpRight size={16} />
-                </div>
-              ) : (
-                '-'
-              )}
-            </div>
-            <div className='detail-card'>
-              <p className='text-purple-100 '>Explorer</p>
-              {coin.explorer ? (
-                <div className='detail-link'>
-                  <Link href={coin.explorer} target='_blank'>
-                    Explorer
-                  </Link>
-                  <ArrowUpRight size={16} />
-                </div>
-              ) : (
-                '-'
-              )}
-            </div>
-            <div className='detail-card'>
-              <p className='text-purple-100 '>Community Link</p>
-              {coin.communityLink ? (
-                <div className='detail-link'>
-                  <Link href={coin.communityLink} target='_blank'>
-                    Community
-                  </Link>
-                  <ArrowUpRight size={16} />
-                </div>
-              ) : (
-                '-'
-              )}
-            </div>
+            {[
+              {
+                label: 'Market Cap',
+                value: formatPrice(coin.marketCap),
+              },
+              {
+                label: 'Market Cap Rank',
+                value: `# ${coin.marketCapRank}`,
+              },
+              {
+                label: 'Total Volume',
+                value: formatPrice(coin.totalVolume),
+              },
+              {
+                label: 'Website',
+                value: '-',
+                link: coin.website,
+                linkText: 'Website',
+              },
+              {
+                label: 'Explorer',
+                value: '-',
+                link: coin.explorer,
+                linkText: 'Explorer',
+              },
+              {
+                label: 'Community Link',
+                value: '-',
+                link: coin.communityLink,
+                linkText: 'Community',
+              },
+            ].map((detail, index) => (
+              <CoinDetailCard
+                key={index}
+                label={detail.label}
+                value={detail.value}
+                link={detail.link}
+                linkText={detail.linkText}
+              />
+            ))}
           </div>
         </div>
 
-        <p className='coin-description'>{coin.description}</p>
+        {/* Top Gainers */}
+        <div className='space-y-6 mt-8'>
+          <h4 className='section-title'>Top Gainers</h4>
+          <div className='top-gainers-list'>
+            {topGainersLosers.top_gainers.map(
+              (coin: TopGainersLosersResponse) => (
+                <CoinCard
+                  key={coin.id}
+                  id={coin.id}
+                  name={coin.name}
+                  symbol={coin.symbol}
+                  image={coin.image}
+                  price={coin.usd}
+                  priceChangePercentage24h={coin.usd_24h_change}
+                  volume24={coin.usd_24h_vol}
+                  rank={coin.market_cap_rank}
+                />
+              )
+            )}
+          </div>
+        </div>
       </section>
     </main>
   );

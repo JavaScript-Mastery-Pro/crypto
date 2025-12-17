@@ -29,14 +29,12 @@ export default function CoinHeader({
               className='coin-header-image'
             />
             <div className='flex gap-4'>
-              <h1 className='coin-header-price'>
-                {formatPrice(livePrice)}
-              </h1>
+              <h1 className='coin-header-price'>{formatPrice(livePrice)}</h1>
               <Badge
                 className={cn(
                   'coin-header-badge',
                   isTrendingUp
-                    ? 'bg-green-500/20 text-green-600'
+                    ? 'bg-green-600/20 text-green-600'
                     : 'bg-red-500/20 text-red-500'
                 )}
               >
@@ -50,13 +48,10 @@ export default function CoinHeader({
             <div className='coin-header-stat'>
               <p className='coin-header-stat-label'>Today</p>
               <div
-                className={cn(
-                  'coin-header-stat-value',
-                  {
-                    'text-green-500': livePriceChangePercentage24h > 0,
-                    'text-red-500': livePriceChangePercentage24h < 0,
-                  }
-                )}
+                className={cn('coin-header-stat-value', {
+                  'text-green-500': livePriceChangePercentage24h > 0,
+                  'text-red-500': livePriceChangePercentage24h < 0,
+                })}
               >
                 <p>{formatPercentage(livePriceChangePercentage24h)}</p>
                 {isTrendingUp ? (
@@ -70,13 +65,10 @@ export default function CoinHeader({
             <div className='coin-header-stat'>
               <p className='coin-header-stat-label'>30 Days</p>
               <div
-                className={cn(
-                  'coin-header-stat-value-30d',
-                  {
-                    'text-green-500': priceChangePercentage30d > 0,
-                    'text-red-500': priceChangePercentage30d < 0,
-                  }
-                )}
+                className={cn('coin-header-stat-value-30d', {
+                  'text-green-500': priceChangePercentage30d > 0,
+                  'text-red-500': priceChangePercentage30d < 0,
+                })}
               >
                 <p>{formatPercentage(priceChangePercentage30d)}</p>
                 {isTrendingUp ? (
@@ -88,9 +80,7 @@ export default function CoinHeader({
             </div>
 
             <div className='text-base flex flex-col gap-2'>
-              <p className='coin-header-stat-label'>
-                Price Change (24h)
-              </p>
+              <p className='coin-header-stat-label'>Price Change (24h)</p>
               <p
                 className={cn('coin-header-stat-price', {
                   'text-green-500': priceChange24h > 0,

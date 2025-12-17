@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
+  getCategories,
   getCoinDetails,
   getCoinOHLC,
-  getTopGainersLosers,
   getTrendingCoins,
 } from '@/lib/coingecko.actions';
 import { cn, formatPercentage, formatPrice } from '@/lib/utils';
@@ -19,12 +19,11 @@ import {
 
 import ChartSection from '@/components/ChartSection';
 import { TrendingDown, TrendingUp } from 'lucide-react';
-import CoinCard from '@/components/CoinCard';
 
 const Home = async () => {
-  const trendingCoins = await getTrendingCoins();
-  const topGainersLosers = await getTopGainersLosers();
   const coinData = await getCoinDetails('bitcoin');
+  const trendingCoins = await getTrendingCoins();
+  const categories = await getCategories();
   const coinOHLCData = await getCoinOHLC(
     'bitcoin',
     30,
@@ -45,7 +44,7 @@ const Home = async () => {
 
         {/* Top Movers */}
         <div className='top-movers-container'>
-          <h4 className='section-title-spacing'>Top Movers</h4>
+          <h4 className='section-title px-5'>Top Movers</h4>
           <div className='table-scrollbar-container custom-scrollbar'>
             <Table>
               <TableHeader className='table-header-cell'>
@@ -117,44 +116,77 @@ const Home = async () => {
         </div>
       </section>
 
-      {/* Top Gainers / Losers */}
-      <section className='space-y-6 mt-5'>
-        <h4 className='section-title'>Top Gainers</h4>
-        <div className='card-grid'>
-          {topGainersLosers.top_gainers.map(
-            (coin: TopGainersLosersResponse) => (
-              <CoinCard
-                key={coin.id}
-                id={coin.id}
-                name={coin.name}
-                symbol={coin.symbol}
-                image={coin.image}
-                price={coin.usd}
-                priceChangePercentage24h={coin.usd_24h_change}
-                volume24={coin.usd_24h_vol}
-                rank={coin.market_cap_rank}
-              />
-            )
-          )}
-        </div>
-      </section>
-
-      <section className='space-y-6 mt-8'>
-        <h4 className='section-title'>Top Losers</h4>
-        <div className='card-grid'>
-          {topGainersLosers.top_losers.map((coin: TopGainersLosersResponse) => (
-            <CoinCard
-              key={coin.id}
-              id={coin.id}
-              name={coin.name}
-              symbol={coin.symbol}
-              image={coin.image}
-              price={coin.usd}
-              priceChangePercentage24h={coin.usd_24h_change}
-              volume24={coin.usd_24h_vol}
-              rank={coin.market_cap_rank}
-            />
-          ))}
+      {/* Categories */}
+      <section className='w-full mt-7 space-y-4'>
+        <div className='custom-scrollbar pt-8 mt-5 w-full bg-dark-500 rounded-xl overflow-hidden'>
+          <h4 className='section-title pl-5'>Top Categories</h4>
+          <Table>
+            <TableHeader className='text-purple-100'>
+              <TableRow className='hover:bg-transparent'>
+                <TableHead className='exchange-header-left'>Category</TableHead>
+                <TableHead className='text-purple-100'>Top Gainers</TableHead>
+                <TableHead className='text-purple-100 pl-7'>
+                  24h Change
+                </TableHead>
+                <TableHead className='text-purple-100'>Market Cap</TableHead>
+                <TableHead className='text-purple-100'>24h Volume</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {categories.map((category: Category, index: number) => {
+                const isTrendingUp = category.market_cap_change_24h > 0;
+                return (
+                  <TableRow
+                    key={index}
+                    className='md:text-base rounded-lg hover:!bg-dark-400/30'
+                  >
+                    <TableCell className='pl-5 font-bold'>
+                      {category.name}
+                    </TableCell>
+                    <TableCell className='flex'>
+                      {category.top_3_coins.map((coin: string) => (
+                        <Image
+                          key={coin}
+                          src={coin}
+                          alt='Coin image'
+                          width={28}
+                          height={28}
+                          className='mr-2 rounded-full py-2'
+                        />
+                      ))}
+                    </TableCell>
+                    <TableCell className='font-medium'>
+                      <div
+                        className={cn(
+                          'flex flex-1 gap-1 items-end pl-5 text-base font-medium',
+                          {
+                            'text-green-500':
+                              category.market_cap_change_24h > 0,
+                            'text-red-500': category.market_cap_change_24h < 0,
+                          }
+                        )}
+                      >
+                        <p>
+                          {formatPercentage(category.market_cap_change_24h)}
+                        </p>
+                        {isTrendingUp ? (
+                          <TrendingUp width={16} height={16} />
+                        ) : (
+                          <TrendingDown width={16} height={16} />
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell className='font-medium'>
+                      {formatPrice(category.market_cap)}
+                    </TableCell>
+                    <TableCell className='font-medium'>
+                      {formatPrice(category.volume_24h)}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
         </div>
       </section>
     </main>

@@ -10,21 +10,21 @@ export default function ChartSection({
   coinId,
 }: ChartSectionProps) {
   return (
-    <div className='w-full h-full xl:col-span-2 px-2 py-3 bg-dark-500 rounded-xl'>
+    <div className='chart-section-container'>
       <CandlestickChart data={coinOHLCData} coinId={coinId}>
-        <div className='flex-1 mb-2 flex gap-2 md:gap-3'>
+        <div className='chart-section-header'>
           <Image
             src={coinData.image.large}
             alt={coinData.name}
             width={56}
             height={56}
-            className='w-10 h-10 md:w-14 md:h-14'
+            className='chart-section-image'
           />
-          <div className='flex flex-col'>
-            <p className='flex text-purple-100 text-xs md:text-sm w-fit'>
+          <div className='chart-section-info'>
+            <p className='chart-section-coin-name'>
               {coinData.name} / {coinData.symbol.toUpperCase()}
             </p>
-            <h1 className='text-xl md:text-2xl font-semibold'>
+            <h1 className='chart-section-price'>
               {formatPrice(coinData.market_data.current_price.usd)}
             </h1>
           </div>

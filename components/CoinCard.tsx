@@ -46,7 +46,7 @@ export default function CoinCard({
                 className={cn(
                   'font-medium h-fit py-1 flex items-center gap-1',
                   isTrendingUp
-                    ? 'bg-green-500/20 text-green-600'
+                    ? 'bg-green-600/20 text-green-600'
                     : 'bg-red-500/20 text-red-500'
                 )}
               >
