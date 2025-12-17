@@ -92,14 +92,16 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
                             {ticker.market.name}
                           </Link>
                         </TableCell>
-                        <TableCell className='exchange-pair'>
-                          <p className='truncate max-w-[100px]'>
-                            {ticker.base}
-                          </p>
-                          /
-                          <p className='truncate max-w-[100px] ml-2'>
-                            {ticker.target}
-                          </p>
+                        <TableCell>
+                          <div className='exchange-pair'>
+                            <p className='truncate max-w-[100px] h-full'>
+                              {ticker.base}
+                            </p>
+                            /
+                            <p className='truncate max-w-[100px] h-full ml-2'>
+                              {ticker.target}
+                            </p>
+                          </div>
                         </TableCell>
                         <TableCell className='font-medium'>
                           {formatPrice(ticker.converted_last.usd)}

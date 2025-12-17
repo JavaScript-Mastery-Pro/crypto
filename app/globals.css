@@ -271,11 +271,11 @@
   }
 
   .exchange-link {
-    @apply py-4 pl-3 block max-w-[110px] truncate;
+    @apply py-4 pl-3 block w-full max-w-[230px] truncate whitespace-pre-wrap;
   }
 
   .exchange-pair {
-    @apply font-medium flex py-4 pr-5;
+    @apply font-medium h-full flex py-4 pr-5;
   }
 
   .exchange-timestamp {
