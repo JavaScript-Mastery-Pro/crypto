@@ -119,7 +119,7 @@ export default function CandlestickChart({
   // Update chart data when chartData or period changes
   useEffect(() => {
     if (candleSeriesRef.current && chartRef.current && chartData.length > 0) {
-      // For both modes, use setData() to update the chart
+      // Update the chart
       candleSeriesRef.current.setData(chartData);
       chartRef.current.timeScale().fitContent();
 

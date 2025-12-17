@@ -231,3 +231,16 @@ interface Category {
   market_cap: number;
   volume_24h: number;
 }
+
+interface UseCoinGeckoWebSocketProps {
+  coinId: string;
+  poolId: string;
+  coinOHLCData: OHLCData[];
+}
+
+interface UseCoinGeckoWebSocketReturn {
+  price: ExtendedPriceData | null;
+  trades: TradeData[];
+  ohlcv: OHLCData[];
+  isConnected: boolean;
+}

@@ -3,19 +3,6 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 
 const WS_BASE = `${process.env.NEXT_PUBLIC_COINGECKO_WEBSOCKET_URL}?x_cg_pro_api_key=${process.env.NEXT_PUBLIC_COINGECKO_API_KEY}`;
 
-interface UseCoinGeckoWebSocketProps {
-  coinId: string;
-  poolId: string;
-  coinOHLCData: OHLCData[];
-}
-
-interface UseCoinGeckoWebSocketReturn {
-  price: ExtendedPriceData | null;
-  trades: TradeData[];
-  ohlcv: OHLCData[];
-  isConnected: boolean;
-}
-
 export function useCoinGeckoWebSocket({
   coinId,
   poolId,
@@ -63,7 +50,7 @@ export function useCoinGeckoWebSocket({
       const newTrade: TradeData = {
         price: msg.pu,
         value: msg.vo,
-        timestamp: msg.t ?? 0, // Already in milliseconds
+        timestamp: msg.t ?? 0,
         type: msg.ty,
         amount: msg.to,
       };
@@ -79,7 +66,7 @@ export function useCoinGeckoWebSocket({
     if (msg.ch === 'G3') {
       setOhlcv((prev) => {
         const lastCandle = prev[prev.length - 1];
-        // WebSocket sends timestamp as integer (already in milliseconds)
+
         const newTimeMs = msg.t ?? 0;
         const newCandle: OHLCData = [
           newTimeMs,
@@ -96,11 +83,15 @@ export function useCoinGeckoWebSocket({
 
         // Only append if timestamp is newer than the last candle
         if (lastCandle && newTimeMs < lastCandle[0]) {
-          console.warn('Skipping out-of-order candle:', newTimeMs, 'vs', lastCandle[0]);
+          console.warn(
+            'Skipping out-of-order candle:',
+            newTimeMs,
+            'vs',
+            lastCandle[0]
+          );
           return prev;
         }
 
-        // New timestamp, append new candle
         // Keep all historical data + last 100 live candles
         const historicalCount = historicalDataLength.current;
         const liveCandles = prev.slice(historicalCount);
