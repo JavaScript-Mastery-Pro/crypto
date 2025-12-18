@@ -23,7 +23,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
   const coinData = await getCoinDetails(id);
   const topGainersLosers = await getTopGainersLosers();
-  const coinOHLCData = await getCoinOHLC(id, 30, 'usd', 'hourly', 'full');
+  const coinOHLCData = await getCoinOHLC(id, 1, 'usd', 'hourly', 'full');
   const pool = await fetchPools(id);
 
   const coin = {

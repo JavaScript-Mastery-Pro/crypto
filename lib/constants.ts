@@ -15,7 +15,7 @@ export const navItems = [
     href: '/',
   },
   {
-    label: 'Coins',
+    label: 'All Coins',
     href: '/coins',
   },
 ];

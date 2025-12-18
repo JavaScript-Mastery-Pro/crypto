@@ -22,13 +22,13 @@ export function useCoinGeckoWebSocket({
   const handleMessage = useCallback((event: MessageEvent) => {
     const ws = wsRef.current;
     const msg: WebSocketMessage = JSON.parse(event.data);
-
+    // Ping/Pong checking to keep connection alive as suggested in their docs
     if (msg.type === 'ping') return ws?.send(JSON.stringify({ type: 'pong' }));
 
     if (msg.type === 'confirm_subscription') {
       const { channel } = JSON.parse(msg?.identifier ?? '');
       subscribed.current.add(channel);
-      console.log(`Subscribed to: ${channel}`);
+
       return;
     }
 
@@ -62,44 +62,40 @@ export function useCoinGeckoWebSocket({
       });
     }
 
-    // G3: OHLCV updates
-    if (msg.ch === 'G3') {
-      setOhlcv((prev) => {
-        const lastCandle = prev[prev.length - 1];
+   // G3: OHLCV updates
+if (msg.ch === 'G3') {
+  setOhlcv((prev) => {
+    const newTimeMs = (msg.t ?? 0) * 1000;
+    console.log('Received OHLCV update for time:', newTimeMs);
 
-        const newTimeMs = msg.t ?? 0;
-        const newCandle: OHLCData = [
-          newTimeMs,
-          Number(msg.o ?? 0),
-          Number(msg.h ?? 0),
-          Number(msg.l ?? 0),
-          Number(msg.c ?? 0),
-        ];
+    const newCandle: OHLCData = [
+      newTimeMs,
+      Number(msg.o ?? 0),
+      Number(msg.h ?? 0),
+      Number(msg.l ?? 0),
+      Number(msg.c ?? 0),
+    ];
 
-        // If same timestamp, update the existing candle
-        if (lastCandle && lastCandle[0] === newTimeMs) {
-          return [...prev.slice(0, -1), newCandle];
-        }
+    const historicalCount = historicalDataLength.current;
+    const historical = prev.slice(0, historicalCount);
+    const live = prev.slice(historicalCount);
 
-        // Only append if timestamp is newer than the last candle
-        if (lastCandle && newTimeMs < lastCandle[0]) {
-          console.warn(
-            'Skipping out-of-order candle:',
-            newTimeMs,
-            'vs',
-            lastCandle[0]
-          );
-          return prev;
-        }
-
-        // Keep all historical data + last 100 live candles
-        const historicalCount = historicalDataLength.current;
-        const liveCandles = prev.slice(historicalCount);
-        const limitedLiveCandles = [...liveCandles, newCandle].slice(-100);
-
-        return [...prev.slice(0, historicalCount), ...limitedLiveCandles];
-      });
+    // 🔑 Upsert by timestamp
+    const map = new Map<number, OHLCData>();
+    for (const candle of live) {
+      map.set(candle[0], candle);
     }
+    map.set(newTimeMs, newCandle);
+
+    // 🔑 Sort by time ASC
+    const updatedLive = Array.from(map.values())
+      .sort((a, b) => a[0] - b[0])
+      .slice(-100);
+
+    return [...historical, ...updatedLive];
+  });
+}
+
   }, []);
 
   // WebSocket connection setup

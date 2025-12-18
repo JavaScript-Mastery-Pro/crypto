@@ -24,13 +24,7 @@ const Home = async () => {
   const coinData = await getCoinDetails('bitcoin');
   const trendingCoins = await getTrendingCoins();
   const categories = await getCategories();
-  const coinOHLCData = await getCoinOHLC(
-    'bitcoin',
-    30,
-    'usd',
-    'hourly',
-    'full'
-  );
+  const coinOHLCData = await getCoinOHLC('bitcoin', 1, 'usd', 'hourly', 'full');
 
   return (
     <main className='main-container'>
