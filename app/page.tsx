@@ -36,9 +36,9 @@ const Home = async () => {
           coinId='bitcoin'
         />
 
-        {/* Top Movers */}
+        {/* Trending Coins */}
         <div className='top-movers-container'>
-          <h4 className='section-title px-5'>Top Movers</h4>
+          <h4 className='section-title px-5'>Trending Coins</h4>
           <div className='table-scrollbar-container custom-scrollbar'>
             <Table>
               <TableHeader className='table-header-cell'>
