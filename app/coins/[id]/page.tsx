@@ -24,8 +24,9 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
   const coinData = await getCoinDetails(id);
   const topGainersLosers = await getTopGainersLosers();
-  const coinOHLCData = await getCoinOHLC(id, 1, 'usd', 'hourly', 'full');
   const pool = await fetchPools(id);
+  // Fetch initial OHLC data for 1 day (matches initialPeriod='daily')
+  const coinOHLCData = await getCoinOHLC(id, 1, 'usd', 'hourly', 'full');
 
   const coinDetails = [
     {
@@ -64,10 +65,10 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
     <main className='coin-details-main'>
       <section className='size-full xl:col-span-2'>
         <LiveDataWrapper
-          coinOHLCData={coinOHLCData}
           coinId={id}
           pool={pool}
           coin={coinData}
+          coinOHLCData={coinOHLCData}
         >
           {/* Exchange Listings - pass it as a child of a client component 
           // so it will be render server side */}

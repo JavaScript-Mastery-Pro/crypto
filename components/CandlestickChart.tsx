@@ -23,21 +23,30 @@ export default function CandlestickChart({
   children,
   liveOhlcv = null,
   mode = 'historical',
+  initialPeriod = 'daily',
 }: CandlestickChartProps) {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const candleSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
-  const [period, setPeriod] = useState<Period>('daily');
+
+  const [period, setPeriod] = useState<Period>(initialPeriod);
   const [ohlcData, setOhlcData] = useState<OHLCData[]>(data ?? []);
   const [loading, setLoading] = useState(false);
+  const prevOhlcDataLength = useRef<number>(data?.length ?? 0);
 
-  console.log('==== Candlestick Chart Live OHLCV:', liveOhlcv);
+  console.log('=====liveOhlcv', liveOhlcv);
 
-  // Fetch historical data
+  // Fetch OHLC data when period changes
   const fetchOHLCData = async (selectedPeriod: Period) => {
     setLoading(true);
     try {
       const config = PERIOD_CONFIG[selectedPeriod];
+      console.log('==== Fetching OHLC:', {
+        period: selectedPeriod,
+        days: config.days,
+        interval: config.interval,
+        coinId,
+      });
       const newData = await getCoinOHLC(
         coinId,
         config.days,
@@ -45,16 +54,22 @@ export default function CandlestickChart({
         config.interval,
         'full'
       );
+      console.log('==== OHLC Fetched:', {
+        period: selectedPeriod,
+        dataPoints: newData?.length,
+      });
       setOhlcData(newData ?? []);
     } catch (err) {
-      console.error(err);
+      console.error('Failed to fetch OHLC data:', err);
     } finally {
       setLoading(false);
     }
   };
 
   const handlePeriodChange = (newPeriod: Period) => {
-    if (mode === 'live' || newPeriod === period) return;
+    if (newPeriod === period) return;
+
+    console.log('==== Period Change:', { from: period, to: newPeriod, mode });
     setPeriod(newPeriod);
     fetchOHLCData(newPeriod);
   };
@@ -95,6 +110,12 @@ export default function CandlestickChart({
   useEffect(() => {
     if (!candleSeriesRef.current) return;
 
+    console.log('==== Chart Update Effect Triggered:', {
+      ohlcDataPoints: ohlcData.length,
+      hasLiveOhlcv: !!liveOhlcv,
+      liveOhlcv,
+    });
+
     // Convert timestamps from milliseconds to seconds
     const convertedToSeconds = ohlcData.map(
       (item) =>
@@ -108,6 +129,7 @@ export default function CandlestickChart({
     );
 
     let merged: OHLCData[];
+    let action = 'none';
 
     if (liveOhlcv) {
       const liveTimestamp = liveOhlcv[0];
@@ -119,10 +141,19 @@ export default function CandlestickChart({
       if (lastHistoricalCandle && lastHistoricalCandle[0] === liveTimestamp) {
         // Update the last candle with live data
         merged = [...convertedToSeconds.slice(0, -1), liveOhlcv];
+        action = 'updated';
       } else {
         // Append new live candle
         merged = [...convertedToSeconds, liveOhlcv];
+        action = 'appended';
       }
+
+      console.log('==== Live OHLCV Merge:', {
+        action,
+        liveTimestamp,
+        liveTime: new Date(liveTimestamp * 1000).toISOString(),
+        lastHistoricalTimestamp: lastHistoricalCandle?.[0],
+      });
     } else {
       merged = convertedToSeconds;
     }
@@ -134,9 +165,11 @@ export default function CandlestickChart({
 
     candleSeriesRef.current.setData(converted);
 
-    // Only fit content on initial load or period change, not on live updates
-    if (!liveOhlcv || mode === 'historical') {
+    // Fit content when ohlcData changes (period change), not on live updates
+    const dataChanged = prevOhlcDataLength.current !== ohlcData.length;
+    if (dataChanged || mode === 'historical') {
       chartRef.current?.timeScale().fitContent();
+      prevOhlcDataLength.current = ohlcData.length;
     }
   }, [ohlcData, liveOhlcv, period, mode]);
 
@@ -144,24 +177,22 @@ export default function CandlestickChart({
     <div className='candlestick-container'>
       <div className='candlestick-header'>
         <div className='flex-1'>{children}</div>
-        {mode === 'historical' && (
-          <div className='candlestick-button-group'>
-            {PERIOD_BUTTONS.map(({ value, label }) => (
-              <button
-                key={value}
-                className={
-                  period === value
-                    ? 'candlestick-period-button-active'
-                    : 'candlestick-period-button'
-                }
-                onClick={() => handlePeriodChange(value)}
-                disabled={loading}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        )}
+        <div className='candlestick-button-group'>
+          {PERIOD_BUTTONS.map(({ value, label }) => (
+            <button
+              key={value}
+              className={
+                period === value
+                  ? 'candlestick-period-button-active'
+                  : 'candlestick-period-button'
+              }
+              onClick={() => handlePeriodChange(value)}
+              disabled={loading}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
       <div
         ref={chartContainerRef}

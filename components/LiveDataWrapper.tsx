@@ -24,11 +24,7 @@ export default function LiveDataWrapper({
   const { price, trades, ohlcv } = useCoinGeckoWebSocket({
     coinId,
     poolId: pool.id,
-    coinOHLCData,
   });
-
-  // console.log('==== LiveDataWrapper coinOHLCData:', coinOHLCData);
-  // console.log('==== LiveDataWrapper OHLCV:', ohlcv);
 
   return (
     <section className='size-full xl:col-span-2'>
@@ -53,6 +49,7 @@ export default function LiveDataWrapper({
           liveOhlcv={ohlcv}
           coinId={coinId}
           mode='live'
+          initialPeriod='daily'
         />
       </div>
 

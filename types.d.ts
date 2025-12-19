@@ -1,12 +1,13 @@
 type OHLCData = [number, number, number, number, number];
 
 interface CandlestickChartProps {
-  data: OHLCData[];
+  data?: OHLCData[];
   liveOhlcv?: OHLCData | null;
   coinId: string;
   height?: number;
   children?: React.ReactNode;
   mode?: 'historical' | 'live';
+  initialPeriod?: Period;
 }
 
 interface ConverterProps {
@@ -225,7 +226,7 @@ interface LiveDataProps {
     network: string;
   };
   coin: CoinDetailsData;
-  coinOHLCData: OHLCData[];
+  coinOHLCData?: OHLCData[];
   children?: React.ReactNode;
 }
 
@@ -249,7 +250,6 @@ interface Category {
 interface UseCoinGeckoWebSocketProps {
   coinId: string;
   poolId: string;
-  coinOHLCData: OHLCData[];
 }
 
 interface UseCoinGeckoWebSocketReturn {

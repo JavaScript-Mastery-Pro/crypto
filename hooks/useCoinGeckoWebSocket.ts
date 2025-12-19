@@ -6,7 +6,6 @@ const WS_BASE = `${process.env.NEXT_PUBLIC_COINGECKO_WEBSOCKET_URL}?x_cg_pro_api
 export function useCoinGeckoWebSocket({
   coinId,
   poolId,
-  coinOHLCData,
 }: UseCoinGeckoWebSocketProps): UseCoinGeckoWebSocketReturn {
   const wsRef = useRef<WebSocket | null>(null);
   const subscribed = useRef<Set<string>>(new Set());
@@ -163,7 +162,7 @@ export function useCoinGeckoWebSocket({
     return () => {
       active = false;
     };
-  }, [coinId, poolId, isWsReady, coinOHLCData, subscribe, unsubscribeAll]);
+  }, [coinId, poolId, isWsReady, subscribe, unsubscribeAll]);
 
   return {
     price,
