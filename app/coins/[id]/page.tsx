@@ -50,6 +50,8 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
     tickers: coinData.tickers,
   };
 
+  console.log('==== coinOHLCData:', coinOHLCData);
+
   return (
     <main className='coin-details-main'>
       <section className='size-full xl:col-span-2'>

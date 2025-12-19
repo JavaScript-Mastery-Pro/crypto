@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useMemo, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   IChartApi,
   ISeriesApi,
@@ -13,7 +13,7 @@ import {
   PERIOD_BUTTONS,
   PERIOD_CONFIG,
 } from '@/lib/constants';
-import { convertOHLCData } from '@/lib/utils';
+import { convertOHLCData, convertOHLCToCandlestickData } from '@/lib/utils';
 const { getCoinOHLC } = await import('@/lib/coingecko.actions');
 
 export default function CandlestickChart({
@@ -21,30 +21,23 @@ export default function CandlestickChart({
   coinId,
   height = 360,
   children,
+  liveOhlcv = null,
   mode = 'historical',
 }: CandlestickChartProps) {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const chartRef = useRef<IChartApi | null>(null);
   const candleSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
-  const resizeObserverRef = useRef<ResizeObserver | null>(null);
-
-  const [period, setPeriod] = useState<Period>(
-    mode === 'live' ? 'daily' : 'monthly'
-  );
-  const [ohlcData, setOhlcData] = useState<OHLCData[]>(data);
+  const [period, setPeriod] = useState<Period>('daily');
+  const [ohlcData, setOhlcData] = useState<OHLCData[]>(data ?? []);
   const [loading, setLoading] = useState(false);
 
-  // In live mode, use data prop directly; in historical mode, use state
-  const activeData = mode === 'live' ? data : ohlcData;
+  console.log('==== Candlestick Chart Live OHLCV:', liveOhlcv);
 
-  // Memoize converted data to avoid recalculating on every render
-  const chartData = useMemo(() => convertOHLCData(activeData), [activeData]);
-
+  // Fetch historical data
   const fetchOHLCData = async (selectedPeriod: Period) => {
     setLoading(true);
     try {
       const config = PERIOD_CONFIG[selectedPeriod];
-
       const newData = await getCoinOHLC(
         coinId,
         config.days,
@@ -52,16 +45,14 @@ export default function CandlestickChart({
         config.interval,
         'full'
       );
-
-      setOhlcData(newData);
-    } catch (error) {
-      console.error('Error fetching OHLC data:', error);
+      setOhlcData(newData ?? []);
+    } catch (err) {
+      console.error(err);
     } finally {
       setLoading(false);
     }
   };
 
-  // Handle period change (only in historical mode)
   const handlePeriodChange = (newPeriod: Period) => {
     if (mode === 'live' || newPeriod === period) return;
     setPeriod(newPeriod);
@@ -73,71 +64,67 @@ export default function CandlestickChart({
     const container = chartContainerRef.current;
     if (!container) return;
 
-    // Show time for shorter periods with hourly interval
     const showTime = ['daily', 'weekly', 'monthly'].includes(period);
-
-    // Initialize chart
     const chart = createChart(container, {
       ...getChartConfig(height, showTime),
       width: container.clientWidth,
     });
+    const series = chart.addSeries(CandlestickSeries, getCandlestickConfig());
 
-    // Add candlestick series
-    const candleSeries = chart.addSeries(
-      CandlestickSeries,
-      getCandlestickConfig()
-    );
-    candleSeries.setData(chartData);
-
-    // Fit content to display all data
+    series.setData(convertOHLCData(ohlcData));
     chart.timeScale().fitContent();
 
-    // Store refs
     chartRef.current = chart;
-    candleSeriesRef.current = candleSeries;
+    candleSeriesRef.current = series;
 
-    // Handle responsive resizing using ResizeObserver (more efficient than window resize)
-    resizeObserverRef.current = new ResizeObserver((entries) => {
-      if (!entries.length || !chartRef.current) return;
-
-      const { width } = entries[0].contentRect;
-      chartRef.current.applyOptions({ width });
+    const observer = new ResizeObserver((entries) => {
+      if (!entries.length) return;
+      chart.applyOptions({ width: entries[0].contentRect.width });
     });
+    observer.observe(container);
 
-    resizeObserverRef.current.observe(container);
-
-    // Cleanup function
     return () => {
-      resizeObserverRef.current?.disconnect();
-      chartRef.current?.remove();
+      observer.disconnect();
+      chart.remove();
       chartRef.current = null;
       candleSeriesRef.current = null;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [height]);
 
-  // Update chart data when chartData or period changes
+  // Update chart when data or liveOhlcv changes
   useEffect(() => {
-    if (candleSeriesRef.current && chartRef.current && chartData.length > 0) {
-      // Update the chart
-      candleSeriesRef.current.setData(chartData);
-      chartRef.current.timeScale().fitContent();
+    if (!candleSeriesRef.current) return;
 
-      // Update time visibility based on period
-      const showTime = ['daily', 'weekly', 'monthly'].includes(period);
-      chartRef.current.applyOptions({
-        timeScale: {
-          timeVisible: showTime,
-        },
-      });
-    }
-  }, [chartData, period, mode]);
+    // Convert timestamps from milliseconds to seconds while keeping full OHLC structure
+    const convertedToSeconds = ohlcData.map((item) => [
+      Math.floor(item[0] / 1000), // timestamp in seconds
+      item[1], // open
+      item[2], // high
+      item[3], // low
+      item[4], // close
+    ] as OHLCData);
+    console.log('==== Updating convertedToSeconds:', convertedToSeconds);
+
+    const merged = liveOhlcv
+      ? [...convertedToSeconds, liveOhlcv]
+      : [...convertedToSeconds];
+
+    console.log('==== Updating merged:', merged);
+    // Sort ascending by time
+    merged.sort((a, b) => a[0] - b[0]);
+
+    const converted = convertOHLCData(merged);
+
+    console.log('==== Updating Candlestick Data:', converted);
+
+    candleSeriesRef.current.setData(converted);
+    chartRef.current?.timeScale().fitContent();
+  }, [ohlcData, liveOhlcv, period]);
 
   return (
     <div className='candlestick-container'>
       <div className='candlestick-header'>
         <div className='flex-1'>{children}</div>
-        {/* Only show period buttons in historical mode */}
         {mode === 'historical' && (
           <div className='candlestick-button-group'>
             {PERIOD_BUTTONS.map(({ value, label }) => (
@@ -157,8 +144,6 @@ export default function CandlestickChart({
           </div>
         )}
       </div>
-
-      {/* Chart Container */}
       <div
         ref={chartContainerRef}
         className='candlestick-chart-container'

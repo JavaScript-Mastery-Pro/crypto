@@ -48,16 +48,6 @@ export function trendingClasses(value: number) {
   };
 }
 
-export const convertOHLCData = (rawData: OHLCData[]): CandlestickData[] => {
-  return rawData.map(([timestampMs, open, high, low, close]) => ({
-    time: Math.floor(timestampMs / 1000) as Time,
-    open: Number(open),
-    high: Number(high),
-    low: Number(low),
-    close: Number(close),
-  }));
-};
-
 export function timeAgo(date: string | number | Date): string {
   const now = new Date();
   const past = new Date(date);
@@ -77,4 +67,53 @@ export function timeAgo(date: string | number | Date): string {
 
   // Format date as YYYY-MM-DD
   return past.toISOString().split('T')[0];
+}
+
+export function convertOHLCData(data: OHLCData[]) {
+  return data
+    .map((d) => ({
+      time: d[0] as Time, // ensure seconds, not ms
+      open: d[1],
+      high: d[2],
+      low: d[3],
+      close: d[4],
+    }))
+    // .sort((a, b) => a.time - b.time)
+    .filter((item, index, arr) =>
+      index === 0 || item.time !== arr[index - 1].time
+    );
+    
+}
+
+
+export function convertOHLCToCandlestickData(
+  data: OHLCData[]
+): CandlestickData<Time>[] {
+  // Convert OHLC tuples to candlestick objects
+  const mapped = data.map(([timestamp, open, high, low, close]) => ({
+    time: timestamp as Time, // use timestamp as-is
+    open,
+    high,
+    low,
+    close,
+  }));
+
+  // Sort ascending by time
+  // mapped.sort((a, b) => (a.time as number) - (b.time as number));
+
+  // Deduplicate any entries with the same timestamp (keep the last one)
+  const deduped: CandlestickData<Time>[] = [];
+  for (const item of mapped) {
+    if (
+      deduped.length === 0 ||
+      (deduped[deduped.length - 1].time as number) < (item.time as number)
+    ) {
+      deduped.push(item);
+    } else {
+      // Replace the last item if timestamp is the same
+      deduped[deduped.length - 1] = item;
+    }
+  }
+
+  return deduped;
 }

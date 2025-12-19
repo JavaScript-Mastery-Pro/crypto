@@ -13,22 +13,34 @@ export function useCoinGeckoWebSocket({
 
   const [price, setPrice] = useState<ExtendedPriceData | null>(null);
   const [trades, setTrades] = useState<TradeData[]>([]);
-  const [ohlcv, setOhlcv] = useState<OHLCData[]>(coinOHLCData);
+  // const [ohlcv, setOhlcv] = useState<OHLCData[]>(
+  //   coinOHLCData.map((c) => [
+  //     Math.floor(c[0] / 1000), // normalize ms → seconds
+  //     c[1],
+  //     c[2],
+  //     c[3],
+  //     c[4],
+  //   ])
+  // );
+   const [ohlcv, setOhlcv] = useState<OHLCData | null>( null)
+  
+
   const [isWsReady, setIsWsReady] = useState(false);
 
   // Track where historical data ends and live data begins
-  const historicalDataLength = useRef(coinOHLCData.length);
+  // const historicalDataLength = useRef(ohlcv.length);
 
   const handleMessage = useCallback((event: MessageEvent) => {
     const ws = wsRef.current;
     const msg: WebSocketMessage = JSON.parse(event.data);
-    // Ping/Pong checking to keep connection alive as suggested in their docs
+
+    // Ping/Pong to keep connection alive
     if (msg.type === 'ping') return ws?.send(JSON.stringify({ type: 'pong' }));
 
+    // Confirm subscription
     if (msg.type === 'confirm_subscription') {
       const { channel } = JSON.parse(msg?.identifier ?? '');
       subscribed.current.add(channel);
-
       return;
     }
 
@@ -55,50 +67,23 @@ export function useCoinGeckoWebSocket({
         amount: msg.to,
       };
 
-      setTrades((prev) => {
-        // Prepend new trade to beginning (most recent first)
-        const allTrades = [newTrade, ...prev];
-        return allTrades.slice(0, 10);
-      });
+      setTrades((prev) => [newTrade, ...prev].slice(0, 10));
     }
-
-   // G3: OHLCV updates
+   console.log('==== Message:', msg);
+  // G3: OHLCV updates — simple append
 if (msg.ch === 'G3') {
-  setOhlcv((prev) => {
-    const newTimeMs = (msg.t ?? 0) * 1000;
-    console.log('Received OHLCV update for time:', newTimeMs);
-
-    const newCandle: OHLCData = [
-      newTimeMs,
+     
+  setOhlcv([
+      msg.t || 0, // seconds
       Number(msg.o ?? 0),
       Number(msg.h ?? 0),
       Number(msg.l ?? 0),
       Number(msg.c ?? 0),
-    ];
-
-    const historicalCount = historicalDataLength.current;
-    const historical = prev.slice(0, historicalCount);
-    const live = prev.slice(historicalCount);
-
-    // 🔑 Upsert by timestamp
-    const map = new Map<number, OHLCData>();
-    for (const candle of live) {
-      map.set(candle[0], candle);
-    }
-    map.set(newTimeMs, newCandle);
-
-    // 🔑 Sort by time ASC
-    const updatedLive = Array.from(map.values())
-      .sort((a, b) => a[0] - b[0])
-      .slice(-100);
-
-    return [...historical, ...updatedLive];
-  });
+    ]);
 }
-
   }, []);
 
-  // WebSocket connection setup
+  // WebSocket connection
   useEffect(() => {
     const ws = new WebSocket(WS_BASE);
     wsRef.current = ws;
@@ -110,11 +95,12 @@ if (msg.ch === 'G3') {
     return () => ws.close();
   }, [handleMessage]);
 
+  // Subscribe helper
   const subscribe = useCallback(
     (channel: string, data?: Record<string, any>) => {
       const ws = wsRef.current;
       if (!ws || !isWsReady || subscribed.current.has(channel)) return;
-
+console.log('==== Subscribing to channel:', channel, data);
       ws.send(
         JSON.stringify({
           command: 'subscribe',
@@ -148,25 +134,34 @@ if (msg.ch === 'G3') {
     subscribed.current.clear();
   }, []);
 
-  // Subscribe to channels when connected
+  // Subscribe on connection ready
   useEffect(() => {
     if (!isWsReady) return;
 
     let active = true;
+
     (async () => {
+      if (!active) return;
+
+      // Reset state and normalize historical data
       setPrice(null);
       setTrades([]);
-      setOhlcv(coinOHLCData);
-      historicalDataLength.current = coinOHLCData.length;
-
-      if (!active) return;
+      // setOhlcv(
+      //   coinOHLCData.map((c) => [
+      //     Math.floor(c[0] / 1000),
+      //     c[1],
+      //     c[2],
+      //     c[3],
+      //     c[4],
+      //   ])
+      // );
+      // historicalDataLength.current = coinOHLCData.length;
 
       unsubscribeAll();
 
-      // Subscribe to price updates
+      // Subscribe channels
       subscribe('CGSimplePrice', { coin_id: [coinId], action: 'set_tokens' });
 
-      // Subscribe to trade and OHLCV updates
       const wsPools = [poolId.replace('_', ':')];
       if (wsPools.length) {
         subscribe('OnchainTrade', {

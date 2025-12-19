@@ -27,6 +27,9 @@ export default function LiveDataWrapper({
     coinOHLCData,
   });
 
+  // console.log('==== LiveDataWrapper coinOHLCData:', coinOHLCData);
+  // console.log('==== LiveDataWrapper OHLCV:', ohlcv);
+
   return (
     <section className='size-full xl:col-span-2'>
       <CoinHeader
@@ -45,7 +48,12 @@ export default function LiveDataWrapper({
       {/* Trend Overview */}
       <div className='w-full'>
         <h4 className='section-title'>Trend Overview</h4>
-        <CandlestickChart data={ohlcv} coinId={coinId} mode='live' />
+        <CandlestickChart
+          data={coinOHLCData}
+          liveOhlcv={ohlcv}
+          coinId={coinId}
+          mode='live'
+        />
       </div>
 
       <Separator className='my-8 bg-purple-600' />

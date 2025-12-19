@@ -166,7 +166,7 @@ export async function fetchPools(
     }
 
     const data = await res.json();
-    const pool = data.data[0];
+    const pool = data.data[1];
 
     return {
       id: pool.id as string,

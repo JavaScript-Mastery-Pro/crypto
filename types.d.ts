@@ -2,6 +2,7 @@ type OHLCData = [number, number, number, number, number];
 
 interface CandlestickChartProps {
   data: OHLCData[];
+  liveOhlcv?: OHLCData | null;
   coinId: string;
   height?: number;
   children?: React.ReactNode;
@@ -241,6 +242,15 @@ interface UseCoinGeckoWebSocketProps {
 interface UseCoinGeckoWebSocketReturn {
   price: ExtendedPriceData | null;
   trades: TradeData[];
-  ohlcv: OHLCData[];
+  ohlcv: OHLCData | null;
   isConnected: boolean;
 }
+
+interface CandlestickData<Time> {
+  time: Time; // number (seconds) or string
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+}
+
