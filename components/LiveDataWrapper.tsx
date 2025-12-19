@@ -33,9 +33,12 @@ export default function LiveDataWrapper({
         image={coin.image.large}
         livePrice={price?.usd ?? coin.market_data.current_price.usd}
         livePriceChangePercentage24h={
-          price?.change24h ?? coin.market_data.price_change_percentage_24h_in_currency.usd
+          price?.change24h ??
+          coin.market_data.price_change_percentage_24h_in_currency.usd
         }
-        priceChangePercentage30d={coin.market_data.price_change_percentage_30d_in_currency.usd}
+        priceChangePercentage30d={
+          coin.market_data.price_change_percentage_30d_in_currency.usd
+        }
         priceChange24h={coin.market_data.price_change_24h_in_currency.usd}
       />
 
@@ -43,14 +46,15 @@ export default function LiveDataWrapper({
 
       {/* Trend Overview */}
       <div className='w-full'>
-        <h4 className='section-title'>Trend Overview</h4>
         <CandlestickChart
           data={coinOHLCData}
           liveOhlcv={ohlcv}
           coinId={coinId}
           mode='live'
           initialPeriod='daily'
-        />
+        >
+          <h4 className='section-title mt-2 pl-2'>Trend Overview</h4>
+        </CandlestickChart>
       </div>
 
       <Separator className='my-8 bg-purple-600' />

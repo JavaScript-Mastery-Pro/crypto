@@ -49,7 +49,7 @@ export default Home;
 const CoinOverviewSection = async () => {
   const [coinData, coinOHLCData] = await Promise.all([
     getCoinDetails('bitcoin'),
-    getCoinOHLC('bitcoin', 30, 'usd', 'hourly', 'full'),
+    getCoinOHLC('bitcoin', 1, 'usd', 'hourly', 'full'),
   ]);
 
   return (
