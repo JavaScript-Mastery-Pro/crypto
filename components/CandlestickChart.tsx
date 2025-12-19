@@ -34,19 +34,12 @@ export default function CandlestickChart({
   const [loading, setLoading] = useState(false);
   const prevOhlcDataLength = useRef<number>(data?.length ?? 0);
 
-  console.log('=====liveOhlcv', liveOhlcv);
-
   // Fetch OHLC data when period changes
   const fetchOHLCData = async (selectedPeriod: Period) => {
     setLoading(true);
     try {
       const config = PERIOD_CONFIG[selectedPeriod];
-      console.log('==== Fetching OHLC:', {
-        period: selectedPeriod,
-        days: config.days,
-        interval: config.interval,
-        coinId,
-      });
+
       const newData = await getCoinOHLC(
         coinId,
         config.days,
@@ -54,10 +47,7 @@ export default function CandlestickChart({
         config.interval,
         'full'
       );
-      console.log('==== OHLC Fetched:', {
-        period: selectedPeriod,
-        dataPoints: newData?.length,
-      });
+
       setOhlcData(newData ?? []);
     } catch (err) {
       console.error('Failed to fetch OHLC data:', err);
@@ -69,7 +59,6 @@ export default function CandlestickChart({
   const handlePeriodChange = (newPeriod: Period) => {
     if (newPeriod === period) return;
 
-    console.log('==== Period Change:', { from: period, to: newPeriod, mode });
     setPeriod(newPeriod);
     fetchOHLCData(newPeriod);
   };
@@ -104,17 +93,12 @@ export default function CandlestickChart({
       chartRef.current = null;
       candleSeriesRef.current = null;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [height]);
 
   // Update chart when data or liveOhlcv changes
   useEffect(() => {
     if (!candleSeriesRef.current) return;
-
-    console.log('==== Chart Update Effect Triggered:', {
-      ohlcDataPoints: ohlcData.length,
-      hasLiveOhlcv: !!liveOhlcv,
-      liveOhlcv,
-    });
 
     // Convert timestamps from milliseconds to seconds
     const convertedToSeconds = ohlcData.map(
@@ -129,7 +113,6 @@ export default function CandlestickChart({
     );
 
     let merged: OHLCData[];
-    let action = 'none';
 
     if (liveOhlcv) {
       const liveTimestamp = liveOhlcv[0];
@@ -141,19 +124,10 @@ export default function CandlestickChart({
       if (lastHistoricalCandle && lastHistoricalCandle[0] === liveTimestamp) {
         // Update the last candle with live data
         merged = [...convertedToSeconds.slice(0, -1), liveOhlcv];
-        action = 'updated';
       } else {
         // Append new live candle
         merged = [...convertedToSeconds, liveOhlcv];
-        action = 'appended';
       }
-
-      console.log('==== Live OHLCV Merge:', {
-        action,
-        liveTimestamp,
-        liveTime: new Date(liveTimestamp * 1000).toISOString(),
-        lastHistoricalTimestamp: lastHistoricalCandle?.[0],
-      });
     } else {
       merged = convertedToSeconds;
     }

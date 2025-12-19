@@ -9,6 +9,38 @@ const header = {
   cache: 'no-store' as RequestCache,
 };
 
+// Get detailed information about a specific coin by its ID
+export async function getCoinDetails(id: string) {
+  const res = await fetch(`${baseUrl}/coins/${id}`, header);
+
+  if (!res.ok) throw new Error('Failed to fetch CoinGecko API data');
+  return res.json();
+}
+
+// Get OHLC (Open, High, Low, Close) data for a coin
+export async function getCoinOHLC(
+  id: string,
+  days: number | string,
+  currency?: string,
+  interval?: 'daily' | 'hourly',
+  precision?: 'full' | string
+) {
+  const currencyParam = currency || 'usd';
+  const params = new URLSearchParams({
+    vs_currency: currencyParam,
+    days: days.toString(),
+  });
+
+  if (interval) params.append('interval', interval);
+  if (precision) params.append('precision', precision);
+
+  const res = await fetch(`${baseUrl}/coins/${id}/ohlc?${params}`, header);
+
+  if (!res.ok) throw new Error('Failed to fetch CoinGecko API data');
+  return res.json();
+}
+
+
 export async function getCoinList(page: number = 1, perPage: number = 50) {
   const params = new URLSearchParams({
     vs_currency: 'usd',
@@ -38,34 +70,7 @@ export async function getCategories() {
   return data.slice(0, 10) || [];
 }
 
-export async function getCoinDetails(id: string) {
-  const res = await fetch(`${baseUrl}/coins/${id}`, header);
 
-  if (!res.ok) throw new Error('Failed to fetch CoinGecko API data');
-  return res.json();
-}
-
-export async function getCoinOHLC(
-  id: string,
-  days: number | string,
-  currency?: string,
-  interval?: 'daily' | 'hourly',
-  precision?: 'full' | string
-) {
-  const currencyParam = currency || 'usd';
-  const params = new URLSearchParams({
-    vs_currency: currencyParam,
-    days: days.toString(),
-  });
-
-  if (interval) params.append('interval', interval);
-  if (precision) params.append('precision', precision);
-
-  const res = await fetch(`${baseUrl}/coins/${id}/ohlc?${params}`, header);
-
-  if (!res.ok) throw new Error('Failed to fetch CoinGecko API data');
-  return res.json();
-}
 
 export async function getTrendingCoins() {
   const res = await fetch(`${baseUrl}/search/trending`, header);

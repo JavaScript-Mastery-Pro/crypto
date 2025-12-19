@@ -18,7 +18,7 @@ const Home = () => {
   return (
     <main className='main-container'>
       <section className='home-grid'>
-        <Suspense fallback={<ChartSectionFallback />}>
+        <Suspense fallback={<CoinOverviewFallback />}>
           <CoinOverviewSection />
         </Suspense>
 
@@ -38,7 +38,7 @@ const Home = () => {
 
 export default Home;
 
-const ChartSectionFallback = () => (
+const CoinOverviewFallback = () => (
   <div className='chart-section-container'>
     <div className='w-full h-full min-h-[420px] rounded-2xl bg-dark-500/60 p-6'>
       <div className='flex items-center gap-4 mb-6'>
