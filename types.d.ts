@@ -144,7 +144,6 @@ interface TradeData {
   value?: number;
 }
 
-
 interface ExtendedPriceData {
   usd: number;
   coin?: string;
@@ -259,3 +258,8 @@ interface UseCoinGeckoWebSocketReturn {
   isConnected: boolean;
 }
 
+interface ClickableTableRowProps {
+  href: string;
+  children: React.ReactNode;
+  className?: string;
+}
