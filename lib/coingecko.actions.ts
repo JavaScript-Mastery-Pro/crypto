@@ -40,6 +40,28 @@ export async function getCoinOHLC(
   return res.json();
 }
 
+// Get trending coins
+export async function getTrendingCoins() {
+  const res = await fetch(`${baseUrl}/search/trending`, header);
+
+  if (!res.ok) throw new Error('Failed to fetch trending coins');
+
+  const data = await res.json();
+  return data.coins || [];
+}
+
+// Get coin categories
+export async function getCategories() {
+  const res = await fetch(
+    `${baseUrl}/coins/categories`,
+    header
+  );
+
+  if (!res.ok) throw new Error('Failed to fetch categories');
+
+  const data = await res.json();
+  return data.slice(0, 10) || [];
+}
 
 export async function getCoinList(page: number = 1, perPage: number = 50) {
   const params = new URLSearchParams({
@@ -56,29 +78,6 @@ export async function getCoinList(page: number = 1, perPage: number = 50) {
 
   if (!res.ok) throw new Error('Failed to fetch CoinGecko API data');
   return res.json();
-}
-
-export async function getCategories() {
-  const res = await fetch(
-    `${baseUrl}/coins/categories`,
-    header
-  );
-
-  if (!res.ok) throw new Error('Failed to fetch top gainers/losers');
-
-  const data = await res.json();
-  return data.slice(0, 10) || [];
-}
-
-
-
-export async function getTrendingCoins() {
-  const res = await fetch(`${baseUrl}/search/trending`, header);
-
-  if (!res.ok) throw new Error('Failed to fetch trending coins');
-
-  const data = await res.json();
-  return data.coins || [];
 }
 
 export async function getTopGainersLosers() {
