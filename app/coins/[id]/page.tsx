@@ -25,7 +25,6 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
   const coinData = await getCoinDetails(id);
   const topGainersLosers = await getTopGainersLosers();
   const pool = await fetchPools(id);
-  // Fetch initial OHLC data for 1 day (matches initialPeriod='daily')
   const coinOHLCData = await getCoinOHLC(id, 1, 'usd', 'hourly', 'full');
 
   const coinDetails = [
