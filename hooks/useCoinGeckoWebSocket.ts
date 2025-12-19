@@ -56,7 +56,7 @@ export function useCoinGeckoWebSocket({
 
       setTrades((prev) => [newTrade, ...prev].slice(0, 7));
     }
-    // G3: OHLCV updates
+    // G3: OHLCV updates 
     if (msg.ch === 'G3') {
       const timestamp = msg.t || 0; // already in seconds
       const newCandle: OHLCData = [
@@ -66,6 +66,16 @@ export function useCoinGeckoWebSocket({
         Number(msg.l ?? 0),
         Number(msg.c ?? 0),
       ];
+
+      console.log('==== G3 OHLCV Update:', {
+        timestamp,
+        formattedTime: new Date(timestamp * 1000).toISOString(),
+        open: msg.o,
+        high: msg.h,
+        low: msg.l,
+        close: msg.c,
+        candle: newCandle,
+      });
 
       // Always update with the latest candle - chart will handle deduplication
       setOhlcv(newCandle);
@@ -145,6 +155,8 @@ export function useCoinGeckoWebSocket({
       subscribe('CGSimplePrice', { coin_id: [coinId], action: 'set_tokens' });
 
       const wsPools = [poolId.replace('_', ':')];
+      console.log("===wsPools", wsPools)
+      
       if (wsPools.length) {
         subscribe('OnchainTrade', {
           'network_id:pool_addresses': wsPools,
