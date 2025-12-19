@@ -13,22 +13,10 @@ export function useCoinGeckoWebSocket({
 
   const [price, setPrice] = useState<ExtendedPriceData | null>(null);
   const [trades, setTrades] = useState<TradeData[]>([]);
-  // const [ohlcv, setOhlcv] = useState<OHLCData[]>(
-  //   coinOHLCData.map((c) => [
-  //     Math.floor(c[0] / 1000), // normalize ms → seconds
-  //     c[1],
-  //     c[2],
-  //     c[3],
-  //     c[4],
-  //   ])
-  // );
-   const [ohlcv, setOhlcv] = useState<OHLCData | null>( null)
-  
+  const [ohlcv, setOhlcv] = useState<OHLCData | null>(null);
+  const lastOhlcvTimestamp = useRef<number>(0);
 
   const [isWsReady, setIsWsReady] = useState(false);
-
-  // Track where historical data ends and live data begins
-  // const historicalDataLength = useRef(ohlcv.length);
 
   const handleMessage = useCallback((event: MessageEvent) => {
     const ws = wsRef.current;
@@ -69,18 +57,21 @@ export function useCoinGeckoWebSocket({
 
       setTrades((prev) => [newTrade, ...prev].slice(0, 10));
     }
-   console.log('==== Message:', msg);
-  // G3: OHLCV updates — simple append
-if (msg.ch === 'G3') {
-     
-  setOhlcv([
-      msg.t || 0, // seconds
-      Number(msg.o ?? 0),
-      Number(msg.h ?? 0),
-      Number(msg.l ?? 0),
-      Number(msg.c ?? 0),
-    ]);
-}
+    // G3: OHLCV updates
+    if (msg.ch === 'G3') {
+      const timestamp = msg.t || 0; // already in seconds
+      const newCandle: OHLCData = [
+        timestamp,
+        Number(msg.o ?? 0),
+        Number(msg.h ?? 0),
+        Number(msg.l ?? 0),
+        Number(msg.c ?? 0),
+      ];
+
+      // Always update with the latest candle - chart will handle deduplication
+      setOhlcv(newCandle);
+      lastOhlcvTimestamp.current = timestamp;
+    }
   }, []);
 
   // WebSocket connection
@@ -100,7 +91,7 @@ if (msg.ch === 'G3') {
     (channel: string, data?: Record<string, any>) => {
       const ws = wsRef.current;
       if (!ws || !isWsReady || subscribed.current.has(channel)) return;
-console.log('==== Subscribing to channel:', channel, data);
+
       ws.send(
         JSON.stringify({
           command: 'subscribe',
@@ -143,19 +134,11 @@ console.log('==== Subscribing to channel:', channel, data);
     (async () => {
       if (!active) return;
 
-      // Reset state and normalize historical data
+      // Reset state
       setPrice(null);
       setTrades([]);
-      // setOhlcv(
-      //   coinOHLCData.map((c) => [
-      //     Math.floor(c[0] / 1000),
-      //     c[1],
-      //     c[2],
-      //     c[3],
-      //     c[4],
-      //   ])
-      // );
-      // historicalDataLength.current = coinOHLCData.length;
+      setOhlcv(null);
+      lastOhlcvTimestamp.current = 0;
 
       unsubscribeAll();
 

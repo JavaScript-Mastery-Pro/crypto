@@ -13,7 +13,7 @@ import {
   PERIOD_BUTTONS,
   PERIOD_CONFIG,
 } from '@/lib/constants';
-import { convertOHLCData, convertOHLCToCandlestickData } from '@/lib/utils';
+import { convertOHLCData } from '@/lib/utils';
 const { getCoinOHLC } = await import('@/lib/coingecko.actions');
 
 export default function CandlestickChart({
@@ -95,31 +95,50 @@ export default function CandlestickChart({
   useEffect(() => {
     if (!candleSeriesRef.current) return;
 
-    // Convert timestamps from milliseconds to seconds while keeping full OHLC structure
-    const convertedToSeconds = ohlcData.map((item) => [
-      Math.floor(item[0] / 1000), // timestamp in seconds
-      item[1], // open
-      item[2], // high
-      item[3], // low
-      item[4], // close
-    ] as OHLCData);
-    console.log('==== Updating convertedToSeconds:', convertedToSeconds);
+    // Convert timestamps from milliseconds to seconds
+    const convertedToSeconds = ohlcData.map(
+      (item) =>
+        [
+          Math.floor(item[0] / 1000), // timestamp in seconds
+          item[1], // open
+          item[2], // high
+          item[3], // low
+          item[4], // close
+        ] as OHLCData
+    );
 
-    const merged = liveOhlcv
-      ? [...convertedToSeconds, liveOhlcv]
-      : [...convertedToSeconds];
+    let merged: OHLCData[];
 
-    console.log('==== Updating merged:', merged);
-    // Sort ascending by time
+    if (liveOhlcv) {
+      const liveTimestamp = liveOhlcv[0];
+
+      // Check if we need to update an existing candle or add a new one
+      const lastHistoricalCandle =
+        convertedToSeconds[convertedToSeconds.length - 1];
+
+      if (lastHistoricalCandle && lastHistoricalCandle[0] === liveTimestamp) {
+        // Update the last candle with live data
+        merged = [...convertedToSeconds.slice(0, -1), liveOhlcv];
+      } else {
+        // Append new live candle
+        merged = [...convertedToSeconds, liveOhlcv];
+      }
+    } else {
+      merged = convertedToSeconds;
+    }
+
+    // Sort ascending by time (in case of any ordering issues)
     merged.sort((a, b) => a[0] - b[0]);
 
     const converted = convertOHLCData(merged);
 
-    console.log('==== Updating Candlestick Data:', converted);
-
     candleSeriesRef.current.setData(converted);
-    chartRef.current?.timeScale().fitContent();
-  }, [ohlcData, liveOhlcv, period]);
+
+    // Only fit content on initial load or period change, not on live updates
+    if (!liveOhlcv || mode === 'historical') {
+      chartRef.current?.timeScale().fitContent();
+    }
+  }, [ohlcData, liveOhlcv, period, mode]);
 
   return (
     <div className='candlestick-container'>
