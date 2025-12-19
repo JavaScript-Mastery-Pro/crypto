@@ -181,28 +181,6 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
           </div>
         </div>
 
-        {/* Top Gainers */}
-        {/* <div className='space-y-6 mt-8'>
-          <h4 className='section-title'>Top Gainers</h4>
-          <div className='top-gainers-list'>
-            {topGainersLosers.top_gainers.map(
-              (coin: TopGainersLosersResponse) => (
-                <CoinCard
-                  key={coin.id}
-                  id={coin.id}
-                  name={coin.name}
-                  symbol={coin.symbol}
-                  image={coin.image}
-                  price={coin.usd}
-                  priceChangePercentage24h={coin.usd_24h_change}
-                  volume24={coin.usd_24h_vol}
-                  rank={coin.market_cap_rank}
-                />
-              )
-            )}
-          </div>
-        </div> */}
-
         <Tabs defaultValue='top-gainers' className='mt-8  w-full'>
           <TabsList className='size-full p-1 bg-transparent border-b border-dark-500 rounded-none '>
             <TabsTrigger

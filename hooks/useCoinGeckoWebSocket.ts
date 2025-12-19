@@ -55,7 +55,7 @@ export function useCoinGeckoWebSocket({
         amount: msg.to,
       };
 
-      setTrades((prev) => [newTrade, ...prev].slice(0, 10));
+      setTrades((prev) => [newTrade, ...prev].slice(0, 7));
     }
     // G3: OHLCV updates
     if (msg.ch === 'G3') {
