@@ -1,4 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Suspense } from 'react';
+
 import {
   getCategories,
   getCoinDetails,
@@ -18,189 +19,301 @@ import {
 } from '@/components/ui/table';
 
 import { TrendingDown, TrendingUp } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
 import CandlestickChart from '@/components/CandlestickChart';
 
-const Home = async () => {
-  const coinData = await getCoinDetails('bitcoin');
-  const trendingCoins = await getTrendingCoins();
-  const categories = await getCategories();
-  const coinOHLCData = await getCoinOHLC('bitcoin', 1, 'usd', 'hourly', 'full');
-
+const Home = () => {
   return (
     <main className='main-container'>
       <section className='home-grid'>
-        {/* Bitcoin Overview */}
-        <div className='chart-section-container'>
-          <CandlestickChart data={coinOHLCData} coinId='bitcoin'>
-            <div className='chart-section-header'>
-              <Image
-                src={coinData.image.large}
-                alt={coinData.name}
-                width={56}
-                height={56}
-                className='chart-section-image'
-              />
-              <div className='chart-section-info'>
-                <p className='chart-section-coin-name'>
-                  {coinData.name} / {coinData.symbol.toUpperCase()}
-                </p>
-                <h1 className='chart-section-price'>
-                  {formatPrice(coinData.market_data.current_price.usd)}
-                </h1>
-              </div>
-            </div>
-          </CandlestickChart>
-        </div>
+        <Suspense fallback={<ChartSectionFallback />}>
+          <CoinOverviewSection />
+        </Suspense>
 
-        {/* Trending Coins */}
-        <div className='top-movers-container'>
-          <h4 className='section-title px-5'>Trending Coins</h4>
-          <div className='table-scrollbar-container custom-scrollbar'>
-            <Table>
-              <TableHeader className='table-header-cell'>
-                <TableRow className='hover:bg-transparent'>
-                  <TableHead className='table-head-left'>Name</TableHead>
-                  <TableHead className='table-header-cell table-cell'>
-                    24h Change
-                  </TableHead>
-                  <TableHead className='table-head-right'>Price</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {trendingCoins
-                  .slice(0, 6)
-                  .map((coin: { item: any }, index: number) => {
-                    const item = coin.item;
-                    const isTrendingUp =
-                      item.data.price_change_percentage_24h.usd > 0;
-
-                    return (
-                      <TableRow key={index} className='table-row-hover'>
-                        <TableCell className='font-bold'>
-                          <Link
-                            href={`/coins/${item.id}`}
-                            className='coin-link'
-                          >
-                            <Image
-                              src={item.large}
-                              alt={item.name}
-                              width={36}
-                              height={36}
-                              className='coin-image'
-                            />
-                            <div>
-                              <p className='text-sm md:text-base'>
-                                {item.name}
-                              </p>
-                            </div>
-                          </Link>
-                        </TableCell>
-                        <TableCell className='table-cell-change'>
-                          <div
-                            className={cn(
-                              'price-change-indicator',
-                              isTrendingUp ? 'text-green-500' : 'text-red-500'
-                            )}
-                          >
-                            <p>
-                              {formatPercentage(
-                                item.data.price_change_percentage_24h.usd
-                              )}
-                            </p>
-                            {isTrendingUp ? (
-                              <TrendingUp width={16} height={16} />
-                            ) : (
-                              <TrendingDown width={16} height={16} />
-                            )}
-                          </div>
-                        </TableCell>
-                        <TableCell className='table-cell-price'>
-                          {formatPrice(item.data.price)}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-              </TableBody>
-            </Table>
-          </div>
-        </div>
+        <Suspense fallback={<TopMoversFallback />}>
+          <TopMoversSection />
+        </Suspense>
       </section>
 
-      {/* Categories */}
       <section className='w-full mt-7 space-y-4'>
-        <div className='custom-scrollbar pt-8 mt-5 w-full bg-dark-500 rounded-xl overflow-hidden'>
-          <h4 className='section-title pl-5'>Top Categories</h4>
-          <Table>
-            <TableHeader className='text-purple-100'>
-              <TableRow className='hover:bg-transparent'>
-                <TableHead className='exchange-header-left'>Category</TableHead>
-                <TableHead className='text-purple-100'>Top Gainers</TableHead>
-                <TableHead className='text-purple-100 pl-7'>
-                  24h Change
-                </TableHead>
-                <TableHead className='text-purple-100'>Market Cap</TableHead>
-                <TableHead className='text-purple-100'>24h Volume</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {categories.map((category: Category, index: number) => {
-                const isTrendingUp = category.market_cap_change_24h > 0;
-                return (
-                  <TableRow
-                    key={index}
-                    className='md:text-base rounded-lg hover:!bg-dark-400/30'
-                  >
-                    <TableCell className='pl-5 font-bold'>
-                      {category.name}
-                    </TableCell>
-                    <TableCell className='flex gap-1 mr-5'>
-                      {category.top_3_coins.map((coin: string) => (
-                        <Image
-                          key={coin}
-                          src={coin}
-                          alt='Coin image'
-                          width={28}
-                          height={28}
-                          className='rounded-full py-2'
-                        />
-                      ))}
-                    </TableCell>
-                    <TableCell className='font-medium'>
-                      <div
-                        className={cn(
-                          'flex flex-1 gap-1 items-end pl-5 text-base font-medium',
-                          {
-                            'text-green-500':
-                              category.market_cap_change_24h > 0,
-                            'text-red-500': category.market_cap_change_24h < 0,
-                          }
-                        )}
-                      >
-                        <p>
-                          {formatPercentage(category.market_cap_change_24h)}
-                        </p>
-                        {isTrendingUp ? (
-                          <TrendingUp width={16} height={16} />
-                        ) : (
-                          <TrendingDown width={16} height={16} />
-                        )}
-                      </div>
-                    </TableCell>
-                    <TableCell className='font-medium'>
-                      {formatPrice(category.market_cap)}
-                    </TableCell>
-                    <TableCell className='font-medium'>
-                      {formatPrice(category.volume_24h)}
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-        </div>
+        <Suspense fallback={<CategoriesFallback />}>
+          <CategoriesSection />
+        </Suspense>
       </section>
     </main>
   );
 };
 
 export default Home;
+
+const CoinOverviewSection = async () => {
+  const [coinData, coinOHLCData] = await Promise.all([
+    getCoinDetails('bitcoin'),
+    getCoinOHLC('bitcoin', 30, 'usd', 'hourly', 'full'),
+  ]);
+
+  return (
+    <div className='chart-section-container'>
+      <CandlestickChart data={coinOHLCData} coinId='bitcoin'>
+        <div className='chart-section-header'>
+          <Image
+            src={coinData.image.large}
+            alt={coinData.name}
+            width={56}
+            height={56}
+            className='chart-section-image'
+          />
+          <div className='chart-section-info'>
+            <p className='chart-section-coin-name'>
+              {coinData.name} / {coinData.symbol.toUpperCase()}
+            </p>
+            <h1 className='chart-section-price'>
+              {formatPrice(coinData.market_data.current_price.usd)}
+            </h1>
+          </div>
+        </div>
+      </CandlestickChart>
+    </div>
+  );
+};
+
+const TopMoversSection = async () => {
+  const trendingCoins = (await getTrendingCoins()) as TrendingCoin[];
+
+  return (
+    <div className='top-movers-container'>
+      <h4 className='section-title px-5'>Trending Coins</h4>
+      <div className='table-scrollbar-container custom-scrollbar'>
+        <Table>
+          <TableHeader className='table-header-cell'>
+            <TableRow className='hover:bg-transparent'>
+              <TableHead className='table-head-left'>Name</TableHead>
+              <TableHead className='table-header-cell table-cell'>
+                24h Change
+              </TableHead>
+              <TableHead className='table-head-right'>Price</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {trendingCoins.slice(0, 6).map((coin: TrendingCoin, index) => {
+              const item = coin.item;
+              const isTrendingUp =
+                item.data.price_change_percentage_24h.usd > 0;
+
+              return (
+                <TableRow key={index} className='table-row-hover'>
+                  <TableCell className='font-bold'>
+                    <Link href={`/coins/${item.id}`} className='coin-link'>
+                      <Image
+                        src={item.large}
+                        alt={item.name}
+                        width={36}
+                        height={36}
+                        className='coin-image'
+                      />
+                      <div>
+                        <p className='text-sm md:text-base'>{item.name}</p>
+                      </div>
+                    </Link>
+                  </TableCell>
+                  <TableCell className='table-cell-change'>
+                    <div
+                      className={cn(
+                        'price-change-indicator',
+                        isTrendingUp ? 'text-green-500' : 'text-red-500'
+                      )}
+                    >
+                      <p>
+                        {formatPercentage(
+                          item.data.price_change_percentage_24h.usd
+                        )}
+                      </p>
+                      {isTrendingUp ? (
+                        <TrendingUp width={16} height={16} />
+                      ) : (
+                        <TrendingDown width={16} height={16} />
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell className='table-cell-price'>
+                    {formatPrice(item.data.price)}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  );
+};
+
+const CategoriesSection = async () => {
+  const categories = (await getCategories()) as Category[];
+
+  return (
+    <div className='custom-scrollbar pt-8 mt-5 w-full bg-dark-500 rounded-xl overflow-hidden'>
+      <h4 className='section-title pl-5'>Top Categories</h4>
+      <Table>
+        <TableHeader className='text-purple-100'>
+          <TableRow className='hover:bg-transparent'>
+            <TableHead className='exchange-header-left'>Category</TableHead>
+            <TableHead className='text-purple-100'>Top Gainers</TableHead>
+            <TableHead className='text-purple-100 pl-7'>24h Change</TableHead>
+            <TableHead className='text-purple-100'>Market Cap</TableHead>
+            <TableHead className='text-purple-100'>24h Volume</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {categories.map((category: Category, index: number) => {
+            const isTrendingUp = category.market_cap_change_24h > 0;
+            return (
+              <TableRow
+                key={index}
+                className='md:text-base rounded-lg hover:!bg-dark-400/30'
+              >
+                <TableCell className='pl-5 font-bold'>
+                  {category.name}
+                </TableCell>
+                <TableCell className='flex gap-1 mr-5'>
+                  {category.top_3_coins.map((coin: string) => (
+                    <Image
+                      key={coin}
+                      src={coin}
+                      alt='Coin image'
+                      width={28}
+                      height={28}
+                      className='rounded-full py-2'
+                    />
+                  ))}
+                </TableCell>
+                <TableCell className='font-medium'>
+                  <div
+                    className={cn(
+                      'flex flex-1 gap-1 items-end pl-5 text-base font-medium',
+                      {
+                        'text-green-500': category.market_cap_change_24h > 0,
+                        'text-red-500': category.market_cap_change_24h < 0,
+                      }
+                    )}
+                  >
+                    <p>{formatPercentage(category.market_cap_change_24h)}</p>
+                    {isTrendingUp ? (
+                      <TrendingUp width={16} height={16} />
+                    ) : (
+                      <TrendingDown width={16} height={16} />
+                    )}
+                  </div>
+                </TableCell>
+                <TableCell className='font-medium'>
+                  {formatPrice(category.market_cap)}
+                </TableCell>
+                <TableCell className='font-medium'>
+                  {formatPrice(category.volume_24h)}
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </div>
+  );
+};
+
+const ChartSectionFallback = () => (
+  <div className='chart-section-container'>
+    <div className='w-full h-full min-h-[420px] rounded-2xl bg-dark-500/60 p-6'>
+      <div className='flex items-center gap-4 mb-6'>
+        <Skeleton className='h-14 w-14 rounded-full bg-dark-400/60' />
+        <div className='flex flex-col gap-2 flex-1'>
+          <Skeleton className='h-4 w-1/3 bg-dark-400/60' />
+          <Skeleton className='h-8 w-1/2 bg-dark-400/60' />
+        </div>
+      </div>
+      <Skeleton className='h-[280px] w-full rounded-xl bg-dark-400/60' />
+    </div>
+  </div>
+);
+
+const TopMoversFallback = () => (
+  <div className='top-movers-container'>
+    <h4 className='section-title px-5'>Top Movers</h4>
+    <div className='table-scrollbar-container custom-scrollbar'>
+      <Table>
+        <TableHeader className='table-header-cell'>
+          <TableRow className='hover:bg-transparent'>
+            <TableHead className='table-head-left'>Name</TableHead>
+            <TableHead className='table-header-cell table-cell'>
+              24h Change
+            </TableHead>
+            <TableHead className='table-head-right'>Price</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {Array.from({ length: 6 }).map((_, index) => (
+            <TableRow key={index} className='table-row-hover'>
+              <TableCell className='font-bold'>
+                <div className='flex items-center gap-3'>
+                  <Skeleton className='h-9 w-9 rounded-full bg-dark-400/60' />
+                  <Skeleton className='h-4 w-24 bg-dark-400/60' />
+                </div>
+              </TableCell>
+              <TableCell className='table-cell-change'>
+                <Skeleton className='h-4 w-16 bg-dark-400/60' />
+              </TableCell>
+              <TableCell className='table-cell-price'>
+                <Skeleton className='h-4 w-20 bg-dark-400/60' />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </div>
+  </div>
+);
+
+const CategoriesFallback = () => (
+  <div className='custom-scrollbar pt-8 mt-5 w-full bg-dark-500 rounded-xl overflow-hidden'>
+    <h4 className='section-title pl-5'>Top Categories</h4>
+    <Table>
+      <TableHeader className='text-purple-100'>
+        <TableRow className='hover:bg-transparent'>
+          <TableHead className='exchange-header-left'>Category</TableHead>
+          <TableHead className='text-purple-100'>Top Gainers</TableHead>
+          <TableHead className='text-purple-100 pl-7'>24h Change</TableHead>
+          <TableHead className='text-purple-100'>Market Cap</TableHead>
+          <TableHead className='text-purple-100'>24h Volume</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {Array.from({ length: 6 }).map((_, index) => (
+          <TableRow
+            key={index}
+            className='md:text-base rounded-lg hover:!bg-dark-400/30'
+          >
+            <TableCell className='pl-5 font-bold'>
+              <Skeleton className='h-4 w-32 bg-dark-400/60' />
+            </TableCell>
+            <TableCell className='flex gap-1 mr-5'>
+              {Array.from({ length: 3 }).map((__, coinIndex) => (
+                <Skeleton
+                  key={coinIndex}
+                  className='h-7 w-7 rounded-full bg-dark-400/60'
+                />
+              ))}
+            </TableCell>
+            <TableCell className='font-medium'>
+              <Skeleton className='h-4 w-16 bg-dark-400/60' />
+            </TableCell>
+            <TableCell className='font-medium'>
+              <Skeleton className='h-4 w-20 bg-dark-400/60' />
+            </TableCell>
+            <TableCell className='font-medium'>
+              <Skeleton className='h-4 w-24 bg-dark-400/60' />
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </div>
+);
