@@ -95,21 +95,7 @@ interface SearchCoin {
   };
 }
 
-// WebSocket Types
-interface CoinPriceData {
-  coinId: string;
-  price: number;
-  priceChangePercentage24h: number;
-  marketCap: number;
-  volume24h: number;
-  lastUpdated: number;
-}
-
-interface PricesMap {
-  [coinId: string]: CoinPriceData;
-}
-
-// Chart Section Props
+// Chart Section Props (used in ChartSection.tsx)
 interface ChartSectionProps {
   coinData: {
     image: { large: string };
@@ -189,6 +175,47 @@ interface WebSocketMessage {
   identifier?: string;
 }
 
+interface CoinDetailsData {
+  id: string;
+  name: string;
+  symbol: string;
+  image: {
+    large: string;
+    small: string;
+  };
+  market_data: {
+    current_price: {
+      usd: number;
+      [key: string]: number;
+    };
+    price_change_24h_in_currency: {
+      usd: number;
+    };
+    price_change_percentage_24h_in_currency: {
+      usd: number;
+    };
+    price_change_percentage_30d_in_currency: {
+      usd: number;
+    };
+    market_cap: {
+      usd: number;
+    };
+    total_volume: {
+      usd: number;
+    };
+  };
+  market_cap_rank: number;
+  description: {
+    en: string;
+  };
+  links: {
+    homepage: string[];
+    blockchain_site: string[];
+    subreddit_url: string;
+  };
+  tickers: Ticker[];
+}
+
 interface LiveDataProps {
   coinId: string;
   pool: {
@@ -197,23 +224,9 @@ interface LiveDataProps {
     name: string;
     network: string;
   };
-  coin: {
-    name: string;
-    image: string;
-    description: string;
-    priceChangePercentage24h: number;
-    priceChangePercentage30d: number;
-    priceChange24h: number;
-    price: number;
-  };
+  coin: CoinDetailsData;
   coinOHLCData: OHLCData[];
   children?: React.ReactNode;
-}
-
-interface ClickableTableRowProps {
-  href: string;
-  children: ReactNode;
-  className?: string;
 }
 
 interface LiveCoinHeaderProps {
@@ -244,13 +257,5 @@ interface UseCoinGeckoWebSocketReturn {
   trades: TradeData[];
   ohlcv: OHLCData | null;
   isConnected: boolean;
-}
-
-interface CandlestickData<Time> {
-  time: Time; // number (seconds) or string
-  open: number;
-  high: number;
-  low: number;
-  close: number;
 }
 

@@ -17,8 +17,8 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-import ChartSection from '@/components/ChartSection';
 import { TrendingDown, TrendingUp } from 'lucide-react';
+import CandlestickChart from '@/components/CandlestickChart';
 
 const Home = async () => {
   const coinData = await getCoinDetails('bitcoin');
@@ -29,12 +29,28 @@ const Home = async () => {
   return (
     <main className='main-container'>
       <section className='home-grid'>
-        {/* Coin Overview */}
-        <ChartSection
-          coinData={coinData}
-          coinOHLCData={coinOHLCData}
-          coinId='bitcoin'
-        />
+        {/* Bitcoin Overview */}
+        <div className='chart-section-container'>
+          <CandlestickChart data={coinOHLCData} coinId='bitcoin'>
+            <div className='chart-section-header'>
+              <Image
+                src={coinData.image.large}
+                alt={coinData.name}
+                width={56}
+                height={56}
+                className='chart-section-image'
+              />
+              <div className='chart-section-info'>
+                <p className='chart-section-coin-name'>
+                  {coinData.name} / {coinData.symbol.toUpperCase()}
+                </p>
+                <h1 className='chart-section-price'>
+                  {formatPrice(coinData.market_data.current_price.usd)}
+                </h1>
+              </div>
+            </div>
+          </CandlestickChart>
+        </div>
 
         {/* Trending Coins */}
         <div className='top-movers-container'>

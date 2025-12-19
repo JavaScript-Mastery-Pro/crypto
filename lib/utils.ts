@@ -1,5 +1,5 @@
 import { clsx, type ClassValue } from 'clsx';
-import { CandlestickData, Time } from 'lightweight-charts';
+import { Time } from 'lightweight-charts';
 import { twMerge } from 'tailwind-merge';
 
 export function cn(...inputs: ClassValue[]) {
@@ -78,42 +78,7 @@ export function convertOHLCData(data: OHLCData[]) {
       low: d[3],
       close: d[4],
     }))
-    // .sort((a, b) => a.time - b.time)
     .filter((item, index, arr) =>
       index === 0 || item.time !== arr[index - 1].time
     );
-    
-}
-
-
-export function convertOHLCToCandlestickData(
-  data: OHLCData[]
-): CandlestickData<Time>[] {
-  // Convert OHLC tuples to candlestick objects
-  const mapped = data.map(([timestamp, open, high, low, close]) => ({
-    time: timestamp as Time, // use timestamp as-is
-    open,
-    high,
-    low,
-    close,
-  }));
-
-  // Sort ascending by time
-  // mapped.sort((a, b) => (a.time as number) - (b.time as number));
-
-  // Deduplicate any entries with the same timestamp (keep the last one)
-  const deduped: CandlestickData<Time>[] = [];
-  for (const item of mapped) {
-    if (
-      deduped.length === 0 ||
-      (deduped[deduped.length - 1].time as number) < (item.time as number)
-    ) {
-      deduped.push(item);
-    } else {
-      // Replace the last item if timestamp is the same
-      deduped[deduped.length - 1] = item;
-    }
-  }
-
-  return deduped;
 }

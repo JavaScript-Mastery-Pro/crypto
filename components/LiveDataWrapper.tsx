@@ -34,13 +34,13 @@ export default function LiveDataWrapper({
     <section className='size-full xl:col-span-2'>
       <CoinHeader
         name={coin.name}
-        image={coin.image}
-        livePrice={price?.usd ?? coin.price}
+        image={coin.image.large}
+        livePrice={price?.usd ?? coin.market_data.current_price.usd}
         livePriceChangePercentage24h={
-          price?.change24h ?? coin.priceChangePercentage24h
+          price?.change24h ?? coin.market_data.price_change_percentage_24h_in_currency.usd
         }
-        priceChangePercentage30d={coin.priceChangePercentage30d}
-        priceChange24h={coin.priceChange24h}
+        priceChangePercentage30d={coin.market_data.price_change_percentage_30d_in_currency.usd}
+        priceChange24h={coin.market_data.price_change_24h_in_currency.usd}
       />
 
       <Separator className='my-8 bg-purple-600' />

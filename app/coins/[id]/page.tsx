@@ -27,30 +27,38 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
   const coinOHLCData = await getCoinOHLC(id, 1, 'usd', 'hourly', 'full');
   const pool = await fetchPools(id);
 
-  const coin = {
-    id: coinData.id,
-    name: coinData.name,
-    symbol: coinData.symbol,
-    image: coinData.image.large,
-    icon: coinData.image.small,
-    price: coinData.market_data.current_price.usd,
-    priceList: coinData.market_data.current_price,
-    priceChange24h: coinData.market_data.price_change_24h_in_currency.usd,
-    priceChangePercentage24h:
-      coinData.market_data.price_change_percentage_24h_in_currency.usd,
-    priceChangePercentage30d:
-      coinData.market_data.price_change_percentage_30d_in_currency.usd,
-    marketCap: coinData.market_data.market_cap.usd,
-    marketCapRank: coinData.market_cap_rank,
-    description: coinData.description.en,
-    totalVolume: coinData.market_data.total_volume.usd,
-    website: coinData.links.homepage[0],
-    explorer: coinData.links.blockchain_site[0],
-    communityLink: coinData.links.subreddit_url,
-    tickers: coinData.tickers,
-  };
-
-  console.log('==== coinOHLCData:', coinOHLCData);
+  const coinDetails = [
+    {
+      label: 'Market Cap',
+      value: formatPrice(coinData.market_data.market_cap.usd),
+    },
+    {
+      label: 'Market Cap Rank',
+      value: `# ${coinData.market_cap_rank}`,
+    },
+    {
+      label: 'Total Volume',
+      value: formatPrice(coinData.market_data.total_volume.usd),
+    },
+    {
+      label: 'Website',
+      value: '-',
+      link: coinData.links.homepage[0],
+      linkText: 'Website',
+    },
+    {
+      label: 'Explorer',
+      value: '-',
+      link: coinData.links.blockchain_site[0],
+      linkText: 'Explorer',
+    },
+    {
+      label: 'Community Link',
+      value: '-',
+      link: coinData.links.subreddit_url,
+      linkText: 'Community',
+    },
+  ];
 
   return (
     <main className='coin-details-main'>
@@ -59,9 +67,10 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
           coinOHLCData={coinOHLCData}
           coinId={id}
           pool={pool}
-          coin={coin}
+          coin={coinData}
         >
-          {/* Exchange Listings */}
+          {/* Exchange Listings - pass it as a child of a client component 
+          // so it will be render server side */}
           <div className='w-full mt-8 space-y-4'>
             <h4 className='section-title'>Exchange Listings</h4>
             <div className='custom-scrollbar mt-5 exchange-container'>
@@ -79,7 +88,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {coin.tickers
+                  {coinData.tickers
                     .slice(0, 7)
                     .map((ticker: Ticker, index: number) => (
                       <TableRow
@@ -125,12 +134,12 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
         {/* Converter */}
         <div className='w-full space-y-5'>
           <h4 className='converter-title'>
-            {coin.symbol.toUpperCase()} Converter
+            {coinData.symbol.toUpperCase()} Converter
           </h4>
           <Converter
-            symbol={coin.symbol}
-            icon={coin.icon}
-            priceList={coin.priceList}
+            symbol={coinData.symbol}
+            icon={coinData.image.small}
+            priceList={coinData.market_data.current_price}
           />
         </div>
 
@@ -138,38 +147,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
         <div className='w-full mt-8 space-y-4'>
           <h4 className='section-title pb-3'>Coin Details</h4>
           <div className='coin-details-grid'>
-            {[
-              {
-                label: 'Market Cap',
-                value: formatPrice(coin.marketCap),
-              },
-              {
-                label: 'Market Cap Rank',
-                value: `# ${coin.marketCapRank}`,
-              },
-              {
-                label: 'Total Volume',
-                value: formatPrice(coin.totalVolume),
-              },
-              {
-                label: 'Website',
-                value: '-',
-                link: coin.website,
-                linkText: 'Website',
-              },
-              {
-                label: 'Explorer',
-                value: '-',
-                link: coin.explorer,
-                linkText: 'Explorer',
-              },
-              {
-                label: 'Community Link',
-                value: '-',
-                link: coin.communityLink,
-                linkText: 'Community',
-              },
-            ].map((detail, index) => (
+            {coinDetails.map((detail, index) => (
               <CoinDetailCard
                 key={index}
                 label={detail.label}
@@ -181,6 +159,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
           </div>
         </div>
 
+        {/* Top Gainers / Losers */}
         <Tabs defaultValue='top-gainers' className='mt-8  w-full'>
           <TabsList className='size-full p-1 bg-transparent border-b border-dark-500 rounded-none '>
             <TabsTrigger
