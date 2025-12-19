@@ -2,6 +2,7 @@ import {
   getCoinDetails,
   getCoinOHLC,
   fetchPools,
+  fetchTopPool,
 } from '@/lib/coingecko.actions';
 import { Converter } from '@/components/Converter';
 import LiveDataWrapper from '@/components/LiveDataWrapper';
@@ -12,7 +13,9 @@ import { TopGainersLosers } from '@/components/TopGainersLosers';
 const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
   const coinData = await getCoinDetails(id);
-  const pool = await fetchPools(id);
+  const pool = coinData.asset_platform_id
+    ? await fetchTopPool(coinData.asset_platform_id, coinData.contract_address)
+    : await fetchPools(id);
   const coinOHLCData = await getCoinOHLC(id, 1, 'usd', 'hourly', 'full');
 
   return (
@@ -20,11 +23,11 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
       <section className='size-full xl:col-span-2'>
         <LiveDataWrapper
           coinId={id}
-          pool={pool}
+          poolId={pool.id}
           coin={coinData}
           coinOHLCData={coinOHLCData}
         >
-          {/* Exchange Listings - pass it as a child of a client componentso it will be render server side */}
+          {/* Exchange Listings - pass it as a child of a client component so it will be render server side */}
           <ExchangeListings coinData={coinData} />
         </LiveDataWrapper>
       </section>

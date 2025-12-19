@@ -16,15 +16,17 @@ import { useCoinGeckoWebSocket } from '@/hooks/useCoinGeckoWebSocket';
 
 export default function LiveDataWrapper({
   coinId,
-  pool,
+  poolId,
   coin,
   coinOHLCData,
   children,
 }: LiveDataProps) {
   const { price, trades, ohlcv } = useCoinGeckoWebSocket({
     coinId,
-    poolId: pool.id,
+    poolId,
   });
+
+  console.log('=========poolId', poolId);
 
   return (
     <section className='size-full xl:col-span-2'>

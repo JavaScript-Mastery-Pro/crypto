@@ -11,7 +11,10 @@ const header = {
 
 // Get detailed information about a specific coin by its ID
 export async function getCoinDetails(id: string) {
-  const res = await fetch(`${baseUrl}/coins/${id}`, header);
+  const res = await fetch(
+    `${baseUrl}/coins/${id}?dex_pair_format=contract_address`,
+    header
+  );
 
   if (!res.ok) throw new Error('Failed to fetch CoinGecko API data');
   return res.json();
@@ -52,10 +55,7 @@ export async function getTrendingCoins() {
 
 // Get coin categories
 export async function getCategories() {
-  const res = await fetch(
-    `${baseUrl}/coins/categories`,
-    header
-  );
+  const res = await fetch(`${baseUrl}/coins/categories`, header);
 
   if (!res.ok) throw new Error('Failed to fetch categories');
 
@@ -63,6 +63,7 @@ export async function getCategories() {
   return data.slice(0, 10) || [];
 }
 
+// Get a list of coins with market data
 export async function getCoinList(page: number = 1, perPage: number = 50) {
   const params = new URLSearchParams({
     vs_currency: 'usd',
@@ -80,6 +81,7 @@ export async function getCoinList(page: number = 1, perPage: number = 50) {
   return res.json();
 }
 
+// Get top gainers and losers
 export async function getTopGainersLosers() {
   const res = await fetch(
     `${baseUrl}/coins/top_gainers_losers?vs_currency=usd`,
@@ -95,7 +97,8 @@ export async function getTopGainersLosers() {
   };
 }
 
-export async function searchCoins(query: string): Promise<SearchCoin[]> {
+// Search for coins by query
+export async function searchCoins(query: string) {
   if (!query || query.trim().length === 0) return [];
 
   const res = await fetch(
@@ -154,32 +157,33 @@ export async function searchCoins(query: string): Promise<SearchCoin[]> {
   return coins.slice(0, 10);
 }
 
-export async function fetchPools(
-  id: string
-): Promise<{ id: string; address: string; name: string; network: string }> {
-  try {
-    // Fetch onchain data for the coin which includes pool information
-    const res = await fetch(
-      `${baseUrl}/onchain/search/pools?query=${encodeURIComponent(id)}`,
-      header
-    );
+// Fetch the top pool for a given network and contract address
+export async function fetchTopPool(network: string, contractAddress: string) {
+  const res = await fetch(
+    `${baseUrl}/onchain/networks/${network}/tokens/${contractAddress}/pools`,
+    header
+  );
 
-    if (!res.ok) {
-      console.warn(`No pool data found for ${id}`);
-      return { id: '', address: '', name: '', network: '' };
-    }
+  if (!res.ok) throw new Error('Failed to fetch top pool data');
 
-    const data = await res.json();
-    const pool = data.data[1];
+  const data = await res.json();
+  return data.data[0];
+}
 
-    return {
-      id: pool.id as string,
-      address: pool.attributes.address as string,
-      name: pool.attributes.name as string,
-      network: pool.id.split('_')[0] as string,
-    };
-  } catch (error) {
-    console.error('Failed to fetch pools', error);
+// Fetch pools by coin ID for coins that has no specific network
+export async function fetchPools(id: string) {
+  const res = await fetch(
+    `${baseUrl}/onchain/search/pools?query=${encodeURIComponent(id)}`,
+    header
+  );
+
+  if (!res.ok) {
+    console.warn(`No pool data found for ${id}`);
     return { id: '', address: '', name: '', network: '' };
   }
+
+  const data = await res.json();
+  return data.data[0];
 }
+
+
