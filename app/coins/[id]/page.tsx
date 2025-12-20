@@ -58,13 +58,9 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
   const exchangeColumns = [
     {
       header: 'Exchange',
-      cellClassName: ' text-green-500 font-bold',
+      cellClassName: 'text-green-500 font-bold',
       cell: (ticker: Ticker) => (
-        <Link
-          href={ticker.trade_url}
-          target='_blank'
-          className='exchange-link'
-        >
+        <Link href={ticker.trade_url} target='_blank' className='exchange-link'>
           {ticker.market.name}
         </Link>
       ),
@@ -73,11 +69,8 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
       header: 'Pair',
       cell: (ticker: Ticker) => (
         <div className='exchange-pair'>
-          <p className='truncate max-w-[100px] h-full'>{ticker.base}</p>
-          /
-          <p className='truncate max-w-[100px] h-full ml-2'>
-            {ticker.target}
-          </p>
+          <p className='truncate max-w-[100px] h-full'>{ticker.base}</p>/
+          <p className='truncate max-w-[100px] h-full ml-2'>{ticker.target}</p>
         </div>
       ),
     },
@@ -88,6 +81,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
     },
     {
       header: 'Last Traded',
+      headClassName: 'text-end',
       cellClassName: 'exchange-timestamp',
       cell: (ticker: Ticker) => timeAgo(ticker.timestamp),
     },
@@ -109,9 +103,6 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
                 columns={exchangeColumns}
                 data={coinData.tickers.slice(0, 7)}
                 rowKey={(_, index) => index}
-                headerClassName='text-purple-100'
-                headerRowClassName='hover:bg-transparent'
-                bodyRowClassName='overflow-hidden rounded-lg hover:bg-dark-400/30!'
               />
             </div>
           </div>
@@ -119,14 +110,12 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
       </section>
 
       <section className='size-full max-lg:mt-8 lg:col-span-1'>
-        {/* Converter */}
         <Converter
           symbol={coinData.symbol}
           icon={coinData.image.small}
           priceList={coinData.market_data.current_price}
         />
 
-        {/* Coin Details */}
         <div className='w-full mt-8 space-y-4'>
           <h4 className='section-title pb-3'>Coin Details</h4>
           <div className='coin-details-grid'>
@@ -148,7 +137,6 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
           </div>
         </div>
 
-        {/* Top Gainers / Losers */}
         <TopGainersLosers />
       </section>
     </main>

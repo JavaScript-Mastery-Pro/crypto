@@ -15,11 +15,7 @@ export default function CoinsPagination({
   currentPage,
   totalPages,
   hasMorePages,
-}: {
-  currentPage: number;
-  totalPages: number;
-  hasMorePages: boolean;
-}) {
+}: Pagination) {
   const router = useRouter();
 
   const handlePageChange = (page: number) => {

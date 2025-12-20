@@ -1,17 +1,13 @@
 import { Suspense } from 'react';
 
+import { Categories } from '@/components/home/Categories';
+import { CoinOverview } from '@/components/home/CoinOverview';
+import { TrendingCoins } from '@/components/home/TrendingCoins';
 import {
-  Categories,
   CategoriesFallback,
-} from '@/components/home/Categories';
-import {
-  CoinOverview,
   CoinOverviewFallback,
-} from '@/components/home/CoinOverview';
-import {
-  TrendingCoins,
   TrendingCoinsFallback,
-} from '@/components/home/TrendingCoins';
+} from '@/components/home/Fallback';
 
 const Home = () => {
   return (

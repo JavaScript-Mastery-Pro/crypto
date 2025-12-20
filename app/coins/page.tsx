@@ -94,8 +94,6 @@ const Coins = async ({
             data={coinsData}
             rowKey={(coin) => coin.id}
             headerClassName='coins-header'
-            headerRowClassName='coins-header-row'
-            bodyRowClassName='coins-row relative'
           />
         </div>
 

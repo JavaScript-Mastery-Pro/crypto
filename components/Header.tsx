@@ -7,11 +7,7 @@ import { cn } from '@/lib/utils';
 import { navItems } from '@/lib/constants';
 import { SearchModal } from './SearchModal';
 
-export const Header = ({
-  trendingCoins = [],
-}: {
-  trendingCoins: TrendingCoin[];
-}) => {
+export const Header = ({ trendingCoins = [] }: HeaderProps) => {
   const pathname = usePathname();
 
   return (

@@ -19,7 +19,6 @@ export default function LiveDataWrapper({
     poolId,
   });
 
-  console.log('=========poolId', poolId);
   const tradeColumns = [
     {
       header: 'Price',
@@ -92,21 +91,11 @@ export default function LiveDataWrapper({
       <div className='w-full my-8 space-y-4'>
         <h4 className='section-title'>Recent Trades</h4>
         <div className='custom-scrollbar bg-dark-500 mt-5 rounded-xl overflow-hidden'>
-          {trades.length > 0 ? (
-            <DataTable
-              columns={tradeColumns}
-              data={trades}
-              rowKey={(_, index) => index}
-              tableClassName='bg-dark-500'
-              headerClassName='text-purple-100'
-              headerRowClassName='hover:bg-transparent text-sm'
-              bodyRowClassName='hover:bg-transparent'
-            />
-          ) : (
-            <div className='text-center p-10 text-purple-100/50'>
-              No recent trades
-            </div>
-          )}
+          <DataTable
+            columns={tradeColumns}
+            data={trades ?? []}
+            rowKey={(_, index) => index}
+          />
         </div>
       </div>
 

@@ -254,8 +254,8 @@ interface UseCoinGeckoWebSocketReturn {
 }
 
 interface DataTableColumn<T> {
-  header: ReactNode;
-  cell: (row: T, index: number) => ReactNode;
+  header: React.ReactNode;
+  cell: (row: T, index: number) => React.ReactNode;
   headClassName?: string;
   cellClassName?: string;
 }
@@ -263,10 +263,27 @@ interface DataTableColumn<T> {
 interface DataTableProps<T> {
   columns: DataTableColumn<T>[];
   data: T[];
-  rowKey: (row: T, index: number) => Key;
+  rowKey: (row: T, index: number) => React.Key;
   tableClassName?: string;
   headerClassName?: string;
   headerRowClassName?: string;
   headerCellClassName?: string;
   bodyRowClassName?: string;
+}
+
+type ButtonSize = 'default' | 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg';
+
+type PaginationLinkProps = {
+  isActive?: boolean;
+  size?: ButtonSize;
+} & React.ComponentProps<'a'>;
+
+interface Pagination {
+  currentPage: number;
+  totalPages: number;
+  hasMorePages: boolean;
+}
+
+interface HeaderProps {
+  trendingCoins: TrendingCoin[];
 }
