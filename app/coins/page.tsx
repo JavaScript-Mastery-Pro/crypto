@@ -8,9 +8,10 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import Image from 'next/image';
-import { cn, formatPercentage, formatPrice } from '@/lib/utils';
+import Link from 'next/link';
+
 import CoinsPagination from '@/components/CoinsPagination';
-import { ClickableTableRow } from '@/components/ClickableTableRow';
+import { cn, formatPercentage, formatPrice } from '@/lib/utils';
 
 const Coins = async ({
   searchParams,
@@ -50,14 +51,16 @@ const Coins = async ({
             <TableBody>
               {coinsData.map((coin: CoinMarketData) => {
                 const isTrendingUp = coin.price_change_percentage_24h > 0;
+
                 return (
-                  <ClickableTableRow
-                    key={coin.id}
-                    href={`/coins/${coin.id}`}
-                    className='coins-row'
-                  >
+                  <TableRow key={coin.id} className='coins-row relative'>
                     <TableCell className='coins-rank'>
                       #{coin.market_cap_rank}
+                      <Link
+                        href={`/coins/${coin.id}`}
+                        className='absolute inset-0 z-10'
+                        aria-label='View coin'
+                      />
                     </TableCell>
                     <TableCell className='coins-token'>
                       <div className='coins-token-info'>
@@ -67,7 +70,7 @@ const Coins = async ({
                           width={36}
                           height={36}
                         />
-                        <p className='max-w-[100%] truncate'>
+                        <p className='max-w-full truncate'>
                           {coin.name} ({coin.symbol.toUpperCase()})
                         </p>
                       </div>
@@ -89,7 +92,7 @@ const Coins = async ({
                     <TableCell className='coins-market-cap'>
                       {formatPrice(coin.market_cap)}
                     </TableCell>
-                  </ClickableTableRow>
+                  </TableRow>
                 );
               })}
             </TableBody>

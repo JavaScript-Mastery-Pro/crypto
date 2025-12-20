@@ -1,5 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import CoinCard from './CoinCard';
+import CoinCard from '../CoinCard';
 import { getTopGainersLosers } from '@/lib/coingecko.actions';
 
 export const TopGainersLosers = async () => {
@@ -10,13 +10,13 @@ export const TopGainersLosers = async () => {
       <TabsList className='size-full p-1 bg-transparent border-b border-dark-500 rounded-none '>
         <TabsTrigger
           value='top-gainers'
-          className='data-[state=active]:!border-none data-[state=active]:!bg-transparent flex justify-start !mb-0 py-2 text-lg font-semibold md:text-2xl'
+          className='data-[state=active]:border-none! data-[state=active]:bg-transparent! flex justify-start mb-0! py-2 text-lg font-semibold md:text-2xl'
         >
           Top Gainers
         </TabsTrigger>
         <TabsTrigger
           value='top-losers'
-          className='data-[state=active]:!border-none data-[state=active]:!bg-transparent flex justify-start !mb-0 py-2 text-lg font-semibold md:text-2xl'
+          className='data-[state=active]:border-none! data-[state=active]:bg-transparent! flex justify-start mb-0! py-2 text-lg font-semibold md:text-2xl'
         >
           Top Losers
         </TabsTrigger>

@@ -90,9 +90,9 @@ export default function CoinsPagination({
                 <PaginationLink
                   onClick={() => handlePageChange(page as number)}
                   className={cn(
-                    `hover:!bg-dark-400 rounded-sm text-base cursor-pointer`,
+                    `hover:bg-dark-400! rounded-sm text-base cursor-pointer`,
                     {
-                      '!bg-green-500 text-dark-900 font-semibold':
+                      'bg-green-500! text-dark-900 font-semibold':
                         currentPage === page,
                     }
                   )}

@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/select';
 import Image from 'next/image';
 import { useState } from 'react';
-import { Input } from './ui/input';
+import { Input } from '../ui/input';
 import { formatPrice } from '@/lib/utils';
 
 export const Converter = ({ symbol, icon, priceList }: ConverterProps) => {

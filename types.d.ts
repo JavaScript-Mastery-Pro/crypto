@@ -252,9 +252,3 @@ interface UseCoinGeckoWebSocketReturn {
   ohlcv: OHLCData | null;
   isConnected: boolean;
 }
-
-interface ClickableTableRowProps {
-  href: string;
-  children: React.ReactNode;
-  className?: string;
-}

@@ -6,12 +6,13 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { Skeleton } from '@/components/ui/skeleton';
 import { getCategories } from '@/lib/coingecko.actions';
 import { cn, formatPercentage, formatPrice } from '@/lib/utils';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 import Image from 'next/image';
 
-export const CategoriesSection = async () => {
+export const Categories = async () => {
   const categories = (await getCategories()) as Category[];
 
   return (
@@ -33,7 +34,7 @@ export const CategoriesSection = async () => {
             return (
               <TableRow
                 key={index}
-                className='md:text-base rounded-lg hover:!bg-dark-400/30'
+                className='md:text-base rounded-lg hover:bg-dark-400/30!'
               >
                 <TableCell className='pl-5 font-bold'>
                   {category.name}
@@ -82,3 +83,49 @@ export const CategoriesSection = async () => {
     </div>
   );
 };
+
+export const CategoriesFallback = () => (
+  <div className='custom-scrollbar categories-container'>
+    <h4 className='section-title pl-5'>Top Categories</h4>
+    <Table>
+      <TableHeader className='text-purple-100'>
+        <TableRow className='hover:bg-transparent'>
+          <TableHead className='exchange-header-left'>Category</TableHead>
+          <TableHead className='text-purple-100'>Top Gainers</TableHead>
+          <TableHead className='text-purple-100 pl-7'>24h Change</TableHead>
+          <TableHead className='text-purple-100'>Market Cap</TableHead>
+          <TableHead className='text-purple-100'>24h Volume</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {Array.from({ length: 6 }).map((_, index) => (
+          <TableRow
+            key={index}
+            className='md:text-base rounded-lg hover:bg-dark-400/30!'
+          >
+            <TableCell className='pl-5 font-bold'>
+              <Skeleton className='h-4 w-32 skeleton' />
+            </TableCell>
+            <TableCell className='flex gap-1 mr-5'>
+              {Array.from({ length: 3 }).map((__, coinIndex) => (
+                <Skeleton
+                  key={coinIndex}
+                  className='h-7 w-7 rounded-full skeleton'
+                />
+              ))}
+            </TableCell>
+            <TableCell className='font-medium'>
+              <Skeleton className='h-4 w-16 skeleton' />
+            </TableCell>
+            <TableCell className='font-medium'>
+              <Skeleton className='h-4 w-20 skeleton' />
+            </TableCell>
+            <TableCell className='font-medium'>
+              <Skeleton className='h-4 w-24 skeleton' />
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </div>
+);
