@@ -136,7 +136,7 @@ interface PriceData {
   usd: number;
 }
 
-interface TradeData {
+interface Trade {
   price?: number;
   timestamp?: number;
   type?: string;
@@ -248,7 +248,25 @@ interface UseCoinGeckoWebSocketProps {
 
 interface UseCoinGeckoWebSocketReturn {
   price: ExtendedPriceData | null;
-  trades: TradeData[];
+  trades: Trade[];
   ohlcv: OHLCData | null;
   isConnected: boolean;
+}
+
+interface DataTableColumn<T> {
+  header: ReactNode;
+  cell: (row: T, index: number) => ReactNode;
+  headClassName?: string;
+  cellClassName?: string;
+}
+
+interface DataTableProps<T> {
+  columns: DataTableColumn<T>[];
+  data: T[];
+  rowKey: (row: T, index: number) => Key;
+  tableClassName?: string;
+  headerClassName?: string;
+  headerRowClassName?: string;
+  headerCellClassName?: string;
+  bodyRowClassName?: string;
 }

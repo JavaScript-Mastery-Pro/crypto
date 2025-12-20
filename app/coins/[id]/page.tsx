@@ -7,14 +7,7 @@ import {
 import { Converter } from '@/components/coin-details/Converter';
 import LiveDataWrapper from '@/components/LiveDataWrapper';
 import { TopGainersLosers } from '@/components/coin-details/TopGainersLosers';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { DataTable } from '@/components/DataTable';
 import { formatPrice, timeAgo } from '@/lib/utils';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
@@ -62,6 +55,44 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
     },
   ];
 
+  const exchangeColumns = [
+    {
+      header: 'Exchange',
+      cellClassName: ' text-green-500 font-bold',
+      cell: (ticker: Ticker) => (
+        <Link
+          href={ticker.trade_url}
+          target='_blank'
+          className='exchange-link'
+        >
+          {ticker.market.name}
+        </Link>
+      ),
+    },
+    {
+      header: 'Pair',
+      cell: (ticker: Ticker) => (
+        <div className='exchange-pair'>
+          <p className='truncate max-w-[100px] h-full'>{ticker.base}</p>
+          /
+          <p className='truncate max-w-[100px] h-full ml-2'>
+            {ticker.target}
+          </p>
+        </div>
+      ),
+    },
+    {
+      header: 'Price',
+      cellClassName: 'font-medium',
+      cell: (ticker: Ticker) => formatPrice(ticker.converted_last.usd),
+    },
+    {
+      header: 'Last Traded',
+      cellClassName: 'exchange-timestamp',
+      cell: (ticker: Ticker) => timeAgo(ticker.timestamp),
+    },
+  ];
+
   return (
     <main className='coin-details-main'>
       <section className='size-full xl:col-span-2'>
@@ -74,57 +105,14 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
           <div className='w-full mt-8 space-y-4'>
             <h4 className='section-title'>Exchange Listings</h4>
             <div className='custom-scrollbar mt-5 exchange-container'>
-              <Table>
-                <TableHeader className='text-purple-100'>
-                  <TableRow className='hover:bg-transparent'>
-                    <TableHead className='exchange-header-left'>
-                      Exchange
-                    </TableHead>
-                    <TableHead className='text-purple-100'>Pair</TableHead>
-                    <TableHead className='text-purple-100'>Price</TableHead>
-                    <TableHead className='exchange-header-right'>
-                      Last Traded
-                    </TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {coinData.tickers
-                    .slice(0, 7)
-                    .map((ticker: Ticker, index: number) => (
-                      <TableRow
-                        key={index}
-                        className='overflow-hidden rounded-lg hover:bg-dark-400/30!'
-                      >
-                        <TableCell className=' text-green-500 font-bold'>
-                          <Link
-                            href={ticker.trade_url}
-                            target='_blank'
-                            className='exchange-link'
-                          >
-                            {ticker.market.name}
-                          </Link>
-                        </TableCell>
-                        <TableCell>
-                          <div className='exchange-pair'>
-                            <p className='truncate max-w-[100px] h-full'>
-                              {ticker.base}
-                            </p>
-                            /
-                            <p className='truncate max-w-[100px] h-full ml-2'>
-                              {ticker.target}
-                            </p>
-                          </div>
-                        </TableCell>
-                        <TableCell className='font-medium'>
-                          {formatPrice(ticker.converted_last.usd)}
-                        </TableCell>
-                        <TableCell className='exchange-timestamp'>
-                          {timeAgo(ticker.timestamp)}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
+              <DataTable
+                columns={exchangeColumns}
+                data={coinData.tickers.slice(0, 7)}
+                rowKey={(_, index) => index}
+                headerClassName='text-purple-100'
+                headerRowClassName='hover:bg-transparent'
+                bodyRowClassName='overflow-hidden rounded-lg hover:bg-dark-400/30!'
+              />
             </div>
           </div>
         </LiveDataWrapper>

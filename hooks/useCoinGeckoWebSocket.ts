@@ -11,7 +11,7 @@ export function useCoinGeckoWebSocket({
   const subscribed = useRef<Set<string>>(new Set());
 
   const [price, setPrice] = useState<ExtendedPriceData | null>(null);
-  const [trades, setTrades] = useState<TradeData[]>([]);
+  const [trades, setTrades] = useState<Trade[]>([]);
   const [ohlcv, setOhlcv] = useState<OHLCData | null>(null);
   const lastOhlcvTimestamp = useRef<number>(0);
 
@@ -46,7 +46,7 @@ export function useCoinGeckoWebSocket({
 
     // G2: Trade updates
     if (msg.c === 'G2') {
-      const newTrade: TradeData = {
+      const newTrade: Trade = {
         price: msg.pu,
         value: msg.vo,
         timestamp: msg.t ?? 0,
@@ -56,7 +56,7 @@ export function useCoinGeckoWebSocket({
 
       setTrades((prev) => [newTrade, ...prev].slice(0, 7));
     }
-    // G3: OHLCV updates 
+    // G3: OHLCV updates
     if (msg.ch === 'G3') {
       const timestamp = msg.t || 0; // already in seconds
       const newCandle: OHLCData = [
@@ -66,7 +66,7 @@ export function useCoinGeckoWebSocket({
         Number(msg.l ?? 0),
         Number(msg.c ?? 0),
       ];
-      
+
       // Always update with the latest candle - chart will handle deduplication
       setOhlcv(newCandle);
       lastOhlcvTimestamp.current = timestamp;
@@ -145,8 +145,7 @@ export function useCoinGeckoWebSocket({
       subscribe('CGSimplePrice', { coin_id: [coinId], action: 'set_tokens' });
 
       const wsPools = [poolId.replace('_', ':')];
-     
-      
+
       if (wsPools.length) {
         subscribe('OnchainTrade', {
           'network_id:pool_addresses': wsPools,
