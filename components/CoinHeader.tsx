@@ -14,82 +14,85 @@ export default function CoinHeader({
   priceChange24h,
 }: LiveCoinHeaderProps) {
   const isTrendingUp = livePriceChangePercentage24h > 0;
+  const isThirtyDayUp = priceChangePercentage30d > 0;
+  const isPriceChangeUp = priceChange24h > 0;
+
+  const stats = [
+    {
+      label: 'Today',
+      value: livePriceChangePercentage24h,
+      isUp: isTrendingUp,
+      formatter: formatPercentage,
+      valueClassName: 'coin-header-stat-value',
+      showIcon: true,
+    },
+    {
+      label: '30 Days',
+      value: priceChangePercentage30d,
+      isUp: isThirtyDayUp,
+      formatter: formatPercentage,
+      valueClassName: 'coin-header-stat-value-30d',
+      showIcon: true,
+    },
+    {
+      label: 'Price Change (24h)',
+      value: priceChange24h,
+      isUp: isPriceChangeUp,
+      formatter: formatPrice,
+      valueClassName: 'coin-header-stat-price',
+      showIcon: false,
+    },
+  ];
 
   return (
     <div className='coin-header-container'>
-      <div className='coin-header-container'>
-        <h3 className='text-3xl font-medium'>{name}</h3>
-        <div className='coin-header-info'>
-          <Image
-            src={image}
-            alt={name}
-            width={77}
-            height={77}
-            className='coin-header-image'
-          />
-          <div className='flex gap-4'>
-            <h1 className='coin-header-price'>{formatPrice(livePrice)}</h1>
-            <Badge
-              className={cn(
-                'coin-header-badge',
-                isTrendingUp
-                  ? 'bg-green-600/20 text-green-600'
-                  : 'bg-red-500/20 text-red-500'
-              )}
-            >
-              {formatPercentage(livePriceChangePercentage24h)}
-              {isTrendingUp ? <TrendingUp /> : <TrendingDown />}
-              (24h)
-            </Badge>
-          </div>
+      <h3 className='text-3xl font-medium'>{name}</h3>
+
+      <div className='coin-header-info'>
+        <Image
+          src={image}
+          alt={name}
+          width={77}
+          height={77}
+          className='coin-header-image'
+        />
+        <div className='flex gap-4'>
+          <h1 className='coin-header-price'>{formatPrice(livePrice)}</h1>
+          <Badge
+            className={cn(
+              'coin-header-badge',
+              isTrendingUp
+                ? 'bg-green-600/20 text-green-600'
+                : 'bg-red-500/20 text-red-500'
+            )}
+          >
+            {formatPercentage(livePriceChangePercentage24h)}
+            {isTrendingUp ? <TrendingUp /> : <TrendingDown />}
+            (24h)
+          </Badge>
         </div>
-        <div className='coin-header-stats'>
-          <div className='coin-header-stat'>
-            <p className='coin-header-stat-label'>Today</p>
+      </div>
+
+      <div className='coin-header-stats'>
+        {stats.map((stat) => (
+          <div key={stat.label} className='coin-header-stat'>
+            <p className='coin-header-stat-label'>{stat.label}</p>
             <div
-              className={cn('coin-header-stat-value', {
-                'text-green-500': livePriceChangePercentage24h > 0,
-                'text-red-500': livePriceChangePercentage24h < 0,
+              className={cn(stat.valueClassName, {
+                'text-green-500': stat.isUp,
+                'text-red-500': !stat.isUp,
               })}
             >
-              <p>{formatPercentage(livePriceChangePercentage24h)}</p>
-              {isTrendingUp ? (
-                <TrendingUp width={16} height={16} />
-              ) : (
-                <TrendingDown width={16} height={16} />
-              )}
+              <p>{stat.formatter(stat.value)}</p>
+              {stat.showIcon &&
+                (stat.isUp ? (
+                  <TrendingUp width={16} height={16} />
+                ) : (
+                  <TrendingDown width={16} height={16} />
+                ))}
             </div>
           </div>
-
-          <div className='coin-header-stat'>
-            <p className='coin-header-stat-label'>30 Days</p>
-            <div
-              className={cn('coin-header-stat-value-30d', {
-                'text-green-500': priceChangePercentage30d > 0,
-                'text-red-500': priceChangePercentage30d < 0,
-              })}
-            >
-              <p>{formatPercentage(priceChangePercentage30d)}</p>
-              {isTrendingUp ? (
-                <TrendingUp width={16} height={16} />
-              ) : (
-                <TrendingDown width={16} height={16} />
-              )}
-            </div>
-          </div>
-
-          <div className='text-base flex flex-col gap-2'>
-            <p className='coin-header-stat-label'>Price Change (24h)</p>
-            <p
-              className={cn('coin-header-stat-price', {
-                'text-green-500': priceChange24h > 0,
-                'text-red-500': priceChange24h < 0,
-              })}
-            >
-              {formatPrice(priceChange24h)}
-            </p>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );
