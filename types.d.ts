@@ -288,3 +288,11 @@ interface Pagination {
 interface HeaderProps {
   trendingCoins: TrendingCoin[];
 }
+
+type SearchItemCoin = SearchCoin | TrendingCoin['item'];
+
+interface SearchItemProps {
+  coin: SearchItemCoin;
+  onSelect: (coinId: string) => void;
+  isActiveName: boolean;
+}

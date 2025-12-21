@@ -18,6 +18,50 @@ import { cn, formatPercentage, formatPrice } from '@/lib/utils';
 import useSWR from 'swr';
 import { useDebounce, useKey } from 'react-use';
 
+const TRENDING_LIMIT = 8;
+const SEARCH_LIMIT = 10;
+
+const SearchItem = ({ coin, onSelect, isActiveName }: SearchItemProps) => {
+  const isSearchCoin =
+    typeof coin.data?.price_change_percentage_24h === 'number';
+
+  const change = isSearchCoin
+    ? (coin as SearchCoin).data?.price_change_percentage_24h ?? 0
+    : (coin as TrendingCoin['item']).data.price_change_percentage_24h?.usd ?? 0;
+
+  const price = isSearchCoin ? coin.data?.price : coin.data.price;
+
+  return (
+    <CommandItem
+      value={coin.id}
+      onSelect={() => onSelect(coin.id)}
+      className='search-item'
+    >
+      <div className='coin-info'>
+        <Image src={coin.thumb} alt={coin.name} width={32} height={32} />
+
+        <div>
+          <p className={cn('font-bold', isActiveName && 'text-white')}>
+            {coin.name}
+          </p>
+          <p className='coin-symbol'>{coin.symbol}</p>
+        </div>
+      </div>
+
+      {!price && <span className='coin-price'>{formatPrice(price)}</span>}
+
+      <p
+        className={cn('coin-change', {
+          'text-green-500': change > 0,
+          'text-red-500': change < 0,
+        })}
+      >
+        {formatPercentage(change)}
+      </p>
+    </CommandItem>
+  );
+};
+
 export const SearchModal = ({
   initialTrendingCoins = [],
 }: {
@@ -25,6 +69,7 @@ export const SearchModal = ({
 }) => {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
 
@@ -36,10 +81,9 @@ export const SearchModal = ({
     [searchQuery]
   );
 
-  const {
-    data: searchResults = [],
-    isValidating: isSearching,
-  } = useSWR<SearchCoin[]>(
+  const { data: searchResults = [], isValidating: isSearching } = useSWR<
+    SearchCoin[]
+  >(
     debouncedQuery ? ['coin-search', debouncedQuery] : null,
     ([, query]) => searchCoins(query as string),
     {
@@ -48,7 +92,8 @@ export const SearchModal = ({
   );
 
   useKey(
-    (event) => event.key?.toLowerCase() === 'k' && (event.metaKey || event.ctrlKey),
+    (event) =>
+      event.key?.toLowerCase() === 'k' && (event.metaKey || event.ctrlKey),
     (event) => {
       event.preventDefault();
       setOpen((prev) => !prev);
@@ -65,155 +110,86 @@ export const SearchModal = ({
   };
 
   const hasQuery = debouncedQuery.length > 0;
-  const trendingCoins = initialTrendingCoins;
+  const trendingCoins = initialTrendingCoins.slice(0, TRENDING_LIMIT);
   const showTrending = !hasQuery && trendingCoins.length > 0;
 
+  const isSearchEmpty = !isSearching && !hasQuery && !showTrending;
+  const isTrendingListVisible = !isSearching && showTrending;
+
+  const isNoResults = !isSearching && hasQuery && searchResults.length === 0;
+  const isResultsVisible = !isSearching && hasQuery && searchResults.length > 0;
+
   return (
-    <>
-      <Button
-        variant='ghost'
-        onClick={() => setOpen(true)}
-        className='search-button'
-      >
+    <div id='search-modal'>
+      <Button variant='ghost' onClick={() => setOpen(true)} className='trigger'>
         <SearchIcon size={18} />
         Search
-        <kbd className='search-kbd'>
+        <kbd className='kbd'>
           <span className='text-xs'>⌘</span>K
         </kbd>
       </Button>
 
-      {/* Dialog */}
       <CommandDialog
         open={open}
         onOpenChange={setOpen}
-        className='search-dialog'
+        className='dialog'
+        data-search-modal
       >
-        <div className='bg-dark-500'>
+        <div className='cmd-input'>
           <CommandInput
-            className='placeholder:text-purple-100'
             placeholder='Search for a token by name or symbol...'
             value={searchQuery}
             onValueChange={setSearchQuery}
           />
         </div>
 
-        <CommandList className='custom-scrollbar search-list'>
-          {isSearching && <div className='search-empty'>Searching...</div>}
+        <CommandList className='list custom-scrollbar'>
+          {isSearching && <div className='empty'>Searching...</div>}
 
-          {!isSearching && !hasQuery && !showTrending && (
-            <div className='search-empty'>Type to search for coins...</div>
+          {isSearchEmpty && (
+            <div className='empty'>Type to search for coins...</div>
           )}
 
-          {!isSearching && showTrending && (
+          {isTrendingListVisible && (
             <CommandGroup
               heading={
-                <div className='search-heading'>
+                <div className='heading'>
                   <TrendingUp size={16} />
                   Trending Coins
                 </div>
               }
-              className='bg-dark-500'
+              className='group'
             >
-              {trendingCoins.slice(0, 8).map((trendingCoin) => {
-                const coin = trendingCoin.item;
-
-                return (
-                  <CommandItem
-                    key={coin.id}
-                    value={coin.id}
-                    onSelect={() => handleSelect(coin.id)}
-                    className='search-item'
-                  >
-                    <div className='search-coin-info'>
-                      <Image
-                        src={coin.thumb}
-                        alt={coin.name}
-                        width={32}
-                        height={32}
-                        className='search-coin-image'
-                      />
-                      <div className='flex flex-col'>
-                        <p className='font-bold'>{coin.name}</p>
-                        <p className='search-coin-symbol'>{coin.symbol}</p>
-                      </div>
-                    </div>
-
-                    <span className='search-coin-price'>
-                      {formatPrice(coin.data.price)}
-                    </span>
-
-                    <p
-                      className={cn('search-coin-change', {
-                        'text-green-500':
-                          coin.data.price_change_percentage_24h.usd > 0,
-                        'text-red-500':
-                          coin.data.price_change_percentage_24h.usd < 0,
-                      })}
-                    >
-                      {formatPercentage(
-                        coin.data.price_change_percentage_24h.usd
-                      )}
-                    </p>
-                  </CommandItem>
-                );
-              })}
+              {trendingCoins.map(({ item }) => (
+                <SearchItem
+                  key={item.id}
+                  coin={item}
+                  onSelect={handleSelect}
+                  isActiveName={false}
+                />
+              ))}
             </CommandGroup>
           )}
 
-          {!isSearching && hasQuery && searchResults.length === 0 && (
-            <CommandEmpty>No coins found.</CommandEmpty>
-          )}
+          {isNoResults && <CommandEmpty>No coins found.</CommandEmpty>}
 
-          {!isSearching && hasQuery && searchResults.length > 0 && (
+          {isResultsVisible && (
             <CommandGroup
-              heading={<p className='search-heading'>Search Results</p>}
-              className='search-group'
+              heading={<p className='heading'>Search Results</p>}
+              className='group'
             >
-              {searchResults.slice(0, 10).map((coin) => {
-                return (
-                  <CommandItem
-                    key={coin.id}
-                    value={coin.id}
-                    onSelect={() => handleSelect(coin.id)}
-                    className='search-item'
-                  >
-                    <div className='search-coin-info'>
-                      <Image
-                        src={coin.thumb}
-                        alt={coin.name}
-                        width={32}
-                        height={32}
-                        className='search-coin-image'
-                      />
-                      <div className='flex flex-col'>
-                        <p className='font-bold text-white'>{coin.name}</p>
-                        <p className='search-coin-symbol'>{coin.symbol}</p>
-                      </div>
-                    </div>
-
-                    {coin.data?.price && (
-                      <span className='search-coin-price'>
-                        {formatPrice(coin.data.price)}
-                      </span>
-                    )}
-
-                    <p
-                      className={cn('search-coin-change', {
-                        'text-green-500':
-                          coin.data?.price_change_percentage_24h > 0,
-                        'text-red-500':
-                          coin.data?.price_change_percentage_24h < 0,
-                      })}
-                    >
-                      {formatPercentage(coin.data?.price_change_percentage_24h)}
-                    </p>
-                  </CommandItem>
-                );
-              })}
+              {searchResults.slice(0, SEARCH_LIMIT).map((coin) => (
+                <SearchItem
+                  key={coin.id}
+                  coin={coin}
+                  onSelect={handleSelect}
+                  isActiveName
+                />
+              ))}
             </CommandGroup>
           )}
         </CommandList>
       </CommandDialog>
-    </>
+    </div>
   );
 };
