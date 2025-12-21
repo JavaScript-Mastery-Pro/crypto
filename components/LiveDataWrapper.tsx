@@ -22,22 +22,22 @@ export default function LiveDataWrapper({
   const tradeColumns = [
     {
       header: 'Price',
-      cellClassName: 'pl-5 py-5 font-medium',
+      cellClassName: 'price-cell',
       cell: (trade: Trade) => (trade.price ? formatPrice(trade.price) : '-'),
     },
     {
       header: 'Amount',
-      cellClassName: 'py-4 font-medium',
+      cellClassName: 'amount-cell',
       cell: (trade: Trade) => trade.amount?.toFixed(4) ?? '-',
     },
     {
       header: 'Value',
-      cellClassName: 'font-medium',
+      cellClassName: 'value-cell',
       cell: (trade: Trade) => (trade.value ? formatPrice(trade.value) : '-'),
     },
     {
       header: 'Buy/Sell',
-      cellClassName: 'font-medium',
+      cellClassName: 'type-cell',
       cell: (trade: Trade) => (
         <span
           className={trade.type === 'b' ? 'text-green-500' : 'text-red-500'}
@@ -48,14 +48,14 @@ export default function LiveDataWrapper({
     },
     {
       header: 'Time',
-      cellClassName: 'pr-5',
+      cellClassName: 'time-cell',
       cell: (trade: Trade) =>
         trade.timestamp ? timeAgo(trade.timestamp) : '-',
     },
   ];
 
   return (
-    <section className='size-full xl:col-span-2'>
+    <section id='live-data-wrapper'>
       <CoinHeader
         name={coin.name}
         image={coin.image.large}
@@ -70,10 +70,9 @@ export default function LiveDataWrapper({
         priceChange24h={coin.market_data.price_change_24h_in_currency.usd}
       />
 
-      <Separator className='my-8 bg-purple-600' />
+      <Separator className='divider' />
 
-      {/* Trend Overview */}
-      <div className='w-full'>
+      <div className='trend'>
         <CandlestickChart
           data={coinOHLCData}
           liveOhlcv={ohlcv}
@@ -81,22 +80,22 @@ export default function LiveDataWrapper({
           mode='live'
           initialPeriod='daily'
         >
-          <h4 className='section-title mt-2 pl-2'>Trend Overview</h4>
+          <h4>Trend Overview</h4>
         </CandlestickChart>
       </div>
 
-      <Separator className='my-8 bg-purple-600' />
+      <Separator className='divider' />
 
-      {/* Recent Trades */}
-      <div className='w-full my-8 space-y-4'>
-        <h4 className='section-title'>Recent Trades</h4>
-        <div className='custom-scrollbar bg-dark-500 mt-5 rounded-xl overflow-hidden'>
-          <DataTable
-            columns={tradeColumns}
-            data={trades ?? []}
-            rowKey={(_, index) => index}
-          />
-        </div>
+      <div className='trades'>
+        <h4>Recent Trades</h4>
+        <DataTable
+          tableClassName='trades-table'
+          columns={tradeColumns}
+          data={trades ?? []}
+          rowKey={(_, index) => index}
+          headerCellClassName='py-5! text-purple-100!'
+          bodyCellClassName='py-5!'
+        />
       </div>
 
       {children}

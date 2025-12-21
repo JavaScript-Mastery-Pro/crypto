@@ -765,6 +765,55 @@
     }
   }
 
+  /* LiveDataWrapper Component Utilities */
+  #live-data-wrapper {
+    @apply size-full xl:col-span-2;
+
+    .divider {
+      @apply my-8! bg-purple-600!;
+    }
+
+    .trend {
+      @apply w-full;
+
+      h4 {
+        @apply text-xl md:text-2xl font-semibold mb-2 mt-2 pl-2;
+      }
+    }
+
+    .trades {
+      @apply w-full my-8 space-y-4;
+
+      h4 {
+        @apply text-xl md:text-2xl font-semibold mb-2;
+      }
+    }
+
+    .trades-table {
+      @apply bg-dark-500 mt-5 rounded-xl overflow-hidden;
+
+      .price-cell {
+        @apply pl-5 py-5 font-medium;
+      }
+
+      .amount-cell {
+        @apply py-4 font-medium;
+      }
+
+      .value-cell {
+        @apply font-medium;
+      }
+
+      .type-cell {
+        @apply font-medium;
+      }
+
+      .time-cell {
+        @apply pr-5;
+      }
+    }
+  }
+
   .skeleton {
     @apply bg-dark-400/60;
   }

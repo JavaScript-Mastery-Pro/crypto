@@ -269,6 +269,7 @@ interface DataTableProps<T> {
   headerRowClassName?: string;
   headerCellClassName?: string;
   bodyRowClassName?: string;
+  bodyCellClassName?: string;
 }
 
 type ButtonSize = 'default' | 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg';

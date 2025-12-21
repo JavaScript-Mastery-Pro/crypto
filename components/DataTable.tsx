@@ -17,6 +17,7 @@ export const DataTable = <T,>({
   headerRowClassName,
   headerCellClassName = 'text-purple-100',
   bodyRowClassName,
+  bodyCellClassName,
 }: DataTableProps<T>) => {
   return (
     <Table className={cn('custom-scrollbar', tableClassName)}>
@@ -50,6 +51,7 @@ export const DataTable = <T,>({
               <TableCell
                 key={columnIndex}
                 className={cn(
+                  bodyCellClassName,
                   column.cellClassName,
                   columnIndex === 0 && 'pl-5',
                   columnIndex === columns.length - 1 && 'pr-5'
