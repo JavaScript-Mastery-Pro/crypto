@@ -184,6 +184,67 @@
     }
   }
 
+  /* CoinCard Component Utilities */
+  #coin-card {
+    @apply bg-dark-500 hover:bg-dark-400/50 transition-all rounded-lg p-5 border border-purple-600/20 hover:border-purple-600/50 cursor-pointer h-fit;
+
+    .header {
+      @apply flex gap-3 mb-4;
+
+      img {
+        @apply size-12 rounded-full;
+      }
+
+      h3 {
+        @apply font-semibold text-lg;
+      }
+
+      p {
+        @apply text-sm text-gray-400 uppercase;
+      }
+    }
+
+    .price-row {
+      @apply flex justify-between items-center mb-5;
+
+      .price {
+        @apply text-xl font-bold;
+      }
+
+      .change {
+        @apply flex items-center gap-2;
+
+        .badge {
+          @apply font-medium! h-fit! py-1! flex! items-center! gap-1!;
+        }
+
+        .badge-up {
+          @apply bg-green-600/20! text-green-600!;
+        }
+
+        .badge-down {
+          @apply bg-red-500/20! text-red-500!;
+        }
+      }
+    }
+
+    .stats {
+      @apply space-y-3;
+
+      .stat-row {
+        @apply flex gap-1 justify-between;
+
+        .label {
+          @apply text-purple-100;
+        }
+
+        .value {
+          @apply font-medium;
+        }
+      }
+    }
+  }
+
   /* Home Page Utilities */
   .card-grid {
     @apply w-full grid grid-cols-1 sm:grid-cols-2 mt-5 gap-4 md:gap-6;
