@@ -29,25 +29,21 @@ const Coins = async ({
   const columns = [
     {
       header: 'Rank',
-      cellClassName: 'coins-rank',
+      cellClassName: 'rank-cell',
       cell: (coin: CoinMarketData) => (
         <>
           #{coin.market_cap_rank}
-          <Link
-            href={`/coins/${coin.id}`}
-            className='absolute inset-0 z-10'
-            aria-label='View coin'
-          />
+          <Link href={`/coins/${coin.id}`} aria-label='View coin' />
         </>
       ),
     },
     {
       header: 'Token',
-      cellClassName: 'coins-token',
+      cellClassName: 'token-cell',
       cell: (coin: CoinMarketData) => (
-        <div className='coins-token-info'>
+        <div className='token-info'>
           <Image src={coin.image} alt={coin.name} width={36} height={36} />
-          <p className='max-w-full truncate'>
+          <p>
             {coin.name} ({coin.symbol.toUpperCase()})
           </p>
         </div>
@@ -55,18 +51,18 @@ const Coins = async ({
     },
     {
       header: 'Price',
-      cellClassName: 'coins-price',
+      cellClassName: 'price-cell',
       cell: (coin: CoinMarketData) => formatPrice(coin.current_price),
     },
     {
       header: '24h Change',
-      cellClassName: 'font-medium',
+      cellClassName: 'change-cell',
       cell: (coin: CoinMarketData) => {
         const isTrendingUp = coin.price_change_percentage_24h > 0;
 
         return (
           <span
-            className={cn('coins-change', {
+            className={cn('change-value', {
               'text-green-600': isTrendingUp,
               'text-red-500': !isTrendingUp,
             })}
@@ -79,23 +75,24 @@ const Coins = async ({
     },
     {
       header: 'Market Cap',
-      cellClassName: 'coins-market-cap',
+      cellClassName: 'market-cap-cell',
       cell: (coin: CoinMarketData) => formatPrice(coin.market_cap),
     },
   ];
 
   return (
-    <main className='coins-main'>
-      <div className='flex flex-col w-full space-y-5'>
-        <h4 className='text-2xl'>All Coins</h4>
-        <div className='custom-scrollbar coins-container'>
-          <DataTable
-            columns={columns}
-            data={coinsData}
-            rowKey={(coin) => coin.id}
-            headerClassName='coins-header'
-          />
-        </div>
+    <main id='coins-page'>
+      <div className='content'>
+        <h4>All Coins</h4>
+
+        <DataTable
+          tableClassName='coins-table'
+          columns={columns}
+          data={coinsData}
+          rowKey={(coin) => coin.id}
+          headerCellClassName='py-4! bg-dark-400 text-purple-100'
+          bodyCellClassName='py-4! '
+        />
 
         <CoinsPagination
           currentPage={currentPage}

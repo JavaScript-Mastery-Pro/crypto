@@ -469,62 +469,62 @@
   }
 
   /* Coins Page Utilities */
-  .coins-main {
+  #coins-page {
     @apply py-12 px-4 sm:px-6 mx-auto max-w-[1440px] size-full items-center gap-10 justify-center;
-  }
 
-  .coins-container {
-    @apply bg-dark-500 rounded-xl max-h-fit overflow-hidden;
-  }
+    .content {
+      @apply flex flex-col w-full space-y-5;
+    }
 
-  .coins-header {
-    @apply bg-dark-400 text-purple-100;
-  }
+    h4 {
+      @apply text-2xl;
+    }
 
-  .coins-header-row {
-    @apply hover:bg-transparent;
-  }
+    .coins-table {
+      @apply bg-dark-500 rounded-xl max-h-fit overflow-hidden;
 
-  .coins-header-left {
-    @apply pl-5 py-4 text-purple-100;
-  }
+      .rank-cell {
+        @apply pl-5 max-w-[80px]! py-5 font-medium text-purple-100;
 
-  .coins-header-right {
-    @apply pr-8 text-purple-100;
-  }
+        a {
+          @apply absolute inset-0 z-10;
+        }
+      }
 
-  .coins-row {
-    @apply text-lg hover:!bg-dark-400/30 cursor-pointer;
-  }
+      .token-cell {
+        @apply py-3 font-semibold;
 
-  .coins-rank {
-    @apply pl-5 !max-w-[80px] py-5 font-medium text-purple-100;
-  }
+        .token-info {
+          @apply flex items-center gap-3;
 
-  .coins-token {
-    @apply py-3 font-semibold;
-  }
+          p {
+            @apply max-w-full truncate;
+          }
+        }
+      }
 
-  .coins-token-info {
-    @apply flex items-center gap-3;
-  }
+      .price-cell {
+        @apply py-4 font-medium;
+      }
 
-  .coins-price {
-    @apply py-4 font-medium;
-  }
+      .change-cell {
+        @apply font-medium;
+      }
 
-  .coins-change {
-    @apply flex gap-1 items-center font-medium;
-  }
+      .change-value {
+        @apply flex gap-1 items-center font-medium;
+      }
 
-  .coins-market-cap {
-    @apply pr-5 font-medium;
+      .market-cap-cell {
+        @apply pr-5 font-medium;
+      }
+    }
   }
 
   /* SearchModal Component Utilities */
   #search-modal {
     .trigger {
-      @apply px-6 hover:!bg-transparent font-medium transition-all h-full cursor-pointer text-base text-purple-100 flex items-center gap-2;
+      @apply px-6 hover:bg-transparent! font-medium transition-all h-full cursor-pointer text-base text-purple-100 flex items-center gap-2;
     }
 
     .kbd {
