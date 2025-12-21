@@ -286,10 +286,6 @@
     @apply pr-5 text-end;
   }
 
-  .converter-title {
-    @apply text-2xl font-semibold;
-  }
-
   .coin-details-grid {
     @apply rounded-lg grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-2 gap-3 sm:gap-5;
   }
@@ -413,56 +409,68 @@
   }
 
   /* Converter Component Utilities */
-  .converter-container {
-    @apply space-y-2 bg-dark-500 px-5 py-7 rounded-lg;
-  }
+  #converter {
+    @apply w-full space-y-5;
 
-  .converter-input-wrapper {
-    @apply bg-dark-400 h-12 w-full rounded-md flex items-center justify-between py-4 pr-4;
-  }
+    h4 {
+      @apply text-2xl font-semibold;
+    }
 
-  .converter-input {
-    @apply flex-1 !text-lg border-none font-medium !bg-dark-400 focus-visible:ring-0 shadow-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none;
-  }
+    .panel {
+      @apply space-y-2 bg-dark-500 px-5 py-7 rounded-lg;
+    }
 
-  .converter-coin-info {
-    @apply flex items-center gap-1;
-  }
+    .input-wrapper {
+      @apply bg-dark-400 h-12 w-full rounded-md flex items-center justify-between py-4 pr-4;
 
-  .converter-coin-symbol {
-    @apply font-semibold text-base text-purple-100;
-  }
+      .input {
+        @apply flex-1 text-lg! border-none font-medium bg-dark-400! focus-visible:ring-0 shadow-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none;
+      }
 
-  .converter-divider-wrapper {
-    @apply relative flex justify-center items-center my-4;
-  }
+      .coin-info {
+        @apply flex items-center gap-1;
 
-  .converter-divider-line {
-    @apply h-[1px] z-10 w-full bg-dark-400 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
-  }
+        p {
+          @apply font-semibold text-base text-purple-100;
+        }
+      }
+    }
 
-  .converter-icon {
-    @apply size-8 z-20 bg-dark-400 rounded-full p-2 text-green-500;
-  }
+    .divider {
+      @apply relative flex justify-center items-center my-4;
 
-  .converter-output-wrapper {
-    @apply bg-dark-400 h-12 w-full rounded-md flex items-center justify-between py-4 pl-4;
-  }
+      .line {
+        @apply h-px z-10 w-full bg-dark-400 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2;
+      }
 
-  .converter-select-trigger {
-    @apply w-fit border-none cursor-pointer !h-12 !bg-dark-400 hover:!bg-dark-400 focus-visible:!ring-0;
-  }
+      .icon {
+        @apply size-8 z-20 bg-dark-400 rounded-full p-2 text-green-500;
+      }
+    }
 
-  .converter-select-content {
-    @apply bg-dark-400 max-h-[500px];
-  }
+    .output-wrapper {
+      @apply bg-dark-400 h-12 w-full rounded-md flex items-center justify-between py-4 pl-4;
 
-  .converter-select-item {
-    @apply cursor-pointer hover:!bg-dark-500;
-  }
+      p {
+        @apply text-base font-medium;
+      }
 
-  .converter-currency {
-    @apply font-semibold text-sm text-purple-100;
+      .select-trigger {
+        @apply w-fit border-none cursor-pointer h-12! bg-dark-400! hover:bg-dark-400! focus-visible:ring-0!;
+
+        .select-value {
+          @apply font-semibold text-xs text-purple-100;
+        }
+      }
+
+      .select-content[data-converter] {
+        @apply bg-dark-400 max-h-[500px];
+
+        .select-item {
+          @apply cursor-pointer hover:bg-dark-500!;
+        }
+      }
+    }
   }
 
   /* CoinHeader Component Utilities */
