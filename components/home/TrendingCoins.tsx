@@ -62,11 +62,12 @@ export const TrendingCoins = async () => {
       <h4>Trending Coins</h4>
 
       <DataTable
-        tableClassName='trending-coins-table'
+        tableClassName='trending-coins-table mt-3'
         columns={columns}
         data={trendingCoins.slice(0, 6)}
         rowKey={(_, index) => index}
-        bodyRowClassName='body-row'
+        headerCellClassName='py-3! bg-dark-400 text-purple-100'
+        bodyCellClassName='py-2!'
       />
     </div>
   );

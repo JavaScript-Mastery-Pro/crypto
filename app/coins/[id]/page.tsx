@@ -1,3 +1,6 @@
+import Link from 'next/link';
+import { ArrowUpRight } from 'lucide-react';
+
 import {
   getCoinDetails,
   getCoinOHLC,
@@ -9,8 +12,6 @@ import LiveDataWrapper from '@/components/LiveDataWrapper';
 import { TopGainersLosers } from '@/components/coin-details/TopGainersLosers';
 import { DataTable } from '@/components/DataTable';
 import { formatPrice, timeAgo } from '@/lib/utils';
-import Link from 'next/link';
-import { ArrowUpRight } from 'lucide-react';
 
 const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
@@ -58,72 +59,83 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
   const exchangeColumns = [
     {
       header: 'Exchange',
-      cellClassName: 'text-green-500 font-bold',
+      cellClassName: 'exchange-name',
       cell: (ticker: Ticker) => (
-        <Link href={ticker.trade_url} target='_blank' className='exchange-link'>
+        <>
           {ticker.market.name}
-        </Link>
+
+          <Link
+            href={ticker.trade_url}
+            target='_blank'
+            aria-label='View coin'
+          />
+        </>
       ),
     },
     {
       header: 'Pair',
       cell: (ticker: Ticker) => (
-        <div className='exchange-pair'>
-          <p className='truncate max-w-[100px] h-full'>{ticker.base}</p>/
-          <p className='truncate max-w-[100px] h-full ml-2'>{ticker.target}</p>
+        <div className='pair'>
+          <p>{ticker.base}</p>
+          <p>{ticker.target}</p>
         </div>
       ),
     },
     {
       header: 'Price',
-      cellClassName: 'font-medium',
+      cellClassName: 'price-cell',
       cell: (ticker: Ticker) => formatPrice(ticker.converted_last.usd),
     },
     {
       header: 'Last Traded',
       headClassName: 'text-end',
-      cellClassName: 'exchange-timestamp',
+      cellClassName: 'time-cell',
       cell: (ticker: Ticker) => timeAgo(ticker.timestamp),
     },
   ];
 
   return (
-    <main className='coin-details-main'>
-      <section className='size-full xl:col-span-2'>
+    <main id='coin-details-page'>
+      <section className='primary'>
         <LiveDataWrapper
           coinId={id}
           poolId={pool.id}
           coin={coinData}
           coinOHLCData={coinOHLCData}
         >
-          <div className='w-full mt-8 space-y-4'>
-            <h4 className='section-title'>Exchange Listings</h4>
-            <div className='custom-scrollbar mt-5 exchange-container'>
-              <DataTable
-                columns={exchangeColumns}
-                data={coinData.tickers.slice(0, 7)}
-                rowKey={(_, index) => index}
-              />
-            </div>
+          <div className='exchange-section'>
+            <h4>Exchange Listings</h4>
+
+            <DataTable
+              tableClassName='exchange-table'
+              columns={exchangeColumns}
+              data={coinData.tickers.slice(0, 7)}
+              rowKey={(_, index) => index}
+              headerCellClassName='py-4! bg-dark-400 text-purple-100'
+              bodyCellClassName='py-2!'
+              bodyRowClassName='relative'
+            />
           </div>
         </LiveDataWrapper>
       </section>
 
-      <section className='size-full max-lg:mt-8 lg:col-span-1'>
+      <section className='secondary'>
         <Converter
           symbol={coinData.symbol}
           icon={coinData.image.small}
           priceList={coinData.market_data.current_price}
         />
 
-        <div className='w-full mt-8 space-y-4'>
-          <h4 className='section-title pb-3'>Coin Details</h4>
-          <div className='coin-details-grid'>
+        <div className='details'>
+          <h4>Coin Details</h4>
+
+          <ul className='details-grid'>
             {coinDetails.map(({ label, value, link, linkText }, index) => (
-              <div key={index} className='detail-card'>
-                <p className='text-purple-100'>{label}</p>
+              <li key={index}>
+                <p className='label'>{label}</p>
+
                 {link ? (
-                  <div className='detail-link'>
+                  <div className='link'>
                     <Link href={link} target='_blank'>
                       {linkText || label}
                     </Link>
@@ -132,9 +144,9 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
                 ) : (
                   <p className='text-base font-medium'>{value}</p>
                 )}
-              </div>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
 
         <TopGainersLosers />

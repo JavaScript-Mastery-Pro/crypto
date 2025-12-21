@@ -66,9 +66,12 @@ export const Categories = async () => {
     <div id='categories' className='custom-scrollbar'>
       <h4>Top Categories</h4>
       <DataTable
+        tableClassName='mt-3'
         columns={columns}
         data={categories}
         rowKey={(_, index) => index}
+        headerCellClassName='py-3! bg-dark-400 text-purple-100'
+        bodyCellClassName='py-2!'
       />
     </div>
   );

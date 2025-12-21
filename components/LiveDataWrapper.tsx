@@ -93,8 +93,8 @@ export default function LiveDataWrapper({
           columns={tradeColumns}
           data={trades ?? []}
           rowKey={(_, index) => index}
-          headerCellClassName='py-5! text-purple-100!'
-          bodyCellClassName='py-5!'
+          headerCellClassName='py-4! bg-dark-400 text-purple-100'
+          bodyCellClassName='py-4!'
         />
       </div>
 
