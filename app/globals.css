@@ -171,6 +171,35 @@
     @apply bg-red-500/20! text-red-500!;
   }
 
+  /* Header Component Utilities */
+  header {
+    @apply border-b border-dark-400 h-20;
+
+    .inner {
+      @apply flex justify-between items-center h-full;
+
+      a {
+        @apply mb-0;
+      }
+
+      nav {
+        @apply flex h-full items-center;
+
+        .nav-link {
+          @apply px-6 py-5 flex items-center transition-all hover:text-white font-medium h-full text-purple-100 cursor-pointer;
+        }
+
+        .nav-link.is-active {
+          @apply text-white;
+        }
+
+        .nav-link.is-home {
+          @apply max-sm:hidden;
+        }
+      }
+    }
+  }
+
   /* CandlestickChart Styles */
   #candlestick-chart {
     @apply p-3 mt-5 rounded-lg bg-dark-500;
