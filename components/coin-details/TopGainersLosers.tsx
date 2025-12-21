@@ -25,20 +25,21 @@ export const TopGainersLosers = async () => {
   const topGainersLosers = await getTopGainersLosers();
 
   return (
-    <Tabs defaultValue='top-gainers' className='mt-8 w-full'>
-      <TabsList className='size-full p-1 bg-transparent border-b border-dark-500 rounded-none '>
+    <Tabs defaultValue='top-gainers' id='top-gainers-losers'>
+      <TabsList className='tabs-list'>
         {TAB_CONFIG.map((tab) => (
           <TabsTrigger
             key={tab.value}
             value={tab.value}
-            className='data-[state=active]:border-none! data-[state=active]:bg-transparent! flex justify-start mb-0! py-2 text-lg font-semibold md:text-2xl'
+            className='tabs-trigger'
           >
             {tab.label}
           </TabsTrigger>
         ))}
       </TabsList>
+
       {TAB_CONFIG.map((tab) => (
-        <TabsContent key={tab.value} value={tab.value} className='top-list'>
+        <TabsContent key={tab.value} value={tab.value} className='tabs-content'>
           {topGainersLosers[tab.key].map(renderCoinCard)}
         </TabsContent>
       ))}
