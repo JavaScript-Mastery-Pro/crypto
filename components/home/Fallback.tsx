@@ -9,43 +9,40 @@ import {
 } from '../ui/table';
 
 export const CategoriesFallback = () => (
-  <div className='custom-scrollbar categories-container'>
-    <h4 className='section-title pl-5'>Top Categories</h4>
+  <div id='categories-fallback' className='custom-scrollbar'>
+    <h4>Top Categories</h4>
     <Table>
-      <TableHeader className='text-purple-100'>
-        <TableRow className='hover:bg-transparent'>
-          <TableHead className='exchange-header-left'>Category</TableHead>
-          <TableHead className='text-purple-100'>Top Gainers</TableHead>
-          <TableHead className='text-purple-100 pl-7'>24h Change</TableHead>
-          <TableHead className='text-purple-100'>Market Cap</TableHead>
-          <TableHead className='text-purple-100'>24h Volume</TableHead>
+      <TableHeader className='header'>
+        <TableRow className='header-row'>
+          <TableHead className='head head-left'>Category</TableHead>
+          <TableHead className='head'>Top Gainers</TableHead>
+          <TableHead className='head head-change'>24h Change</TableHead>
+          <TableHead className='head'>Market Cap</TableHead>
+          <TableHead className='head'>24h Volume</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {Array.from({ length: 6 }).map((_, index) => (
-          <TableRow
-            key={index}
-            className='md:text-base rounded-lg hover:bg-dark-400/30!'
-          >
-            <TableCell className='pl-5 font-bold'>
-              <Skeleton className='h-4 w-32 skeleton' />
+          <TableRow key={index} className='row'>
+            <TableCell className='category-cell'>
+              <Skeleton className='skeleton category-skeleton' />
             </TableCell>
-            <TableCell className='flex gap-1 mr-5'>
+            <TableCell className='gainers-cell'>
               {Array.from({ length: 3 }).map((__, coinIndex) => (
                 <Skeleton
                   key={coinIndex}
-                  className='h-7 w-7 rounded-full skeleton'
+                  className='skeleton coin-skeleton'
                 />
               ))}
             </TableCell>
-            <TableCell className='font-medium'>
-              <Skeleton className='h-4 w-16 skeleton' />
+            <TableCell className='value-cell'>
+              <Skeleton className='skeleton value-skeleton-sm' />
             </TableCell>
-            <TableCell className='font-medium'>
-              <Skeleton className='h-4 w-20 skeleton' />
+            <TableCell className='value-cell'>
+              <Skeleton className='skeleton value-skeleton-md' />
             </TableCell>
-            <TableCell className='font-medium'>
-              <Skeleton className='h-4 w-24 skeleton' />
+            <TableCell className='value-cell'>
+              <Skeleton className='skeleton value-skeleton-lg' />
             </TableCell>
           </TableRow>
         ))}
@@ -55,48 +52,46 @@ export const CategoriesFallback = () => (
 );
 
 export const CoinOverviewFallback = () => (
-  <div id='coin-overview'>
-    <div className='w-full h-full min-h-[420px] rounded-2xl bg-dark-500/60 p-6'>
-      <div className='flex items-center gap-4 mb-6'>
-        <Skeleton className='h-14 w-14 rounded-full skeleton' />
-        <div className='flex flex-col gap-2 flex-1'>
-          <Skeleton className='h-4 w-1/3 skeleton' />
-          <Skeleton className='h-8 w-1/2 skeleton' />
+  <div id='coin-overview-fallback'>
+    <div className='panel'>
+      <div className='header'>
+        <Skeleton className='skeleton header-image' />
+        <div className='header-lines'>
+          <Skeleton className='skeleton header-line-sm' />
+          <Skeleton className='skeleton header-line-lg' />
         </div>
       </div>
-      <Skeleton className='h-[280px] w-full rounded-xl skeleton' />
+      <Skeleton className='skeleton chart-skeleton' />
     </div>
   </div>
 );
 
 export const TrendingCoinsFallback = () => (
-  <div className='top-movers-container'>
-    <h4 className='section-title px-5'>Trending Coins</h4>
-    <div className='table-scrollbar-container custom-scrollbar'>
+  <div id='trending-coins-fallback'>
+    <h4>Trending Coins</h4>
+    <div className='table-wrapper custom-scrollbar'>
       <Table>
-        <TableHeader className='table-header-cell'>
-          <TableRow className='hover:bg-transparent'>
-            <TableHead className='table-head-left'>Name</TableHead>
-            <TableHead className='table-header-cell table-cell'>
-              24h Change
-            </TableHead>
-            <TableHead className='table-head-right'>Price</TableHead>
+        <TableHeader className='header'>
+          <TableRow className='header-row'>
+            <TableHead className='head head-left'>Name</TableHead>
+            <TableHead className='head'>24h Change</TableHead>
+            <TableHead className='head head-right'>Price</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {Array.from({ length: 6 }).map((_, index) => (
-            <TableRow key={index} className='table-row-hover'>
-              <TableCell className='font-bold'>
-                <div className='flex items-center gap-3'>
-                  <Skeleton className='h-9 w-9 rounded-full skeleton' />
-                  <Skeleton className='h-4 w-24 skeleton' />
+            <TableRow key={index} className='row'>
+              <TableCell className='name-cell'>
+                <div className='name'>
+                  <Skeleton className='skeleton name-image' />
+                  <Skeleton className='skeleton name-line' />
                 </div>
               </TableCell>
-              <TableCell className='table-cell-change'>
-                <Skeleton className='h-4 w-16 skeleton' />
+              <TableCell className='change-cell'>
+                <Skeleton className='skeleton change-line' />
               </TableCell>
-              <TableCell className='table-cell-price'>
-                <Skeleton className='h-4 w-20 skeleton' />
+              <TableCell className='price-cell'>
+                <Skeleton className='skeleton price-line' />
               </TableCell>
             </TableRow>
           ))}

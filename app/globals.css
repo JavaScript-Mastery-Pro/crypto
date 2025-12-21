@@ -155,8 +155,8 @@
     @apply px-4 sm:px-6 mx-auto max-w-[1440px];
   }
 
-  .command-input-wrapper {
-    @apply !bg-dark-500;
+  .main-container {
+    @apply py-6 md:py-12 mx-auto px-4 sm:px-6 max-w-[1440px] w-full space-y-6 md:space-y-6;
   }
 
   .badge {
@@ -171,7 +171,10 @@
     @apply bg-red-500/20! text-red-500!;
   }
 
-  /* Header Component Utilities */
+  .skeleton {
+    @apply bg-dark-400/60;
+  }
+
   header {
     @apply border-b border-dark-400 h-20;
 
@@ -200,7 +203,6 @@
     }
   }
 
-  /* CandlestickChart Styles */
   #candlestick-chart {
     @apply p-3 mt-5 rounded-lg bg-dark-500;
 
@@ -225,7 +227,6 @@
     }
   }
 
-  /* CoinCard Component Utilities */
   #coin-card {
     @apply bg-dark-500 hover:bg-dark-400/50 transition-all rounded-lg p-5 border border-purple-600/20 hover:border-purple-600/50 cursor-pointer h-fit;
 
@@ -274,15 +275,6 @@
     }
   }
 
-  /* Home Page Utilities */
-  .card-grid {
-    @apply w-full grid grid-cols-1 sm:grid-cols-2 mt-5 gap-4 md:gap-6;
-  }
-
-  .top-list {
-    @apply gap-4 mt-2 md:gap-5 sm:grid-cols-2 lg:grid-cols-1 grid;
-  }
-
   #categories {
     @apply pt-8 mt-5 w-full bg-dark-500 rounded-xl overflow-hidden;
 
@@ -329,10 +321,6 @@
     .trending-coins-table {
       @apply bg-dark-500 overflow-hidden;
 
-      .body-row {
-        @apply overflow-hidden border-none hover:bg-dark-400! rounded-lg;
-      }
-
       .name-cell {
         @apply font-bold;
 
@@ -363,67 +351,174 @@
     }
   }
 
-  .table-header-cell {
-    @apply text-purple-100;
-  }
-
-  .table-row-hover {
-    @apply overflow-hidden border-none hover:bg-dark-400! rounded-lg;
-  }
-
-  .coin-link {
-    @apply pl-1 md:pl-2 py-1 md:py-2 xl:py-1 flex items-center gap-2 md:gap-3;
-  }
-
-  .coin-image {
-    @apply rounded-full w-8 h-8 md:w-9 md:h-9;
-  }
-
-  .price-change-indicator {
-    @apply flex gap-1 items-center text-sm font-medium;
-  }
-
-  .top-movers-container {
-    @apply w-full flex flex-col justify-center h-full py-4 bg-dark-500 rounded-xl;
-  }
-
-  .categories-container {
-    @apply pt-8 mt-5 w-full bg-dark-500 rounded-xl overflow-hidden;
-  }
-
-  .main-container {
-    @apply py-6 md:py-12 mx-auto px-4 sm:px-6 max-w-[1440px] w-full space-y-6 md:space-y-6;
-  }
-
   .home-grid {
     @apply grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 items-start lg:items-center gap-6;
   }
 
-  .section-title {
-    @apply text-xl md:text-2xl font-semibold mb-2;
+  #categories-fallback {
+    @apply pt-8 mt-5 w-full bg-dark-500 rounded-xl overflow-hidden;
+
+    h4 {
+      @apply text-xl md:text-2xl font-semibold mb-2 pl-5;
+    }
+
+    .header {
+      @apply text-purple-100;
+    }
+
+    .header-row {
+      @apply hover:bg-transparent;
+    }
+
+    .head {
+      @apply text-purple-100;
+    }
+
+    .head-left {
+      @apply pl-5 py-5;
+    }
+
+    .head-change {
+      @apply pl-7;
+    }
+
+    .row {
+      @apply md:text-base rounded-lg hover:bg-dark-400/30!;
+    }
+
+    .category-cell {
+      @apply pl-5 font-bold;
+    }
+
+    .gainers-cell {
+      @apply flex gap-1 mr-5;
+    }
+
+    .value-cell {
+      @apply font-medium;
+    }
+
+    .category-skeleton {
+      @apply h-4 w-32;
+    }
+
+    .coin-skeleton {
+      @apply h-7 w-7 rounded-full;
+    }
+
+    .value-skeleton-sm {
+      @apply h-4 w-16;
+    }
+
+    .value-skeleton-md {
+      @apply h-4 w-20;
+    }
+
+    .value-skeleton-lg {
+      @apply h-4 w-24;
+    }
   }
 
-  .table-scrollbar-container {
-    @apply bg-dark-500 overflow-hidden;
+  #coin-overview-fallback {
+    @apply w-full h-full xl:col-span-2 px-2 bg-dark-500 rounded-xl;
+
+    .panel {
+      @apply w-full h-full min-h-[420px] rounded-2xl bg-dark-500/60 p-6;
+    }
+
+    .header {
+      @apply flex items-center gap-4 mb-6;
+    }
+
+    .header-image {
+      @apply h-14 w-14 rounded-full;
+    }
+
+    .header-lines {
+      @apply flex flex-col gap-2 flex-1;
+    }
+
+    .header-line-sm {
+      @apply h-4 w-1/3;
+    }
+
+    .header-line-lg {
+      @apply h-8 w-1/2;
+    }
+
+    .chart-skeleton {
+      @apply h-[280px] w-full rounded-xl;
+    }
   }
 
-  .table-head-left {
-    @apply pl-4 md:pl-5 py-3 text-purple-100;
+  #trending-coins-fallback {
+    @apply w-full flex flex-col justify-center h-full py-4 bg-dark-500 rounded-xl;
+
+    h4 {
+      @apply text-xl md:text-2xl font-semibold mb-2 px-5;
+    }
+
+    .table-wrapper {
+      @apply bg-dark-500 overflow-hidden;
+    }
+
+    .header {
+      @apply text-purple-100;
+    }
+
+    .header-row {
+      @apply hover:bg-transparent;
+    }
+
+    .head {
+      @apply text-purple-100;
+    }
+
+    .head-left {
+      @apply pl-4 md:pl-5 py-3;
+    }
+
+    .head-right {
+      @apply pr-4 md:pr-5;
+    }
+
+    .row {
+      @apply overflow-hidden border-none hover:bg-dark-400! rounded-lg;
+    }
+
+    .name-cell {
+      @apply font-bold;
+    }
+
+    .name {
+      @apply flex items-center gap-3;
+    }
+
+    .name-image {
+      @apply h-9 w-9 rounded-full;
+    }
+
+    .name-line {
+      @apply h-4 w-24;
+    }
+
+    .change-cell {
+      @apply font-medium py-4 pr-3 md:pr-5;
+    }
+
+    .price-cell {
+      @apply font-bold pr-5 text-sm max-w-full truncate;
+    }
+
+    .change-line {
+      @apply h-4 w-16;
+    }
+
+    .price-line {
+      @apply h-4 w-20;
+    }
   }
 
-  .table-head-right {
-    @apply pr-4 md:pr-5 text-purple-100;
-  }
-
-  .table-cell-change {
-    @apply font-medium py-4 pr-3 md:pr-5;
-  }
-
-  .table-cell-price {
-    @apply font-bold pr-5 text-sm max-w-full truncate;
-  }
-
-  /* Coin Details Page Utilities */
   #coin-details-page {
     @apply py-12 px-4 sm:px-6 mx-auto max-w-[1440px] size-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 items-center gap-6 xl:gap-10 justify-center;
 
@@ -496,19 +591,6 @@
     }
   }
 
-  .exchange-header-left {
-    @apply pl-5 py-5 text-purple-100;
-  }
-
-  .exchange-header-right {
-    @apply pr-5 text-purple-100 text-end;
-  }
-
-  .coin-description {
-    @apply mt-8 text-sm font-sans text-purple-50 leading-[30px];
-  }
-
-  /* Coins Page Utilities */
   #coins-page {
     @apply py-12 px-4 sm:px-6 mx-auto max-w-[1440px] size-full items-center gap-10 justify-center;
 
@@ -561,7 +643,6 @@
     }
   }
 
-  /* SearchModal Component Utilities */
   #search-modal {
     .trigger {
       @apply px-6 hover:bg-transparent! font-medium transition-all h-full cursor-pointer text-base text-purple-100 flex items-center gap-2;
@@ -570,65 +651,64 @@
     .kbd {
       @apply pointer-events-none hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium opacity-100;
     }
+
+    .dialog {
+      @apply bg-dark-400! max-w-sm sm:max-w-md md:max-w-2xl mx-auto;
+
+      .cmd-input {
+        @apply bg-dark-500!;
+
+        input {
+          @apply placeholder:text-purple-100!;
+        }
+      }
+
+      .list {
+        @apply bg-dark-500 max-h-[400px];
+      }
+
+      .empty {
+        @apply py-6 text-center text-sm text-gray-400;
+      }
+
+      .heading {
+        @apply flex items-center gap-2 text-purple-100;
+      }
+
+      .group {
+        @apply bg-dark-500 text-purple-100;
+      }
+
+      .search-item {
+        @apply grid! grid-cols-4! gap-4! items-center! data-[selected=true]:bg-dark-400! transition-all! cursor-pointer! hover:bg-dark-400/50! py-3!;
+
+        .coin-info {
+          @apply flex! gap-2! items-center! col-span-2!;
+
+          img {
+            @apply size-9 rounded-full;
+          }
+
+          div {
+            @apply flex flex-col;
+          }
+
+          .coin-symbol {
+            @apply text-sm text-purple-100 uppercase;
+          }
+        }
+
+        .coin-price {
+          @apply font-semibold text-sm lg:text-base;
+        }
+
+        .coin-change {
+          @apply flex gap-1 text-sm lg:text-base items-center font-medium;
+        }
+      }
+    }
   }
 
-  .dialog {
-    @apply bg-dark-400! max-w-sm sm:max-w-md md:max-w-2xl mx-auto;
-
-    .cmd-input {
-      @apply bg-dark-500!;
-
-      input {
-        @apply placeholder:text-purple-100!;
-      }
-    }
-
-    .list {
-      @apply bg-dark-500 max-h-[400px];
-    }
-
-    .empty {
-      @apply py-6 text-center text-sm text-gray-400;
-    }
-
-    .heading {
-      @apply flex items-center gap-2 text-purple-100;
-    }
-
-    .group {
-      @apply bg-dark-500 text-purple-100;
-    }
-
-    .search-item {
-      @apply grid! grid-cols-4! gap-4! items-center! data-[selected=true]:bg-dark-400! transition-all! cursor-pointer! hover:bg-dark-400/50! py-3!;
-
-      .coin-info {
-        @apply flex! gap-2! items-center! col-span-2!;
-
-        img {
-          @apply size-9 rounded-full;
-        }
-
-        div {
-          @apply flex flex-col;
-        }
-
-        .coin-symbol {
-          @apply text-sm text-purple-100 uppercase;
-        }
-      }
-
-      .coin-price {
-        @apply font-semibold text-sm lg:text-base;
-      }
-
-      .coin-change {
-        @apply flex gap-1 text-sm lg:text-base items-center font-medium;
-      }
-    }
-  }
-
-  /* Converter Component Utilities */
   #converter {
     @apply w-full space-y-5;
 
@@ -693,7 +773,6 @@
     }
   }
 
-  /* TopGainersLosers Component Utilities */
   #top-gainers-losers {
     @apply mt-8 w-full;
 
@@ -710,7 +789,6 @@
     }
   }
 
-  /* CoinHeader Component Utilities */
   #coin-header {
     @apply space-y-5 w-full;
 
@@ -751,7 +829,6 @@
     }
   }
 
-  /* CoinOverview Component Utilities */
   #coin-overview {
     @apply w-full h-full xl:col-span-2 px-2 bg-dark-500 rounded-xl;
 
@@ -776,7 +853,6 @@
     }
   }
 
-  /* CoinsPagination Component Utilities */
   #coins-pagination {
     .pagination-content {
       @apply flex w-full;
@@ -819,7 +895,6 @@
     }
   }
 
-  /* LiveDataWrapper Component Utilities */
   #live-data-wrapper {
     @apply size-full xl:col-span-2;
 
@@ -866,26 +941,6 @@
         @apply pr-5;
       }
     }
-  }
-
-  .skeleton {
-    @apply bg-dark-400/60;
-  }
-
-  .skeleton-image {
-    @apply size-[45px] sm:size-[50px] xl:size-[77px] bg-dark-400/50 rounded-full animate-pulse;
-  }
-
-  .skeleton-price {
-    @apply h-12 sm:h-16 xl:h-20 w-48 sm:w-64 xl:w-80 bg-dark-400/50 rounded animate-pulse;
-  }
-
-  .skeleton-badge {
-    @apply h-10 w-32 bg-dark-400/50 rounded-full animate-pulse mt-2;
-  }
-
-  .skeleton-stat {
-    @apply h-5 w-24 bg-dark-400/50 rounded animate-pulse;
   }
 }
 
