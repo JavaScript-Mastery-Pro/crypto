@@ -111,9 +111,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
               columns={exchangeColumns}
               data={coinData.tickers.slice(0, 7)}
               rowKey={(_, index) => index}
-              headerCellClassName='py-4! bg-dark-400 text-purple-100'
               bodyCellClassName='py-2!'
-              bodyRowClassName='relative'
             />
           </div>
         </LiveDataWrapper>

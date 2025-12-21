@@ -66,7 +66,7 @@ export const TrendingCoins = async () => {
         columns={columns}
         data={trendingCoins.slice(0, 6)}
         rowKey={(_, index) => index}
-        headerCellClassName='py-3! bg-dark-400 text-purple-100'
+        headerCellClassName='py-3!'
         bodyCellClassName='py-2!'
       />
     </div>

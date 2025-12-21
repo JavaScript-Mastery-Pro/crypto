@@ -15,7 +15,7 @@ export const DataTable = <T,>({
   tableClassName,
   headerClassName,
   headerRowClassName,
-  headerCellClassName = 'text-purple-100',
+  headerCellClassName,
   bodyRowClassName,
   bodyCellClassName,
 }: DataTableProps<T>) => {
@@ -27,6 +27,7 @@ export const DataTable = <T,>({
             <TableHead
               key={columnIndex}
               className={cn(
+                'bg-dark-400 text-purple-100 py-4',
                 headerCellClassName,
                 column.headClassName,
                 columnIndex === 0 && 'pl-5',
@@ -43,7 +44,7 @@ export const DataTable = <T,>({
           <TableRow
             key={rowKey(row, rowIndex)}
             className={cn(
-              'overflow-hidden rounded-lg border-b border-purple-100/5 hover:bg-dark-400/30!',
+              'overflow-hidden rounded-lg border-b border-purple-100/5 hover:bg-dark-400/30! relative',
               bodyRowClassName
             )}
           >
@@ -51,6 +52,7 @@ export const DataTable = <T,>({
               <TableCell
                 key={columnIndex}
                 className={cn(
+                  'py-4',
                   bodyCellClassName,
                   column.cellClassName,
                   columnIndex === 0 && 'pl-5',

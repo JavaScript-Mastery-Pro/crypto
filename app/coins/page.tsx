@@ -90,9 +90,6 @@ const Coins = async ({
           columns={columns}
           data={coinsData}
           rowKey={(coin) => coin.id}
-          headerCellClassName='py-4! bg-dark-400 text-purple-100'
-          bodyCellClassName='py-4!'
-          bodyRowClassName='relative'
         />
 
         <CoinsPagination

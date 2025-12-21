@@ -70,8 +70,6 @@ export const Categories = async () => {
         columns={columns}
         data={categories}
         rowKey={(_, index) => index}
-        headerCellClassName='py-3! bg-dark-400 text-purple-100'
-        bodyCellClassName='py-2!'
       />
     </div>
   );
