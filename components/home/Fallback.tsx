@@ -55,7 +55,7 @@ export const CategoriesFallback = () => (
 );
 
 export const CoinOverviewFallback = () => (
-  <div className='chart-section-container'>
+  <div id='coin-overview'>
     <div className='w-full h-full min-h-[420px] rounded-2xl bg-dark-500/60 p-6'>
       <div className='flex items-center gap-4 mb-6'>
         <Skeleton className='h-14 w-14 rounded-full skeleton' />

@@ -588,29 +588,29 @@
     @apply h-5 w-24 bg-dark-400/50 rounded animate-pulse;
   }
 
-  /* ChartSection Component Utilities */
-  .chart-section-container {
+  /* CoinOverview Component Utilities */
+  #coin-overview {
     @apply w-full h-full xl:col-span-2 px-2 bg-dark-500 rounded-xl;
-  }
 
-  .chart-section-header {
-    @apply flex-1 mb-2 flex gap-2 md:gap-3;
-  }
+    .header {
+      @apply flex-1 mb-2 flex gap-2 md:gap-3;
 
-  .chart-section-image {
-    @apply w-10 h-10 md:w-14 md:h-14;
-  }
+      img {
+        @apply w-10 h-10 md:w-14 md:h-14;
+      }
 
-  .chart-section-info {
-    @apply flex flex-col;
-  }
+      .info {
+        @apply flex flex-col;
 
-  .chart-section-coin-name {
-    @apply flex text-purple-100 text-xs md:text-sm w-fit;
-  }
+        p {
+          @apply flex text-purple-100 text-xs md:text-sm w-fit;
+        }
 
-  .chart-section-price {
-    @apply text-xl md:text-2xl font-semibold;
+        h1 {
+          @apply text-xl md:text-2xl font-semibold;
+        }
+      }
+    }
   }
 
   .skeleton {
