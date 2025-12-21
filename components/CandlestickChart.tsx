@@ -148,17 +148,16 @@ export default function CandlestickChart({
   }, [ohlcData, liveOhlcv, period, mode]);
 
   return (
-    <div className='candlestick-container'>
-      <div className='candlestick-header'>
+    <div id='candlestick-chart'>
+      <div className='chart-header'>
         <div className='flex-1'>{children}</div>
-        <div className='candlestick-button-group'>
+
+        <div className='button-group'>
           {PERIOD_BUTTONS.map(({ value, label }) => (
             <button
               key={value}
               className={
-                period === value
-                  ? 'candlestick-period-button-active'
-                  : 'candlestick-period-button'
+                period === value ? 'period-button-active' : 'period-button'
               }
               onClick={() => handlePeriodChange(value)}
               disabled={loading}
@@ -168,11 +167,8 @@ export default function CandlestickChart({
           ))}
         </div>
       </div>
-      <div
-        ref={chartContainerRef}
-        className='candlestick-chart-container'
-        style={{ height }}
-      />
+
+      <div ref={chartContainerRef} className='chart' style={{ height }} />
     </div>
   );
 }

@@ -7,16 +7,12 @@ import { cn } from '@/lib/utils';
 import { navItems } from '@/lib/constants';
 import { SearchModal } from './SearchModal';
 
-export const Header = ({
-  trendingCoins = [],
-}: {
-  trendingCoins: TrendingCoin[];
-}) => {
+export const Header = ({ trendingCoins = [] }: HeaderProps) => {
   const pathname = usePathname();
 
   return (
-    <header className='border-b border-dark-400 h-20'>
-      <div className='container flex justify-between items-center h-full'>
+    <header>
+      <div className='main-container inner'>
         <Link href='/'>
           <Image
             src='/assets/logo.svg'
@@ -26,7 +22,7 @@ export const Header = ({
           />
         </Link>
 
-        <nav className='flex h-full items-center'>
+        <nav>
           {navItems.map((item) => {
             const isActive = pathname === item.href;
 
@@ -43,13 +39,10 @@ export const Header = ({
               <Link
                 key={item.label}
                 href={item.href}
-                className={cn(
-                  'px-6 py-5 flex items-center transition-all hover:text-white font-medium h-full text-purple-100 cursor-pointer',
-                  {
-                    'text-white': isActive,
-                    'max-sm:hidden': item.label === 'Home',
-                  }
-                )}
+                className={cn('nav-link', {
+                  'is-active': isActive,
+                  'is-home': item.label === 'Home',
+                })}
               >
                 {item.label}
               </Link>

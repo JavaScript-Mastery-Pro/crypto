@@ -1,13 +1,6 @@
 'use client';
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { DataTable } from '@/components/DataTable';
 import CoinHeader from './CoinHeader';
 import { Separator } from './ui/separator';
 import CandlestickChart from './CandlestickChart';
@@ -26,10 +19,43 @@ export default function LiveDataWrapper({
     poolId,
   });
 
-  console.log('=========poolId', poolId);
+  const tradeColumns = [
+    {
+      header: 'Price',
+      cellClassName: 'price-cell',
+      cell: (trade: Trade) => (trade.price ? formatPrice(trade.price) : '-'),
+    },
+    {
+      header: 'Amount',
+      cellClassName: 'amount-cell',
+      cell: (trade: Trade) => trade.amount?.toFixed(4) ?? '-',
+    },
+    {
+      header: 'Value',
+      cellClassName: 'value-cell',
+      cell: (trade: Trade) => (trade.value ? formatPrice(trade.value) : '-'),
+    },
+    {
+      header: 'Buy/Sell',
+      cellClassName: 'type-cell',
+      cell: (trade: Trade) => (
+        <span
+          className={trade.type === 'b' ? 'text-green-500' : 'text-red-500'}
+        >
+          {trade.type === 'b' ? 'Buy' : 'Sell'}
+        </span>
+      ),
+    },
+    {
+      header: 'Time',
+      cellClassName: 'time-cell',
+      cell: (trade: Trade) =>
+        trade.timestamp ? timeAgo(trade.timestamp) : '-',
+    },
+  ];
 
   return (
-    <section className='size-full xl:col-span-2'>
+    <section id='live-data-wrapper'>
       <CoinHeader
         name={coin.name}
         image={coin.image.large}
@@ -44,10 +70,9 @@ export default function LiveDataWrapper({
         priceChange24h={coin.market_data.price_change_24h_in_currency.usd}
       />
 
-      <Separator className='my-8 bg-purple-600' />
+      <Separator className='divider' />
 
-      {/* Trend Overview */}
-      <div className='w-full'>
+      <div className='trend'>
         <CandlestickChart
           data={coinOHLCData}
           liveOhlcv={ohlcv}
@@ -55,63 +80,20 @@ export default function LiveDataWrapper({
           mode='live'
           initialPeriod='daily'
         >
-          <h4 className='section-title mt-2 pl-2'>Trend Overview</h4>
+          <h4>Trend Overview</h4>
         </CandlestickChart>
       </div>
 
-      <Separator className='my-8 bg-purple-600' />
+      <Separator className='divider' />
 
-      {/* Recent Trades */}
-      <div className='w-full my-8 space-y-4'>
-        <h4 className='section-title'>Recent Trades</h4>
-        <div className='custom-scrollbar bg-dark-500 mt-5 rounded-xl overflow-hidden'>
-          {trades.length > 0 ? (
-            <Table className='bg-dark-500'>
-              <TableHeader className='text-purple-100'>
-                <TableRow className='hover:bg-transparent text-sm'>
-                  <TableHead className='pl-5 text-purple-100'>Price</TableHead>
-                  <TableHead className='py-5 text-purple-100'>Amount</TableHead>
-                  <TableHead className='pr-8 text-purple-100'>Value</TableHead>
-                  <TableHead className='pr-8 text-purple-100'>
-                    Buy/Sell
-                  </TableHead>
-                  <TableHead className='pr-8 text-purple-100'>Time</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {trades?.map((trade, index) => (
-                  <TableRow key={index} className='hover:bg-transparent'>
-                    <TableCell className='pl-5 py-5 font-medium'>
-                      {trade.price ? formatPrice(trade.price) : '-'}
-                    </TableCell>
-                    <TableCell className='py-4 font-medium'>
-                      {trade.amount?.toFixed(4) ?? '-'}
-                    </TableCell>
-                    <TableCell className='font-medium'>
-                      {trade.value ? formatPrice(trade.value) : '-'}
-                    </TableCell>
-                    <TableCell className='font-medium'>
-                      <span
-                        className={
-                          trade.type === 'b' ? 'text-green-500' : 'text-red-500'
-                        }
-                      >
-                        {trade.type === 'b' ? 'Buy' : 'Sell'}
-                      </span>
-                    </TableCell>
-                    <TableCell className='pr-5'>
-                      {trade.timestamp ? timeAgo(trade.timestamp) : '-'}
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          ) : (
-            <div className='text-center p-10 text-purple-100/50'>
-              No recent trades
-            </div>
-          )}
-        </div>
+      <div className='trades'>
+        <h4>Recent Trades</h4>
+        <DataTable
+          tableClassName='trades-table'
+          columns={tradeColumns}
+          data={trades ?? []}
+          rowKey={(_, index) => index}
+        />
       </div>
 
       {children}

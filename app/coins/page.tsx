@@ -1,16 +1,10 @@
 import { getCoinList } from '@/lib/coingecko.actions';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { DataTable } from '@/components/DataTable';
 import Image from 'next/image';
-import { cn, formatPercentage, formatPrice } from '@/lib/utils';
+import Link from 'next/link';
+
 import CoinsPagination from '@/components/CoinsPagination';
-import { ClickableTableRow } from '@/components/ClickableTableRow';
+import { cn, formatPercentage, formatPrice } from '@/lib/utils';
 
 const Coins = async ({
   searchParams,
@@ -32,69 +26,71 @@ const Coins = async ({
   const estimatedTotalPages =
     currentPage >= 100 ? Math.ceil(currentPage / 100) * 100 + 100 : 100;
 
-  return (
-    <main className='coins-main'>
-      <div className='flex flex-col w-full space-y-5'>
-        <h4 className='text-2xl'>All Coins</h4>
-        <div className='custom-scrollbar coins-container'>
-          <Table>
-            <TableHeader className='coins-header'>
-              <TableRow className='coins-header-row'>
-                <TableHead className='coins-header-left'>Rank</TableHead>
-                <TableHead className='text-purple-100'>Token</TableHead>
-                <TableHead className='text-purple-100'>Price</TableHead>
-                <TableHead className='coins-header-right'>24h Change</TableHead>
-                <TableHead className='coins-header-right'>Market Cap</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {coinsData.map((coin: CoinMarketData) => {
-                const isTrendingUp = coin.price_change_percentage_24h > 0;
-                return (
-                  <ClickableTableRow
-                    key={coin.id}
-                    href={`/coins/${coin.id}`}
-                    className='coins-row'
-                  >
-                    <TableCell className='coins-rank'>
-                      #{coin.market_cap_rank}
-                    </TableCell>
-                    <TableCell className='coins-token'>
-                      <div className='coins-token-info'>
-                        <Image
-                          src={coin.image}
-                          alt={coin.name}
-                          width={36}
-                          height={36}
-                        />
-                        <p className='max-w-[100%] truncate'>
-                          {coin.name} ({coin.symbol.toUpperCase()})
-                        </p>
-                      </div>
-                    </TableCell>
-                    <TableCell className='coins-price'>
-                      {formatPrice(coin.current_price)}
-                    </TableCell>
-                    <TableCell className='font-medium'>
-                      <span
-                        className={cn('coins-change', {
-                          'text-green-600': isTrendingUp,
-                          'text-red-500': !isTrendingUp,
-                        })}
-                      >
-                        {isTrendingUp && '+'}
-                        {formatPercentage(coin.price_change_percentage_24h)}
-                      </span>
-                    </TableCell>
-                    <TableCell className='coins-market-cap'>
-                      {formatPrice(coin.market_cap)}
-                    </TableCell>
-                  </ClickableTableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
+  const columns = [
+    {
+      header: 'Rank',
+      cellClassName: 'rank-cell',
+      cell: (coin: CoinMarketData) => (
+        <>
+          #{coin.market_cap_rank}
+          <Link href={`/coins/${coin.id}`} aria-label='View coin' />
+        </>
+      ),
+    },
+    {
+      header: 'Token',
+      cellClassName: 'token-cell',
+      cell: (coin: CoinMarketData) => (
+        <div className='token-info'>
+          <Image src={coin.image} alt={coin.name} width={36} height={36} />
+          <p>
+            {coin.name} ({coin.symbol.toUpperCase()})
+          </p>
         </div>
+      ),
+    },
+    {
+      header: 'Price',
+      cellClassName: 'price-cell',
+      cell: (coin: CoinMarketData) => formatPrice(coin.current_price),
+    },
+    {
+      header: '24h Change',
+      cellClassName: 'change-cell',
+      cell: (coin: CoinMarketData) => {
+        const isTrendingUp = coin.price_change_percentage_24h > 0;
+
+        return (
+          <span
+            className={cn('change-value', {
+              'text-green-600': isTrendingUp,
+              'text-red-500': !isTrendingUp,
+            })}
+          >
+            {isTrendingUp && '+'}
+            {formatPercentage(coin.price_change_percentage_24h)}
+          </span>
+        );
+      },
+    },
+    {
+      header: 'Market Cap',
+      cellClassName: 'market-cap-cell',
+      cell: (coin: CoinMarketData) => formatPrice(coin.market_cap),
+    },
+  ];
+
+  return (
+    <main id='coins-page'>
+      <div className='content'>
+        <h4>All Coins</h4>
+
+        <DataTable
+          tableClassName='coins-table'
+          columns={columns}
+          data={coinsData}
+          rowKey={(coin) => coin.id}
+        />
 
         <CoinsPagination
           currentPage={currentPage}

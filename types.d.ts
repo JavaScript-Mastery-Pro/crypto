@@ -136,7 +136,7 @@ interface PriceData {
   usd: number;
 }
 
-interface TradeData {
+interface Trade {
   price?: number;
   timestamp?: number;
   type?: string;
@@ -248,13 +248,51 @@ interface UseCoinGeckoWebSocketProps {
 
 interface UseCoinGeckoWebSocketReturn {
   price: ExtendedPriceData | null;
-  trades: TradeData[];
+  trades: Trade[];
   ohlcv: OHLCData | null;
   isConnected: boolean;
 }
 
-interface ClickableTableRowProps {
-  href: string;
-  children: React.ReactNode;
-  className?: string;
+interface DataTableColumn<T> {
+  header: React.ReactNode;
+  cell: (row: T, index: number) => React.ReactNode;
+  headClassName?: string;
+  cellClassName?: string;
+}
+
+interface DataTableProps<T> {
+  columns: DataTableColumn<T>[];
+  data: T[];
+  rowKey: (row: T, index: number) => React.Key;
+  tableClassName?: string;
+  headerClassName?: string;
+  headerRowClassName?: string;
+  headerCellClassName?: string;
+  bodyRowClassName?: string;
+  bodyCellClassName?: string;
+}
+
+type ButtonSize = 'default' | 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg';
+
+type PaginationLinkProps = {
+  isActive?: boolean;
+  size?: ButtonSize;
+} & React.ComponentProps<'a'>;
+
+interface Pagination {
+  currentPage: number;
+  totalPages: number;
+  hasMorePages: boolean;
+}
+
+interface HeaderProps {
+  trendingCoins: TrendingCoin[];
+}
+
+type SearchItemCoin = SearchCoin | TrendingCoin['item'];
+
+interface SearchItemProps {
+  coin: SearchItemCoin;
+  onSelect: (coinId: string) => void;
+  isActiveName: boolean;
 }
