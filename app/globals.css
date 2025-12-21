@@ -159,6 +159,18 @@
     @apply !bg-dark-500;
   }
 
+  .badge {
+    @apply font-medium mt-2 h-fit py-1 flex items-center gap-1;
+  }
+
+  .badge-up {
+    @apply bg-green-600/20! text-green-600!;
+  }
+
+  .badge-down {
+    @apply bg-red-500/20! text-red-500!;
+  }
+
   /* CandlestickChart Styles */
   #candlestick-chart {
     @apply p-3 mt-5 rounded-lg bg-dark-500;
@@ -213,18 +225,6 @@
 
       .change {
         @apply flex items-center gap-2;
-
-        .badge {
-          @apply font-medium! h-fit! py-1! flex! items-center! gap-1!;
-        }
-
-        .badge-up {
-          @apply bg-green-600/20! text-green-600!;
-        }
-
-        .badge-down {
-          @apply bg-red-500/20! text-red-500!;
-        }
       }
     }
 
@@ -628,65 +628,44 @@
   }
 
   /* CoinHeader Component Utilities */
-  .coin-header-container {
+  #coin-header {
     @apply space-y-5 w-full;
-  }
 
-  .coin-header-info {
-    @apply flex gap-3 items-center;
-  }
+    h3 {
+      @apply text-3xl font-medium;
+    }
 
-  .coin-header-image {
-    @apply size-[45px] sm:size-[50px] xl:size-[77px];
-  }
+    .info {
+      @apply flex gap-3 items-center;
 
-  .coin-header-price {
-    @apply text-3xl sm:text-5xl xl:text-6xl font-semibold;
-  }
+      img {
+        @apply size-[45px] sm:size-[50px] xl:size-[77px];
+      }
+    }
 
-  .coin-header-badge {
-    @apply font-medium mt-2 h-fit py-1 flex items-center gap-1;
-  }
+    .price-row {
+      @apply flex gap-4;
 
-  .coin-header-stats {
-    @apply grid grid-cols-3 mt-8 gap-4 sm:gap-6 w-fit;
-  }
+      h1 {
+        @apply text-3xl sm:text-5xl xl:text-6xl font-semibold;
+      }
+    }
 
-  .coin-header-stat {
-    @apply text-base border-r border-purple-600 flex flex-col gap-2;
-  }
+    .stats {
+      @apply grid grid-cols-3 mt-8 gap-4 sm:gap-6 w-fit;
 
-  .coin-header-stat-label {
-    @apply text-purple-100 max-sm:text-sm;
-  }
+      li {
+        @apply text-base border-r last:border-none border-purple-600 flex flex-col gap-2;
 
-  .coin-header-stat-value {
-    @apply flex flex-1 gap-1 items-end text-base font-medium;
-  }
+        .label {
+          @apply text-purple-100 max-sm:text-sm;
+        }
 
-  .coin-header-stat-value-30d {
-    @apply flex gap-1 flex-1 items-end text-base font-medium;
-  }
-
-  .coin-header-stat-price {
-    @apply flex gap-1 items-center text-base font-medium;
-  }
-
-  /* Skeleton States */
-  .coin-header-skeleton-image {
-    @apply size-[45px] sm:size-[50px] xl:size-[77px] bg-dark-400/50 rounded-full animate-pulse;
-  }
-
-  .coin-header-skeleton-price {
-    @apply h-12 sm:h-16 xl:h-20 w-48 sm:w-64 xl:w-80 bg-dark-400/50 rounded animate-pulse;
-  }
-
-  .coin-header-skeleton-badge {
-    @apply h-10 w-32 bg-dark-400/50 rounded-full animate-pulse mt-2;
-  }
-
-  .coin-header-skeleton-stat {
-    @apply h-5 w-24 bg-dark-400/50 rounded animate-pulse;
+        .value {
+          @apply flex gap-1 flex-1 items-end text-base font-medium;
+        }
+      }
+    }
   }
 
   /* CoinOverview Component Utilities */
@@ -716,6 +695,22 @@
 
   .skeleton {
     @apply bg-dark-400/60;
+  }
+
+  .skeleton-image {
+    @apply size-[45px] sm:size-[50px] xl:size-[77px] bg-dark-400/50 rounded-full animate-pulse;
+  }
+
+  .skeleton-price {
+    @apply h-12 sm:h-16 xl:h-20 w-48 sm:w-64 xl:w-80 bg-dark-400/50 rounded animate-pulse;
+  }
+
+  .skeleton-badge {
+    @apply h-10 w-32 bg-dark-400/50 rounded-full animate-pulse mt-2;
+  }
+
+  .skeleton-stat {
+    @apply h-5 w-24 bg-dark-400/50 rounded animate-pulse;
   }
 }
 

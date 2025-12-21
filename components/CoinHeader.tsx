@@ -1,9 +1,10 @@
 'use client';
 
-import { cn, formatPercentage, formatPrice } from '@/lib/utils';
-import { TrendingDown, TrendingUp } from 'lucide-react';
 import Image from 'next/image';
+import { TrendingDown, TrendingUp } from 'lucide-react';
+
 import { Badge } from './ui/badge';
+import { cn, formatPercentage, formatPrice } from '@/lib/utils';
 
 export default function CoinHeader({
   livePriceChangePercentage24h,
@@ -23,7 +24,6 @@ export default function CoinHeader({
       value: livePriceChangePercentage24h,
       isUp: isTrendingUp,
       formatter: formatPercentage,
-      valueClassName: 'coin-header-stat-value',
       showIcon: true,
     },
     {
@@ -31,7 +31,6 @@ export default function CoinHeader({
       value: priceChangePercentage30d,
       isUp: isThirtyDayUp,
       formatter: formatPercentage,
-      valueClassName: 'coin-header-stat-value-30d',
       showIcon: true,
     },
     {
@@ -39,32 +38,21 @@ export default function CoinHeader({
       value: priceChange24h,
       isUp: isPriceChangeUp,
       formatter: formatPrice,
-      valueClassName: 'coin-header-stat-price',
       showIcon: false,
     },
   ];
 
   return (
-    <div className='coin-header-container'>
-      <h3 className='text-3xl font-medium'>{name}</h3>
+    <div id='coin-header'>
+      <h3>{name}</h3>
 
-      <div className='coin-header-info'>
-        <Image
-          src={image}
-          alt={name}
-          width={77}
-          height={77}
-          className='coin-header-image'
-        />
-        <div className='flex gap-4'>
-          <h1 className='coin-header-price'>{formatPrice(livePrice)}</h1>
+      <div className='info'>
+        <Image src={image} alt={name} width={77} height={77} />
+
+        <div className='price-row'>
+          <h1>{formatPrice(livePrice)}</h1>
           <Badge
-            className={cn(
-              'coin-header-badge',
-              isTrendingUp
-                ? 'bg-green-600/20 text-green-600'
-                : 'bg-red-500/20 text-red-500'
-            )}
+            className={cn('badge', isTrendingUp ? 'badge-up' : 'badge-down')}
           >
             {formatPercentage(livePriceChangePercentage24h)}
             {isTrendingUp ? <TrendingUp /> : <TrendingDown />}
@@ -73,12 +61,13 @@ export default function CoinHeader({
         </div>
       </div>
 
-      <div className='coin-header-stats'>
+      <ul className='stats'>
         {stats.map((stat) => (
-          <div key={stat.label} className='coin-header-stat'>
-            <p className='coin-header-stat-label'>{stat.label}</p>
+          <li key={stat.label}>
+            <p className='label'>{stat.label}</p>
+
             <div
-              className={cn(stat.valueClassName, {
+              className={cn('value', {
                 'text-green-500': stat.isUp,
                 'text-red-500': !stat.isUp,
               })}
@@ -91,9 +80,9 @@ export default function CoinHeader({
                   <TrendingDown width={16} height={16} />
                 ))}
             </div>
-          </div>
+          </li>
         ))}
-      </div>
+      </ul>
     </div>
   );
 }
