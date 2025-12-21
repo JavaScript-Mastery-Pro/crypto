@@ -693,6 +693,49 @@
     }
   }
 
+  /* CoinsPagination Component Utilities */
+  #coins-pagination {
+    .pagination-content {
+      @apply flex w-full;
+    }
+
+    .pagination-control {
+      @apply bg-dark-400 rounded-sm py-1;
+
+      &.prev {
+        @apply pr-2;
+      }
+
+      &.next {
+        @apply pl-2;
+      }
+    }
+
+    .control-button {
+      @apply cursor-pointer;
+    }
+
+    .control-disabled {
+      @apply pointer-events-none opacity-50;
+    }
+
+    .pagination-pages {
+      @apply flex flex-1 justify-center gap-2;
+
+      .ellipsis {
+        @apply px-3 py-2 text-base;
+      }
+
+      .page-link {
+        @apply hover:bg-dark-400! rounded-sm text-base cursor-pointer;
+      }
+
+      .page-link-active {
+        @apply bg-green-500! text-dark-900 font-semibold;
+      }
+    }
+  }
+
   .skeleton {
     @apply bg-dark-400/60;
   }

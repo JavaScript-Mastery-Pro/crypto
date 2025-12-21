@@ -26,32 +26,31 @@ export default function CoinsPagination({
   const isLastPage = !hasMorePages || currentPage === totalPages;
 
   return (
-    <Pagination>
-      <PaginationContent className='flex w-full'>
-        <PaginationItem className='bg-dark-400 rounded-sm pr-2 py-1'>
+    <Pagination id='coins-pagination'>
+      <PaginationContent className='pagination-content'>
+        <PaginationItem className='pagination-control prev'>
           <PaginationPrevious
             onClick={() => currentPage > 1 && handlePageChange(currentPage - 1)}
             className={
               currentPage === 1
-                ? 'pointer-events-none opacity-50'
-                : 'cursor-pointer'
+                ? 'control-disabled'
+                : 'control-button'
             }
           />
         </PaginationItem>
 
-        <div className='flex flex-1 justify-center gap-2'>
+        <div className='pagination-pages'>
           {pageNumbers.map((page, index) => (
             <PaginationItem key={index}>
               {page === ELLIPSIS ? (
-                <span className='px-3 py-2 text-base'>...</span>
+                <span className='ellipsis'>...</span>
               ) : (
                 <PaginationLink
                   onClick={() => handlePageChange(page)}
                   className={cn(
-                    'hover:bg-dark-400! rounded-sm text-base cursor-pointer',
+                    'page-link',
                     {
-                      'bg-green-500! text-dark-900 font-semibold':
-                        currentPage === page,
+                      'page-link-active': currentPage === page,
                     }
                   )}
                   isActive={currentPage === page}
@@ -63,11 +62,11 @@ export default function CoinsPagination({
           ))}
         </div>
 
-        <PaginationItem className='bg-dark-400 rounded-sm pl-2 py-1'>
+        <PaginationItem className='pagination-control next'>
           <PaginationNext
             onClick={() => !isLastPage && handlePageChange(currentPage + 1)}
             className={
-              isLastPage ? 'pointer-events-none opacity-50' : 'cursor-pointer'
+              isLastPage ? 'control-disabled' : 'control-button'
             }
           />
         </PaginationItem>
