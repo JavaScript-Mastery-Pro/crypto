@@ -1,66 +1,62 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 
-export const DataTable = <T,>({
+export function DataTable<T>({
   columns,
   data,
   rowKey,
   tableClassName,
-  headerClassName,
   headerRowClassName,
   headerCellClassName,
   bodyRowClassName,
   bodyCellClassName,
-}: DataTableProps<T>) => {
+}: DataTableProps<T>) {
   return (
-    <Table className={cn('custom-scrollbar', tableClassName)}>
-      <TableHeader className={headerClassName}>
-        <TableRow className={cn('hover:bg-transparent!', headerRowClassName)}>
-          {columns.map((column, columnIndex) => (
-            <TableHead
-              key={columnIndex}
-              className={cn(
-                'bg-dark-400 text-purple-100 py-4 first:pl-5 last:pr-5',
-                headerCellClassName,
-                column.headClassName
-              )}
-            >
-              {column.header}
-            </TableHead>
-          ))}
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {data.map((row, rowIndex) => (
-          <TableRow
-            key={rowKey(row, rowIndex)}
-            className={cn(
-              'overflow-hidden rounded-lg border-b border-purple-100/5 hover:bg-dark-400/30! relative',
-              bodyRowClassName
-            )}
-          >
-            {columns.map((column, columnIndex) => (
-              <TableCell
-                key={columnIndex}
+    <div className='relative w-full rounded-xl border border-white/5 overflow-hidden'>
+      <Table className={cn('custom-scrollbar bg-dark-500', tableClassName)}>
+        <TableHeader>
+          <TableRow className={cn('hover:bg-transparent! border-none', headerRowClassName)}>
+            {columns.map((column, index) => (
+              <TableHead
+                key={`head-${index}`}
                 className={cn(
-                  'py-4 first:pl-5 last:pr-5',
-                  bodyCellClassName,
-                  column.cellClassName
+                  'bg-dark-400 text-purple-100 py-4 px-5 font-semibold',
+                  headerCellClassName,
+                  column.headClassName,
                 )}
               >
-                {column.cell(row, rowIndex)}
-              </TableCell>
+                {column.header}
+              </TableHead>
             ))}
           </TableRow>
-        ))}
-      </TableBody>
-    </Table>
+        </TableHeader>
+
+        <TableBody>
+          {data.length > 0 ? (
+            data.map((row, rowIndex) => (
+              <TableRow
+                key={rowKey(row, rowIndex)}
+                className={cn('relative border-b border-white/5 last:border-none transition-colors', bodyRowClassName)}
+              >
+                {columns.map((column, colIndex) => (
+                  <TableCell
+                    key={`cell-${colIndex}`}
+                    className={cn('py-5 px-5', bodyCellClassName, column.cellClassName)}
+                  >
+                    {column.cell(row, rowIndex)}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={columns.length} className='h-24 text-center text-purple-100 italic'>
+                No market data available.
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+    </div>
   );
-};
+}

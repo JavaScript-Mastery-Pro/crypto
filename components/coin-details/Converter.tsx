@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Image from 'next/image';
 import { useState } from 'react';
 import { Input } from '../ui/input';
@@ -37,18 +31,6 @@ export const Converter = ({ symbol, icon, priceList }: ConverterProps) => {
           </div>
         </div>
 
-        <div className='divider'>
-          <div className='line' />
-
-          <Image
-            src='/assets/converter.svg'
-            alt='converter'
-            width={32}
-            height={32}
-            className='icon'
-          />
-        </div>
-
         <div className='output-wrapper'>
           <p>{formatPrice(convertedPrice, 2, currency, false)}</p>
 
@@ -61,11 +43,7 @@ export const Converter = ({ symbol, icon, priceList }: ConverterProps) => {
 
             <SelectContent className='select-content' data-converter>
               {Object.keys(priceList).map((currencyCode) => (
-                <SelectItem
-                  key={currencyCode}
-                  value={currencyCode}
-                  className='select-item'
-                >
+                <SelectItem key={currencyCode} value={currencyCode} className='select-item'>
                   {currencyCode.toUpperCase()}
                 </SelectItem>
               ))}

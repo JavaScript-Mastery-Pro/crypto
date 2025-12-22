@@ -51,9 +51,7 @@ export default function CoinHeader({
 
         <div className='price-row'>
           <h1>{formatPrice(livePrice)}</h1>
-          <Badge
-            className={cn('badge', isTrendingUp ? 'badge-up' : 'badge-down')}
-          >
+          <Badge className={cn('badge', isTrendingUp ? 'badge-up' : 'badge-down')}>
             {formatPercentage(livePriceChangePercentage24h)}
             {isTrendingUp ? <TrendingUp /> : <TrendingDown />}
             (24h)
@@ -74,11 +72,7 @@ export default function CoinHeader({
             >
               <p>{stat.formatter(stat.value)}</p>
               {stat.showIcon &&
-                (stat.isUp ? (
-                  <TrendingUp width={16} height={16} />
-                ) : (
-                  <TrendingDown width={16} height={16} />
-                ))}
+                (stat.isUp ? <TrendingUp width={16} height={16} /> : <TrendingDown width={16} height={16} />)}
             </div>
           </li>
         ))}

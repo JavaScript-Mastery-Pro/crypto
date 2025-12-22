@@ -1,125 +1,80 @@
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 
-import {
-  getCoinDetails,
-  getCoinOHLC,
-  fetchPools,
-  fetchTopPool,
-} from '@/lib/coingecko.actions';
+import { getCoinDetails, getCoinOHLC, fetchPools, fetchTopPool } from '@/lib/coingecko.actions';
 import { Converter } from '@/components/coin-details/Converter';
-import LiveDataWrapper from '@/components/LiveDataWrapper';
 import { TopGainersLosers } from '@/components/coin-details/TopGainersLosers';
+import LiveDataWrapper from '@/components/LiveDataWrapper';
 import { DataTable } from '@/components/DataTable';
 import { formatPrice, timeAgo } from '@/lib/utils';
 
-const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
+export default async function CoinDetailsPage({ params }: CoinDetailsPageProps) {
   const { id } = await params;
-  const coinData = await getCoinDetails(id);
-  const coinOHLCData = await getCoinOHLC(id, 1, 'usd', 'hourly', 'full');
 
-  const platform = coinData.asset_platform_id
-    ? coinData.detail_platforms[coinData.asset_platform_id]
-    : null;
+  const [coinData, coinOHLCData] = await Promise.all([getCoinDetails(id), getCoinOHLC(id, 1, 'usd', 'hourly', 'full')]);
 
-  const network = platform?.geckoterminal_url.split('/')[3] || null;
-  const contractAddress = platform?.contract_address || null;
+  const platformId = coinData.asset_platform_id;
+  const platform = platformId ? coinData.detail_platforms?.[platformId] : null;
+  const network = platform?.geckoterminal_url?.split('/')[3] ?? null;
+  const contractAddress = platform?.contract_address ?? null;
 
-  const pool =
-    network && contractAddress
-      ? await fetchTopPool(network, contractAddress)
-      : await fetchPools(id);
+  const pool = network && contractAddress ? await fetchTopPool(network, contractAddress) : await fetchPools(id);
 
-  const coinDetails = [
-    {
-      label: 'Market Cap',
-      value: formatPrice(coinData.market_data.market_cap.usd),
-    },
-    {
-      label: 'Market Cap Rank',
-      value: `# ${coinData.market_cap_rank}`,
-    },
-    {
-      label: 'Total Volume',
-      value: formatPrice(coinData.market_data.total_volume.usd),
-    },
-    {
-      label: 'Website',
-      value: '-',
-      link: coinData.links.homepage[0],
-      linkText: 'Website',
-    },
-    {
-      label: 'Explorer',
-      value: '-',
-      link: coinData.links.blockchain_site[0],
-      linkText: 'Explorer',
-    },
-    {
-      label: 'Community Link',
-      value: '-',
-      link: coinData.links.subreddit_url,
-      linkText: 'Community',
-    },
+  const marketStats = [
+    { label: 'Market Cap', value: formatPrice(coinData.market_data.market_cap.usd) },
+    { label: 'Rank', value: `#${coinData.market_cap_rank}` },
+    { label: 'Volume', value: formatPrice(coinData.market_data.total_volume.usd) },
+    { label: 'Website', link: coinData.links.homepage[0], linkText: 'Official Site' },
+    { label: 'Explorer', link: coinData.links.blockchain_site[0], linkText: 'Blockchain' },
+    { label: 'Community', link: coinData.links.subreddit_url, linkText: 'Reddit' },
   ];
 
-  const exchangeColumns = [
+  const exchangeColumns: DataTableColumn<Ticker>[] = [
     {
       header: 'Exchange',
       cellClassName: 'exchange-name',
-      cell: (ticker: Ticker) => (
+      cell: (ticker) => (
         <>
           {ticker.market.name}
-
-          <Link
-            href={ticker.trade_url}
-            target='_blank'
-            aria-label='View coin'
-          />
+          <Link href={ticker.trade_url} target='_blank' />
         </>
       ),
     },
     {
       header: 'Pair',
-      cell: (ticker: Ticker) => (
-        <div className='pair'>
-          <p>{ticker.base}</p>
-          <span>/</span>
-          <p>{ticker.target}</p>
+      cell: (ticker) => (
+        <div
+          className='pair font-medium text-purple-100 truncate max-w-[120px]'
+          title={`${ticker.base}/${ticker.target}`}
+        >
+          {ticker.base}/{ticker.target}
         </div>
       ),
     },
     {
       header: 'Price',
-      cellClassName: 'price-cell',
-      cell: (ticker: Ticker) => formatPrice(ticker.converted_last.usd),
+      cellClassName: 'price-cell font-bold',
+      cell: (ticker) => formatPrice(ticker.converted_last.usd),
     },
     {
       header: 'Last Traded',
-      headClassName: 'text-end',
-      cellClassName: 'time-cell',
-      cell: (ticker: Ticker) => timeAgo(ticker.timestamp),
+      cellClassName: 'time-cell text-end text-purple-100 text-sm',
+      cell: (ticker) => timeAgo(ticker.timestamp),
     },
   ];
 
   return (
     <main id='coin-details-page'>
       <section className='primary'>
-        <LiveDataWrapper
-          coinId={id}
-          poolId={pool.id}
-          coin={coinData}
-          coinOHLCData={coinOHLCData}
-        >
+        <LiveDataWrapper coinId={id} poolId={pool?.id || ''} coin={coinData} coinOHLCData={coinOHLCData}>
           <div className='exchange-section'>
             <h4>Exchange Listings</h4>
-
             <DataTable
               tableClassName='exchange-table'
               columns={exchangeColumns}
               data={coinData.tickers.slice(0, 7)}
-              rowKey={(_, index) => index}
-              bodyCellClassName='py-2!'
+              rowKey={(ticker: Ticker, index: number) => `${ticker.market.name}-${ticker.target}-${index}`}
+              bodyCellClassName='py-3!'
             />
           </div>
         </LiveDataWrapper>
@@ -133,32 +88,27 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
         />
 
         <div className='details'>
-          <h4>Coin Details</h4>
-
+          <h4>Asset Information</h4>
           <ul className='details-grid'>
-            {coinDetails.map(({ label, value, link, linkText }, index) => (
+            {marketStats.map((stat, index) => (
               <li key={index}>
-                <p className='label'>{label}</p>
-
-                {link ? (
+                <p className='label'>{stat.label}</p>
+                {stat.link ? (
                   <div className='link'>
-                    <Link href={link} target='_blank'>
-                      {linkText || label}
+                    <Link href={stat.link} target='_blank'>
+                      {stat.linkText}
                     </Link>
-                    <ArrowUpRight size={16} />
+                    <ArrowUpRight size={14} className='opacity-70' />
                   </div>
                 ) : (
-                  <p className='text-base font-medium'>{value}</p>
+                  <p className='value font-bold'>{stat.value}</p>
                 )}
               </li>
             ))}
           </ul>
         </div>
-
         <TopGainersLosers />
       </section>
     </main>
   );
-};
-
-export default CoinDetails;
+}

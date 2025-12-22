@@ -519,7 +519,7 @@
     }
 
     .exchange-table {
-      @apply bg-dark-500 rounded-xl overflow-hidden mt-5;
+      @apply bg-dark-500 rounded-xl overflow-hidden;
 
       .exchange-name {
         @apply text-green-500 font-bold;
@@ -685,10 +685,46 @@
         @apply font-semibold text-sm lg:text-base;
       }
 
-      .coin-change {
-        @apply flex gap-1 text-sm lg:text-base items-center font-medium;
+      .empty {
+        @apply py-6 text-center text-sm text-gray-400;
+      }
+
+      .heading {
+        @apply flex items-center gap-2 text-purple-100;
+      }
+
+      .group {
+        @apply bg-dark-500 text-purple-100;
+      }
+
+      .search-item {
+        @apply grid! grid-cols-4! gap-4! items-center! data-[selected=true]:bg-dark-400! transition-all! cursor-pointer! hover:bg-dark-400/50! py-3!;
+
+        .coin-info {
+          @apply flex! gap-2! items-center! col-span-2!;
+
+          img {
+            @apply size-9 rounded-full;
+          }
+
+          div {
+            @apply flex flex-col;
+          }
+
+          .coin-symbol {
+            @apply text-sm text-purple-100 uppercase;
+          }
+        }
+
+        .coin-price {
+          @apply font-semibold text-sm lg:text-base;
+        }
       }
     }
+  }
+
+  .coin-change {
+    @apply flex items-center gap-1 min-w-[75px] justify-end font-medium text-sm;
   }
 
   #converter {
@@ -767,7 +803,7 @@
     }
 
     .tabs-content {
-      @apply gap-4! mt-2! md:gap-5! sm:grid-cols-2! lg:grid-cols-1! grid!;
+      @apply gap-2! mt-2! md:gap-2! sm:grid-cols-2! lg:grid-cols-1! grid!;
     }
   }
 
@@ -901,7 +937,7 @@
     }
 
     .trades-table {
-      @apply bg-dark-500 mt-5 rounded-xl overflow-hidden;
+      @apply bg-dark-500  rounded-xl overflow-hidden;
 
       .price-cell {
         @apply pl-5 py-5 font-medium;

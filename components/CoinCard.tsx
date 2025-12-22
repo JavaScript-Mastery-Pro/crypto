@@ -1,62 +1,35 @@
 'use client';
 
-import Link from 'next/link';
 import Image from 'next/image';
-import { TrendingUp, TrendingDown } from 'lucide-react';
+import Link from 'next/link';
+import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { cn, formatPercentage, formatPrice } from '@/lib/utils';
 
-import { Badge } from './ui/badge';
-import { formatPrice, formatPercentage, cn } from '@/lib/utils';
-
-export default function CoinCard({
-  id,
-  name,
-  symbol,
-  image,
-  price,
-  priceChangePercentage24h,
-  volume24,
-  rank,
-}: TopGainersLosers) {
-  const isTrendingUp = priceChangePercentage24h > 0;
+export default function CoinCard({ coin }: { coin: TopGainersLosers }) {
+  const isPositive = coin.price_change_percentage_24h >= 0;
 
   return (
-    <Link href={`/coins/${id}`} id='coin-card'>
-      <div className='header'>
-        <Image
-          src={image}
-          alt={name}
-          width={48}
-          height={48}
-          className='image'
-        />
-        <div className='flex-1'>
-          <h3>{name}</h3>
-          <p className='symbol'>{symbol}</p>
+    <Link href={`/coins/${coin.id}`} id='coin-card' className='flex justify-between'>
+      <div className='header mb-0'>
+        <div className='relative size-10 flex-shrink-0'>
+          <Image src={coin.image} alt={coin.name} fill className='rounded-full object-cover bg-dark-400' />
+        </div>
+        <div className='overflow-hidden'>
+          <h5 className='font-bold text-sm truncate group-hover:text-purple-400 transition-colors'>{coin.name}</h5>
+          <span className='text-xs text-purple-100 uppercase'>{coin.symbol}</span>
         </div>
       </div>
 
-      <div className='price-row'>
-        <p className='price'>{formatPrice(price, 7)}</p>
-
-        <div className='change'>
-          <Badge
-            className={cn('badge', isTrendingUp ? 'badge-up' : 'badge-down')}
-          >
-            {formatPercentage(priceChangePercentage24h)}
-            {isTrendingUp ? <TrendingUp /> : <TrendingDown />}
-          </Badge>
-        </div>
-      </div>
-
-      <div className='stats'>
-        <div className='stat-row'>
-          <span className='label'>Market Cap Rank</span>
-          <span className='value'>#{rank}</span>
-        </div>
-
-        <div className='stat-row'>
-          <span className='label'>Volume 24h: </span>
-          <span className='value'>{formatPrice(volume24)}</span>
+      <div className='text-right space-y-2'>
+        <p className='font-bold text-sm'>{formatPrice(coin.current_price)}</p>
+        <div
+          className={cn(
+            'flex items-center justify-end gap-1 text-xs font-bold',
+            isPositive ? 'text-green-500' : 'text-red-500',
+          )}
+        >
+          {isPositive ? <ArrowUpRight size={12} /> : <ArrowDownRight size={12} />}
+          <span>{formatPercentage(Math.abs(coin.price_change_percentage_24h))}</span>
         </div>
       </div>
     </Link>

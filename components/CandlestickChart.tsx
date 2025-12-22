@@ -1,174 +1,129 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import {
-  IChartApi,
-  ISeriesApi,
-  createChart,
-  CandlestickSeries,
-} from 'lightweight-charts';
-import {
-  getCandlestickConfig,
-  getChartConfig,
-  PERIOD_BUTTONS,
-  PERIOD_CONFIG,
-} from '@/lib/constants';
+import { createChart, CandlestickSeries, IChartApi, ISeriesApi } from 'lightweight-charts';
+
+import { getChartConfig, getCandlestickConfig, PERIOD_BUTTONS, PERIOD_CONFIG } from '@/lib/constants';
 import { convertOHLCData } from '@/lib/utils';
-const { getCoinOHLC } = await import('@/lib/coingecko.actions');
+import { getCoinOHLC } from '@/lib/coingecko.actions';
 
-export default function CandlestickChart({
-  data,
-  coinId,
-  height = 360,
-  children,
-  liveOhlcv = null,
-  mode = 'historical',
-  initialPeriod = 'daily',
-}: CandlestickChartProps) {
-  const chartContainerRef = useRef<HTMLDivElement | null>(null);
+export default function CandlestickChart({ initialData, liveOhlcv, coinId, children, height = 400 }: CandlestickChartProps) {
+  const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
-  const candleSeriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
+  const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
 
-  const [period, setPeriod] = useState<Period>(initialPeriod);
-  const [ohlcData, setOhlcData] = useState<OHLCData[]>(data ?? []);
-  const [loading, setLoading] = useState(false);
-  const prevOhlcDataLength = useRef<number>(data?.length ?? 0);
+  const [ohlcData, setOhlcData] = useState(initialData);
+  const [period, setPeriod] = useState('daily');
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Fetch OHLC data when period changes
-  const fetchOHLCData = async (selectedPeriod: Period) => {
-    setLoading(true);
+  // 1. Handle Period Changes
+  const changePeriod = async (newPeriod: string) => {
+    setIsLoading(true);
+    setPeriod(newPeriod);
+
     try {
-      const config = PERIOD_CONFIG[selectedPeriod];
+      const config = PERIOD_CONFIG[newPeriod as keyof typeof PERIOD_CONFIG];
 
-      const newData = await getCoinOHLC(
+      // CORRECT ORDER: id, days, currency, interval
+      const data = await getCoinOHLC(
         coinId,
         config.days,
-        'usd',
-        config.interval,
-        'full'
+        'usd', // Add 'usd' explicitly here
+        config.interval, // Interval is the 4th argument
       );
 
-      setOhlcData(newData ?? []);
-    } catch (err) {
-      console.error('Failed to fetch OHLC data:', err);
+      setOhlcData(data);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
-  const handlePeriodChange = (newPeriod: Period) => {
-    if (newPeriod === period) return;
-
-    setPeriod(newPeriod);
-    fetchOHLCData(newPeriod);
-  };
-
-  // Initialize chart
+  // 2. Initialize Chart
   useEffect(() => {
-    const container = chartContainerRef.current;
-    if (!container) return;
+    if (!chartContainerRef.current) return;
 
-    const showTime = ['daily', 'weekly', 'monthly'].includes(period);
-    const chart = createChart(container, {
-      ...getChartConfig(height, showTime),
-      width: container.clientWidth,
-    });
+    const chart = createChart(chartContainerRef.current, getChartConfig(height));
     const series = chart.addSeries(CandlestickSeries, getCandlestickConfig());
 
-    series.setData(convertOHLCData(ohlcData));
-    chart.timeScale().fitContent();
-
     chartRef.current = chart;
-    candleSeriesRef.current = series;
+    seriesRef.current = series;
 
-    const observer = new ResizeObserver((entries) => {
-      if (!entries.length) return;
-      chart.applyOptions({ width: entries[0].contentRect.width });
-    });
-    observer.observe(container);
+    // Handle Resize
+    const handleResize = () => {
+      chart.applyOptions({ width: chartContainerRef.current?.clientWidth });
+    };
+    window.addEventListener('resize', handleResize);
 
     return () => {
-      observer.disconnect();
+      window.removeEventListener('resize', handleResize);
       chart.remove();
-      chartRef.current = null;
-      candleSeriesRef.current = null;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [height]);
 
-  // Update chart when data or liveOhlcv changes
+  // 3. Update Series Data
   useEffect(() => {
-    if (!candleSeriesRef.current) return;
+    if (seriesRef.current && ohlcData) {
+      // Convert timestamps from milliseconds to seconds
+      const convertedToSeconds = ohlcData.map(
+        (item) =>
+          [
+            Math.floor(item[0] / 1000), // timestamp in seconds
+            item[1], // open
+            item[2], // high
+            item[3], // low
+            item[4], // close
+          ] as OHLCData
+      );
 
-    // Convert timestamps from milliseconds to seconds
-    const convertedToSeconds = ohlcData.map(
-      (item) =>
-        [
-          Math.floor(item[0] / 1000), // timestamp in seconds
-          item[1], // open
-          item[2], // high
-          item[3], // low
-          item[4], // close
-        ] as OHLCData
-    );
+      let merged: OHLCData[];
 
-    let merged: OHLCData[];
+      if (liveOhlcv) {
+        const liveTimestamp = liveOhlcv[0];
 
-    if (liveOhlcv) {
-      const liveTimestamp = liveOhlcv[0];
+        // Check if we need to update an existing candle or add a new one
+        const lastHistoricalCandle =
+          convertedToSeconds[convertedToSeconds.length - 1];
 
-      // Check if we need to update an existing candle or add a new one
-      const lastHistoricalCandle =
-        convertedToSeconds[convertedToSeconds.length - 1];
-
-      if (lastHistoricalCandle && lastHistoricalCandle[0] === liveTimestamp) {
-        // Update the last candle with live data
-        merged = [...convertedToSeconds.slice(0, -1), liveOhlcv];
+        if (lastHistoricalCandle && lastHistoricalCandle[0] === liveTimestamp) {
+          // Update the last candle with live data
+          merged = [...convertedToSeconds.slice(0, -1), liveOhlcv];
+        } else {
+          // Append new live candle
+          merged = [...convertedToSeconds, liveOhlcv];
+        }
       } else {
-        // Append new live candle
-        merged = [...convertedToSeconds, liveOhlcv];
+        merged = convertedToSeconds;
       }
-    } else {
-      merged = convertedToSeconds;
-    }
 
-    // Sort ascending by time (in case of any ordering issues)
-    merged.sort((a, b) => a[0] - b[0]);
+      // Sort ascending by time (in case of any ordering issues)
+      merged.sort((a, b) => a[0] - b[0]);
 
-    const converted = convertOHLCData(merged);
+      // Update the chart series
+      const formatted = convertOHLCData(merged);
+      seriesRef.current.setData(formatted);
 
-    candleSeriesRef.current.setData(converted);
-
-    // Fit content when ohlcData changes (period change), not on live updates
-    const dataChanged = prevOhlcDataLength.current !== ohlcData.length;
-    if (dataChanged || mode === 'historical') {
       chartRef.current?.timeScale().fitContent();
-      prevOhlcDataLength.current = ohlcData.length;
     }
-  }, [ohlcData, liveOhlcv, period, mode]);
+  }, [ohlcData, liveOhlcv, period]);
 
   return (
-    <div id='candlestick-chart'>
-      <div className='chart-header'>
-        <div className='flex-1'>{children}</div>
-
-        <div className='button-group'>
-          {PERIOD_BUTTONS.map(({ value, label }) => (
+    <div id='candlestick-chart' className='flex flex-col'>
+      <div className='chart-header flex justify-between items-center p-4'>
+        {children}
+        <div className='button-group bg-dark-400 p-1 rounded-md flex gap-1'>
+          {PERIOD_BUTTONS.map((btn) => (
             <button
-              key={value}
-              className={
-                period === value ? 'period-button-active' : 'period-button'
-              }
-              onClick={() => handlePeriodChange(value)}
-              disabled={loading}
+              key={btn.value}
+              onClick={() => changePeriod(btn.value)}
+              className={period === btn.value ? 'period-button-active' : 'period-button'}
+              disabled={isLoading}
             >
-              {label}
+              {btn.label}
             </button>
           ))}
         </div>
       </div>
-
-      <div ref={chartContainerRef} className='chart' style={{ height }} />
+      <div ref={chartContainerRef} className='w-full' />
     </div>
   );
 }

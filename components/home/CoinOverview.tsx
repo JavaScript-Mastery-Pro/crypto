@@ -1,33 +1,24 @@
 import Image from 'next/image';
-
 import CandlestickChart from '../CandlestickChart';
 import { getCoinDetails, getCoinOHLC } from '@/lib/coingecko.actions';
 import { formatPrice } from '@/lib/utils';
 
-export const CoinOverview = async () => {
-  const [coinData, coinOHLCData] = await Promise.all([
-    getCoinDetails('bitcoin'),
-    getCoinOHLC('bitcoin', 1, 'usd', 'hourly', 'full'),
-  ]);
+export const CoinOverview = async ({ coinId = 'bitcoin' }: { coinId?: string }) => {
+  const [coin, ohlcData] = await Promise.all([getCoinDetails(coinId), getCoinOHLC(coinId, 1)]);
 
   return (
-    <div id='coin-overview'>
-      <CandlestickChart data={coinOHLCData} coinId='bitcoin'>
+    <section id='coin-overview'>
+      <CandlestickChart initialData={ohlcData} coinId={coinId}>
         <div className='header'>
-          <Image
-            src={coinData.image.large}
-            alt={coinData.name}
-            width={56}
-            height={56}
-          />
+          <Image src={coin.image.large} alt={coin.name} width={56} height={56} />
           <div className='info'>
-            <p>
-              {coinData.name} / {coinData.symbol.toUpperCase()}
+            <p className='uppercase'>
+              {coin.name} / {coin.symbol}
             </p>
-            <h1>{formatPrice(coinData.market_data.current_price.usd)}</h1>
+            <h1>{formatPrice(coin.market_data.current_price.usd)}</h1>
           </div>
         </div>
       </CandlestickChart>
-    </div>
+    </section>
   );
 };

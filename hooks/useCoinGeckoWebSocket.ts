@@ -1,41 +1,47 @@
-import { useEffect, useRef, useState } from 'react';
+'use client';
+
+import { useEffect, useRef, useState, useCallback } from 'react';
 
 const WS_BASE = `${process.env.NEXT_PUBLIC_COINGECKO_WEBSOCKET_URL}?x_cg_pro_api_key=${process.env.NEXT_PUBLIC_COINGECKO_API_KEY}`;
 
-export function useCoinGeckoWebSocket({
-  coinId,
-  poolId,
-}: UseCoinGeckoWebSocketProps): UseCoinGeckoWebSocketReturn {
+export function useCoinGeckoWebSocket({ coinId, poolId }: UseCoinGeckoWebSocketProps): UseCoinGeckoWebSocketReturn {
   const wsRef = useRef<WebSocket | null>(null);
   const subscribed = useRef<Set<string>>(new Set());
 
   const [price, setPrice] = useState<ExtendedPriceData | null>(null);
   const [trades, setTrades] = useState<Trade[]>([]);
   const [ohlcv, setOhlcv] = useState<OHLCData | null>(null);
-
   const [isWsReady, setIsWsReady] = useState(false);
 
-  // WebSocket connection
+  // Helper to send JSON payloads safely
+  const send = useCallback((payload: Record<string, unknown>) => {
+    if (wsRef.current?.readyState === WebSocket.OPEN) {
+      wsRef.current.send(JSON.stringify(payload));
+    }
+  }, []);
+
+  // 1. WebSocket Connection & Message Handling
   useEffect(() => {
     const ws = new WebSocket(WS_BASE);
     wsRef.current = ws;
-    const send = (payload: Record<string, unknown>) =>
-      ws.send(JSON.stringify(payload));
 
     const handleMessage = (event: MessageEvent) => {
       const msg: WebSocketMessage = JSON.parse(event.data);
 
+      // Handle Ping/Pong
       if (msg.type === 'ping') {
         send({ type: 'pong' });
         return;
       }
 
+      // Track confirmed subscriptions
       if (msg.type === 'confirm_subscription') {
-        const { channel } = JSON.parse(msg?.identifier ?? '');
+        const { channel } = JSON.parse(msg?.identifier ?? '{}');
         subscribed.current.add(channel);
         return;
       }
 
+      // Simple Price Stream (C1)
       if (msg.c === 'C1') {
         setPrice({
           usd: msg.p ?? 0,
@@ -48,19 +54,20 @@ export function useCoinGeckoWebSocket({
         });
       }
 
+      // Real-Time Trades (G2)
       if (msg.c === 'G2') {
         const newTrade: Trade = {
-          price: msg.pu,
-          value: msg.vo,
-          timestamp: msg.t ?? 0,
-          type: msg.ty,
-          amount: msg.to,
+          price: msg.pu ?? 0,
+          value: msg.vo ?? 0,
+          timestamp: msg.t ?? Date.now(),
+          type: (msg.ty as 'b' | 's') ?? 'b',
+          amount: msg.to ?? 0,
         };
-
         setTrades((prev) => [newTrade, ...prev].slice(0, 7));
       }
 
-      if (msg.ch === 'G3') {
+      // OHLCV Stream (G3) - Corrected to Object Format
+       if (msg.ch === 'G3') {
         const timestamp = msg.t || 0;
         const newCandle: OHLCData = [
           timestamp,
@@ -79,31 +86,16 @@ export function useCoinGeckoWebSocket({
     ws.onclose = () => setIsWsReady(false);
 
     return () => ws.close();
-  }, []);
+  }, [send]);
 
-  // Subscribe on connection ready
+  // 2. Subscription Management
   useEffect(() => {
-    if (!isWsReady) return;
-    const ws = wsRef.current;
-    if (!ws) return;
-    const send = (payload: Record<string, unknown>) =>
-      ws.send(JSON.stringify(payload));
-
-    const unsubscribeAll = () => {
-      subscribed.current.forEach((channel) => {
-        send({
-          command: 'unsubscribe',
-          identifier: JSON.stringify({ channel }),
-        });
-      });
-      subscribed.current.clear();
-    };
+    if (!isWsReady || !wsRef.current) return;
 
     const subscribe = (channel: string, data?: Record<string, unknown>) => {
       if (subscribed.current.has(channel)) return;
 
       send({ command: 'subscribe', identifier: JSON.stringify({ channel }) });
-
       if (data) {
         send({
           command: 'message',
@@ -113,7 +105,15 @@ export function useCoinGeckoWebSocket({
       }
     };
 
-    queueMicrotask(() => {
+    const unsubscribeAll = () => {
+      subscribed.current.forEach((channel) => {
+        send({ command: 'unsubscribe', identifier: JSON.stringify({ channel }) });
+      });
+      subscribed.current.clear();
+    };
+
+    // Reset data and re-subscribe on asset change
+     queueMicrotask(() => {
       setPrice(null);
       setTrades([]);
       setOhlcv(null);
@@ -121,27 +121,17 @@ export function useCoinGeckoWebSocket({
 
     unsubscribeAll();
 
+    // Market Price Subscription
     subscribe('CGSimplePrice', { coin_id: [coinId], action: 'set_tokens' });
 
+    // On-Chain Pool Subscriptions (Trades & OHLCV)
     const poolAddress = poolId.replace('_', ':');
     if (poolAddress) {
-      subscribe('OnchainTrade', {
-        'network_id:pool_addresses': [poolAddress],
-        action: 'set_pools',
-      });
-
-      subscribe('OnchainOHLCV', {
-        'network_id:pool_addresses': [poolAddress],
-        interval: '1s',
-        action: 'set_pools',
-      });
+      const poolPayload = { 'network_id:pool_addresses': [poolAddress], action: 'set_pools' };
+      subscribe('OnchainTrade', poolPayload);
+      subscribe('OnchainOHLCV', { ...poolPayload, interval: '1s' });
     }
-  }, [coinId, poolId, isWsReady]);
+  }, [coinId, poolId, isWsReady, send]);
 
-  return {
-    price,
-    trades,
-    ohlcv,
-    isConnected: isWsReady,
-  };
+  return { price, trades, ohlcv, isConnected: isWsReady };
 }
