@@ -1,3 +1,4 @@
+import { OHLCData } from '@/types';
 import { clsx, type ClassValue } from 'clsx';
 import { Time } from 'lightweight-charts';
 import { twMerge } from 'tailwind-merge';
@@ -10,7 +11,7 @@ export function formatPrice(
   value: number | null | undefined,
   digits?: number,
   currency?: string,
-  showSymbol?: boolean
+  showSymbol?: boolean,
 ) {
   if (value === null || value === undefined || isNaN(value)) {
     return showSymbol !== false ? '$0.00' : '0.00';
@@ -78,16 +79,11 @@ export function convertOHLCData(data: OHLCData[]) {
       low: d[3],
       close: d[4],
     }))
-    .filter(
-      (item, index, arr) => index === 0 || item.time !== arr[index - 1].time
-    );
+    .filter((item, index, arr) => index === 0 || item.time !== arr[index - 1].time);
 }
 
 export const ELLIPSIS = 'ellipsis' as const;
-export const buildPageNumbers = (
-  currentPage: number,
-  totalPages: number
-): (number | typeof ELLIPSIS)[] => {
+export const buildPageNumbers = (currentPage: number, totalPages: number): (number | typeof ELLIPSIS)[] => {
   const MAX_VISIBLE_PAGES = 5;
 
   const pages: (number | typeof ELLIPSIS)[] = [];

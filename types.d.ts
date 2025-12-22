@@ -1,43 +1,25 @@
-type OHLCData = [number, number, number, number, number];
+import React from 'react';
 
-interface CandlestickChartProps {
-  data?: OHLCData[];
-  liveOhlcv?: OHLCData | null;
-  coinId: string;
-  height?: number;
-  children?: React.ReactNode;
-  mode?: 'historical' | 'live';
-  initialPeriod?: Period;
+// --- Shared Utility & Base Types ---
+type OHLCData = {
+  time: number;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+};
+
+type Period = 'daily' | 'weekly' | 'monthly' | '3months' | '6months' | 'yearly' | 'max';
+
+interface Trade {
+  price: number;
+  amount: number;
+  value: number;
+  type: 'b' | 's'; // b = buy, s = sell
+  timestamp: number;
 }
 
-interface ConverterProps {
-  symbol: string;
-  icon: string;
-  priceList: Record<string, number>;
-}
-
-interface Ticker {
-  market: {
-    name: string;
-  };
-  base: string;
-  target: string;
-  converted_last: {
-    usd: number;
-  };
-  timestamp: string;
-  trade_url: string;
-}
-
-type Period =
-  | 'daily'
-  | 'weekly'
-  | 'monthly'
-  | '3months'
-  | '6months'
-  | 'yearly'
-  | 'max';
-
+// --- Market Data Interfaces ---
 interface CoinMarketData {
   id: string;
   symbol: string;
@@ -96,54 +78,57 @@ interface SearchCoin {
   };
 }
 
-// Chart Section Props (used in ChartSection.tsx)
-interface ChartSectionProps {
-  coinData: {
-    image: { large: string };
-    name: string;
-    symbol: string;
-    market_data: {
-      current_price: { usd: number };
-    };
+interface Category {
+  name: string;
+  top_3_coins: string[];
+  market_cap_change_24h: number;
+  market_cap: number;
+  volume_24h: number;
+}
+
+// --- Coin Detail & Ticker Interfaces ---
+interface Ticker {
+  market: { name: string };
+  base: string;
+  target: string;
+  converted_last: { usd: number };
+  timestamp: string;
+  trade_url: string;
+}
+
+interface CoinDetailsData {
+  id: string;
+  name: string;
+  symbol: string;
+  asset_platform_id?: string;
+  detail_platforms?: Record<
+    string,
+    {
+      decimal_place: number | null;
+      contract_address: string;
+      geckoterminal_url?: string;
+    }
+  >;
+  image: { large: string; small: string };
+  market_data: {
+    current_price: { usd: number; [key: string]: number };
+    price_change_24h_in_currency: { usd: number };
+    price_change_percentage_24h_in_currency: { usd: number };
+    price_change_percentage_30d_in_currency: { usd: number };
+    market_cap: { usd: number };
+    total_volume: { usd: number };
   };
-  coinOHLCData: OHLCData[];
-  coinId: string;
-}
-
-interface TopGainersLosers {
-  id: string;
-  name: string;
-  symbol: string;
-  image: string;
-  price: number;
-  priceChangePercentage24h: number;
-  volume24: number;
-  rank: number;
-}
-
-interface TopGainersLosersResponse {
-  id: string;
-  name: string;
-  symbol: string;
-  image: string;
-  usd: number;
-  usd_24h_change: number;
-  usd_24h_vol: number;
   market_cap_rank: number;
+  description: { en: string };
+  links: {
+    homepage: string[];
+    blockchain_site: string[];
+    subreddit_url: string;
+  };
+  tickers: Ticker[];
 }
 
-interface PriceData {
-  usd: number;
-}
-
-interface Trade {
-  price?: number;
-  timestamp?: number;
-  type?: string;
-  amount?: number;
-  value?: number;
-}
-
+// --- WebSocket & Live Logic Interfaces ---
 interface ExtendedPriceData {
   usd: number;
   coin?: string;
@@ -175,52 +160,22 @@ interface WebSocketMessage {
   identifier?: string;
 }
 
-interface CoinDetailsData {
-  id: string;
-  name: string;
-  symbol: string;
-  image: {
-    large: string;
-    small: string;
-  };
-  market_data: {
-    current_price: {
-      usd: number;
-      [key: string]: number;
-    };
-    price_change_24h_in_currency: {
-      usd: number;
-    };
-    price_change_percentage_24h_in_currency: {
-      usd: number;
-    };
-    price_change_percentage_30d_in_currency: {
-      usd: number;
-    };
-    market_cap: {
-      usd: number;
-    };
-    total_volume: {
-      usd: number;
-    };
-  };
-  market_cap_rank: number;
-  description: {
-    en: string;
-  };
-  links: {
-    homepage: string[];
-    blockchain_site: string[];
-    subreddit_url: string;
-  };
-  tickers: Ticker[];
+// --- Component Prop Interfaces ---
+interface CandlestickChartProps {
+  initialData: OHLCData[];
+  liveOhlcv: OHLCData | null; // Resolves TS2741 & TS2322
+  coinId: string;
+  children?: React.ReactNode;
+  mode?: 'live' | 'historical';
+  initialPeriod?: string;
+  height?: number;
 }
 
 interface LiveDataProps {
   coinId: string;
   poolId: string;
   coin: CoinDetailsData;
-  coinOHLCData?: OHLCData[];
+  coinOHLCData: OHLCData[];
   children?: React.ReactNode;
 }
 
@@ -231,6 +186,65 @@ interface LiveCoinHeaderProps {
   livePriceChangePercentage24h: number;
   priceChangePercentage30d: number;
   priceChange24h: number;
+}
+
+interface ConverterProps {
+  symbol: string;
+  icon: string;
+  priceList: Record<string, number>;
+}
+
+interface SearchItemProps {
+  coin: SearchCoin | TrendingCoin['item'];
+  onSelect: (coinId: string) => void;
+  isActiveName: boolean;
+}
+
+// --- DataTable Interfaces ---
+interface DataTableColumn<T> {
+  header: React.ReactNode;
+  cell: (row: T, index: number) => React.ReactNode;
+  headClassName?: string;
+  cellClassName?: string;
+}
+
+interface DataTableProps<T> {
+  columns: DataTableColumn<T>[];
+  data: T[];
+  rowKey: (row: T, index: number) => React.Key;
+  tableClassName?: string;
+  headerClassName?: string;
+  headerRowClassName?: string;
+  headerCellClassName?: string;
+  bodyRowClassName?: string;
+  bodyCellClassName?: string;
+}
+
+// --- Pagination & Navigation ---
+type ButtonSize = 'default' | 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg';
+
+type PaginationLinkProps = {
+  isActive?: boolean;
+  size?: ButtonSize;
+} & React.ComponentProps<'a'>;
+
+interface PaginationProps {
+  currentPage: number;
+  totalPages: number;
+  hasMorePages: boolean;
+}
+
+// --- Page & Route Props ---
+interface CoinsPageProps {
+  searchParams: Promise<{ page?: string }>;
+}
+
+interface CoinDetailsPageProps {
+  params: Promise<{ id: string }>;
+}
+
+interface HeaderProps {
+  trendingCoins: TrendingCoin[];
 }
 
 interface Category {
@@ -251,48 +265,4 @@ interface UseCoinGeckoWebSocketReturn {
   trades: Trade[];
   ohlcv: OHLCData | null;
   isConnected: boolean;
-}
-
-interface DataTableColumn<T> {
-  header: React.ReactNode;
-  cell: (row: T, index: number) => React.ReactNode;
-  headClassName?: string;
-  cellClassName?: string;
-}
-
-interface DataTableProps<T> {
-  columns: DataTableColumn<T>[];
-  data: T[];
-  rowKey: (row: T, index: number) => React.Key;
-  tableClassName?: string;
-  headerClassName?: string;
-  headerRowClassName?: string;
-  headerCellClassName?: string;
-  bodyRowClassName?: string;
-  bodyCellClassName?: string;
-}
-
-type ButtonSize = 'default' | 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg';
-
-type PaginationLinkProps = {
-  isActive?: boolean;
-  size?: ButtonSize;
-} & React.ComponentProps<'a'>;
-
-interface Pagination {
-  currentPage: number;
-  totalPages: number;
-  hasMorePages: boolean;
-}
-
-interface HeaderProps {
-  trendingCoins: TrendingCoin[];
-}
-
-type SearchItemCoin = SearchCoin | TrendingCoin['item'];
-
-interface SearchItemProps {
-  coin: SearchItemCoin;
-  onSelect: (coinId: string) => void;
-  isActiveName: boolean;
 }

@@ -1,9 +1,4 @@
-import {
-  CandlestickSeriesPartialOptions,
-  ChartOptions,
-  ColorType,
-  DeepPartial,
-} from 'lightweight-charts';
+import { CandlestickSeriesPartialOptions, ChartOptions, ColorType, DeepPartial } from 'lightweight-charts';
 
 export const navItems = [
   {
@@ -40,10 +35,7 @@ export const getCandlestickConfig = (): CandlestickSeriesPartialOptions => ({
   wickVisible: true,
 });
 
-export const getChartConfig = (
-  height: number,
-  timeVisible: boolean = true
-): DeepPartial<ChartOptions> => ({
+export const getChartConfig = (height: number, timeVisible: boolean = true): DeepPartial<ChartOptions> => ({
   width: 0,
   height,
   layout: {
@@ -86,15 +78,11 @@ export const getChartConfig = (
     },
   },
   localization: {
-    priceFormatter: (price: number) =>
-      '$' + price.toLocaleString(undefined, { maximumFractionDigits: 2 }),
+    priceFormatter: (price: number) => '$' + price.toLocaleString(undefined, { maximumFractionDigits: 2 }),
   },
 });
 
-export const PERIOD_CONFIG: Record<
-  Period,
-  { days: number | string; interval?: 'hourly' | 'daily' }
-> = {
+export const PERIOD_CONFIG: Record<Period, { days: number | string; interval?: 'hourly' | 'daily' }> = {
   daily: { days: 1, interval: 'hourly' },
   weekly: { days: 7, interval: 'hourly' },
   monthly: { days: 30, interval: 'hourly' },
