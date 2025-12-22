@@ -214,12 +214,12 @@
       @apply flex gap-1 xl:gap-2 items-center;
     }
 
-    .period-button {
-      @apply rounded-sm border-0 cursor-pointer px-2 xl:px-3 py-1.5 text-xs xl:text-sm text-purple-100 hover:bg-dark-400 hover:text-white transition-colors duration-200;
+    .config-button {
+      @apply rounded-sm border-0 cursor-pointer px-2.5 py-2 text-xs xl:text-sm text-purple-100 hover:bg-dark-400 hover:text-white;
     }
 
-    .period-button-active {
-      @apply rounded-sm px-3 py-1.5 border-0 cursor-pointer text-sm text-gray-900 bg-green-500;
+    .config-button-active {
+      @apply rounded-sm px-2.5 py-1.5 border-0 cursor-pointer text-sm text-gray-900 bg-green-500;
     }
 
     .chart {

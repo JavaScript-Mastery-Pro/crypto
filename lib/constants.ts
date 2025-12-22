@@ -113,3 +113,8 @@ export const PERIOD_BUTTONS: { value: Period; label: string }[] = [
   { value: 'yearly', label: '1Y' },
   { value: 'max', label: 'Max' },
 ];
+
+export const LIVE_INTERVAL_BUTTONS: { value: '1s' | '1m'; label: string }[] = [
+  { value: '1s', label: '1s' },
+  { value: '1m', label: '1m' },
+];

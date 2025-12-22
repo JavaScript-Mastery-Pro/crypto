@@ -10,6 +10,7 @@ import {
 import {
   getCandlestickConfig,
   getChartConfig,
+  LIVE_INTERVAL_BUTTONS,
   PERIOD_BUTTONS,
   PERIOD_CONFIG,
 } from '@/lib/constants';
@@ -24,6 +25,8 @@ export default function CandlestickChart({
   liveOhlcv = null,
   mode = 'historical',
   initialPeriod = 'daily',
+  liveInterval,
+  setLiveInterval,
 }: CandlestickChartProps) {
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const chartRef = useRef<IChartApi | null>(null);
@@ -152,13 +155,37 @@ export default function CandlestickChart({
         <div className='flex-1'>{children}</div>
 
         <div className='button-group'>
+          <span className='text-sm mx-2 font-medium text-purple-100/50'>
+            Period:
+          </span>
           {PERIOD_BUTTONS.map(({ value, label }) => (
             <button
               key={value}
               className={
-                period === value ? 'period-button-active' : 'period-button'
+                period === value ? 'config-button-active' : 'config-button'
               }
               onClick={() => handlePeriodChange(value)}
+              disabled={loading}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {/* Update Frequency: as fast as 1s, for actively traded pools. */}
+        <div className='button-group'>
+          <span className='text-sm mx-2 font-medium text-purple-100/50'>
+            Update Frequency:
+          </span>
+          {LIVE_INTERVAL_BUTTONS.map(({ value, label }) => (
+            <button
+              key={value}
+              className={
+                liveInterval === value
+                  ? 'config-button-active'
+                  : 'config-button'
+              }
+              onClick={() => setLiveInterval(value)}
               disabled={loading}
             >
               {label}

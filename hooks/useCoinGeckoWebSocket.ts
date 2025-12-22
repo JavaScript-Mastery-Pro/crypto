@@ -5,6 +5,7 @@ const WS_BASE = `${process.env.NEXT_PUBLIC_COINGECKO_WEBSOCKET_URL}?x_cg_pro_api
 export function useCoinGeckoWebSocket({
   coinId,
   poolId,
+  liveInterval
 }: UseCoinGeckoWebSocketProps): UseCoinGeckoWebSocketReturn {
   const wsRef = useRef<WebSocket | null>(null);
   const subscribed = useRef<Set<string>>(new Set());
@@ -132,11 +133,11 @@ export function useCoinGeckoWebSocket({
 
       subscribe('OnchainOHLCV', {
         'network_id:pool_addresses': [poolAddress],
-        interval: '1s',
+        interval: liveInterval,
         action: 'set_pools',
       });
     }
-  }, [coinId, poolId, isWsReady]);
+  }, [coinId, poolId, isWsReady, liveInterval]);
 
   return {
     price,
