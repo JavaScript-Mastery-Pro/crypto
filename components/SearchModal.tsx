@@ -38,7 +38,7 @@ const SearchItem = ({ coin, onSelect, isActiveName }: SearchItemProps) => {
       className='search-item'
     >
       <div className='coin-info'>
-        <Image src={coin.thumb} alt={coin.name} width={32} height={32} />
+        <Image src={coin.thumb} alt={coin.name} width={40} height={40} />
 
         <div>
           <p className={cn('font-bold', isActiveName && 'text-white')}>

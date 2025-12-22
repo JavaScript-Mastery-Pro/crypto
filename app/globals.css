@@ -634,57 +634,59 @@
 
     .dialog {
       @apply bg-dark-400! max-w-sm sm:max-w-md md:max-w-2xl mx-auto;
+    }
 
-      .cmd-input {
-        @apply bg-dark-500!;
+    .cmd-input {
+      @apply bg-dark-500!;
 
-        input {
-          @apply placeholder:text-purple-100!;
+      input {
+        @apply placeholder:text-purple-100!;
+      }
+    }
+
+    .list {
+      @apply bg-dark-500 max-h-100;
+    }
+
+    .heading {
+      @apply flex items-center gap-2 text-purple-100;
+    }
+
+    .group {
+      @apply bg-dark-500 text-purple-100;
+    }
+  }
+
+  .dialog {
+    .empty {
+      @apply py-6 text-center text-sm text-gray-400;
+    }
+
+    .search-item {
+      @apply grid grid-cols-4 gap-4 items-center justify-between data-[selected=true]:bg-dark-400 transition-all !cursor-pointer hover:bg-dark-400 py-3;
+
+      .coin-info {
+        @apply flex gap-4 items-center col-span-2;
+
+        img {
+          @apply size-9 rounded-full;
+        }
+
+        div {
+          @apply flex flex-col;
+        }
+
+        .coin-symbol {
+          @apply text-sm text-purple-100 uppercase;
         }
       }
 
-      .list {
-        @apply bg-dark-500 max-h-100;
+      .coin-price {
+        @apply font-semibold text-sm lg:text-base;
       }
 
-      .empty {
-        @apply py-6 text-center text-sm text-gray-400;
-      }
-
-      .heading {
-        @apply flex items-center gap-2 text-purple-100;
-      }
-
-      .group {
-        @apply bg-dark-500 text-purple-100;
-      }
-
-      .search-item {
-        @apply grid! grid-cols-4! gap-4! items-center! data-[selected=true]:bg-dark-400! transition-all! cursor-pointer! hover:bg-dark-400/50! py-3!;
-
-        .coin-info {
-          @apply flex! gap-2! items-center! col-span-2!;
-
-          img {
-            @apply size-9 rounded-full;
-          }
-
-          div {
-            @apply flex flex-col;
-          }
-
-          .coin-symbol {
-            @apply text-sm text-purple-100 uppercase;
-          }
-        }
-
-        .coin-price {
-          @apply font-semibold text-sm lg:text-base;
-        }
-
-        .coin-change {
-          @apply flex gap-1 text-sm lg:text-base items-center font-medium;
-        }
+      .coin-change {
+        @apply flex gap-1 text-sm lg:text-base items-center font-medium;
       }
     }
   }
