@@ -9,8 +9,8 @@ export default function CoinCard({ coin }: { coin: TopGainersLosers }) {
   const isPositive = coin.price_change_percentage_24h >= 0;
 
   return (
-    <Link href={`/coins/${coin.id}`} id='coin-card' className='group'>
-      <div className='header'>
+    <Link href={`/coins/${coin.id}`} id='coin-card' className='flex justify-between'>
+      <div className='header mb-0'>
         <div className='relative size-10 flex-shrink-0'>
           <Image src={coin.image} alt={coin.name} fill className='rounded-full object-cover bg-dark-400' />
         </div>
@@ -20,7 +20,7 @@ export default function CoinCard({ coin }: { coin: TopGainersLosers }) {
         </div>
       </div>
 
-      <div className='text-right'>
+      <div className='text-right space-y-2'>
         <p className='font-bold text-sm'>{formatPrice(coin.current_price)}</p>
         <div
           className={cn(
