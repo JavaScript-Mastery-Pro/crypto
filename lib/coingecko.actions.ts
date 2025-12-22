@@ -38,11 +38,13 @@ export async function getCoinOHLC(
   days: number | string,
   currency: string = 'usd',
   interval?: 'daily' | 'hourly',
+    precision?: 'full' | string
 ): Promise<OHLCData[]> {
   const vsCurrency = currency && currency !== 'undefined' ? currency : 'usd';
   const params = new URLSearchParams({ vs_currency: vsCurrency, days: days.toString() });
 
   if (interval === 'daily') params.append('interval', interval);
+    if (precision) params.append('precision', precision);
 
   return fetcher<OHLCData[]>(`/coins/${id}/ohlc`, params);
 }
@@ -126,7 +128,6 @@ export async function searchCoins(query: string): Promise<SearchCoin[]> {
 }
 
 /* --- On-Chain Pool Actions --- */
-
 export async function fetchTopPool(network: string, contractAddress: string) {
   const data = await fetcher<{ data: any[] }>(`/onchain/networks/${network}/tokens/${contractAddress}/pools`);
   return data.data[0];

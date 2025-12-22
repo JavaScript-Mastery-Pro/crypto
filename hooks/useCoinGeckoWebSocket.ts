@@ -67,8 +67,7 @@ export function useCoinGeckoWebSocket({ coinId, poolId }: UseCoinGeckoWebSocketP
       }
 
       // OHLCV Stream (G3) - Corrected to Object Format
-      
-      if (msg.ch === 'G3') {
+       if (msg.ch === 'G3') {
         const timestamp = msg.t || 0;
         const newCandle: OHLCData = [
           timestamp,

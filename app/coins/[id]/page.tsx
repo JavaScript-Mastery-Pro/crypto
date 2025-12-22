@@ -11,7 +11,7 @@ import { formatPrice, timeAgo } from '@/lib/utils';
 export default async function CoinDetailsPage({ params }: CoinDetailsPageProps) {
   const { id } = await params;
 
-  const [coinData, coinOHLCData] = await Promise.all([getCoinDetails(id), getCoinOHLC(id, 1, 'usd', 'hourly')]);
+  const [coinData, coinOHLCData] = await Promise.all([getCoinDetails(id), getCoinOHLC(id, 1, 'usd', 'hourly', 'full')]);
 
   const platformId = coinData.asset_platform_id;
   const platform = platformId ? coinData.detail_platforms?.[platformId] : null;
