@@ -9,11 +9,11 @@ import { cn, formatPercentage, formatPrice } from '@/lib/utils';
 export const TrendingCoins = async () => {
   const trendingCoins = (await getTrendingCoins()) as TrendingCoin[];
 
-  const columns = [
+  const columns: DataTableColumn<TrendingCoin>[] = [
     {
       header: 'Name',
       cellClassName: 'name-cell',
-      cell: (coin: TrendingCoin) => {
+      cell: (coin) => {
         const item = coin.item;
 
         return (
@@ -27,7 +27,7 @@ export const TrendingCoins = async () => {
     {
       header: '24h Change',
       cellClassName: 'change-cell',
-      cell: (coin: TrendingCoin) => {
+      cell: (coin) => {
         const item = coin.item;
         const isTrendingUp = item.data.price_change_percentage_24h.usd > 0;
 
@@ -51,7 +51,7 @@ export const TrendingCoins = async () => {
     {
       header: 'Price',
       cellClassName: 'price-cell',
-      cell: (coin: TrendingCoin) => {
+      cell: (coin) => {
         return formatPrice(coin.item.data.price);
       },
     },

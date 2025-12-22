@@ -63,11 +63,11 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
     },
   ];
 
-  const exchangeColumns = [
+  const exchangeColumns: DataTableColumn<Ticker>[] = [
     {
       header: 'Exchange',
       cellClassName: 'exchange-name',
-      cell: (ticker: Ticker) => (
+      cell: (ticker) => (
         <>
           {ticker.market.name}
 
@@ -81,7 +81,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
     },
     {
       header: 'Pair',
-      cell: (ticker: Ticker) => (
+      cell: (ticker) => (
         <div className='pair'>
           <p>{ticker.base}</p>
           <span>/</span>
@@ -92,13 +92,13 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
     {
       header: 'Price',
       cellClassName: 'price-cell',
-      cell: (ticker: Ticker) => formatPrice(ticker.converted_last.usd),
+      cell: (ticker) => formatPrice(ticker.converted_last.usd),
     },
     {
       header: 'Last Traded',
       headClassName: 'text-end',
       cellClassName: 'time-cell',
-      cell: (ticker: Ticker) => timeAgo(ticker.timestamp),
+      cell: (ticker) => timeAgo(ticker.timestamp),
     },
   ];
 

@@ -7,16 +7,17 @@ import { cn, formatPercentage, formatPrice } from '@/lib/utils';
 
 export const Categories = async () => {
   const categories = (await getCategories()) as Category[];
-  const columns = [
+
+  const columns: DataTableColumn<Category>[] = [
     {
       header: 'Category',
       cellClassName: 'category-cell',
-      cell: (category: Category) => category.name,
+      cell: (category) => category.name,
     },
     {
       header: 'Top Gainers',
       cellClassName: 'top-gainers-cell',
-      cell: (category: Category) =>
+      cell: (category) =>
         category.top_3_coins.map((coin: string) => (
           <Image
             key={coin}
@@ -30,7 +31,7 @@ export const Categories = async () => {
     {
       header: '24h Change',
       cellClassName: 'change-header-cell',
-      cell: (category: Category) => {
+      cell: (category) => {
         const isTrendingUp = category.market_cap_change_24h > 0;
 
         return (
@@ -53,12 +54,12 @@ export const Categories = async () => {
     {
       header: 'Market Cap',
       cellClassName: 'market-cap-cell',
-      cell: (category: Category) => formatPrice(category.market_cap),
+      cell: (category) => formatPrice(category.market_cap),
     },
     {
       header: '24h Volume',
       cellClassName: 'volume-cell',
-      cell: (category: Category) => formatPrice(category.volume_24h),
+      cell: (category) => formatPrice(category.volume_24h),
     },
   ];
 

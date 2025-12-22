@@ -26,11 +26,11 @@ const Coins = async ({
   const estimatedTotalPages =
     currentPage >= 100 ? Math.ceil(currentPage / 100) * 100 + 100 : 100;
 
-  const columns = [
+  const columns: DataTableColumn<CoinMarketData>[] = [
     {
       header: 'Rank',
       cellClassName: 'rank-cell',
-      cell: (coin: CoinMarketData) => (
+      cell: (coin) => (
         <>
           #{coin.market_cap_rank}
           <Link href={`/coins/${coin.id}`} aria-label='View coin' />
@@ -40,7 +40,7 @@ const Coins = async ({
     {
       header: 'Token',
       cellClassName: 'token-cell',
-      cell: (coin: CoinMarketData) => (
+      cell: (coin) => (
         <div className='token-info'>
           <Image src={coin.image} alt={coin.name} width={36} height={36} />
           <p>
@@ -52,12 +52,12 @@ const Coins = async ({
     {
       header: 'Price',
       cellClassName: 'price-cell',
-      cell: (coin: CoinMarketData) => formatPrice(coin.current_price),
+      cell: (coin) => formatPrice(coin.current_price),
     },
     {
       header: '24h Change',
       cellClassName: 'change-cell',
-      cell: (coin: CoinMarketData) => {
+      cell: (coin) => {
         const isTrendingUp = coin.price_change_percentage_24h > 0;
 
         return (
@@ -76,7 +76,7 @@ const Coins = async ({
     {
       header: 'Market Cap',
       cellClassName: 'market-cap-cell',
-      cell: (coin: CoinMarketData) => formatPrice(coin.market_cap),
+      cell: (coin) => formatPrice(coin.market_cap),
     },
   ];
 

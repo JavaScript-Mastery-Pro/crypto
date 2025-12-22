@@ -19,26 +19,26 @@ export default function LiveDataWrapper({
     poolId,
   });
 
-  const tradeColumns = [
+  const tradeColumns: DataTableColumn<Trade>[] = [
     {
       header: 'Price',
       cellClassName: 'price-cell',
-      cell: (trade: Trade) => (trade.price ? formatPrice(trade.price) : '-'),
+      cell: (trade) => (trade.price ? formatPrice(trade.price) : '-'),
     },
     {
       header: 'Amount',
       cellClassName: 'amount-cell',
-      cell: (trade: Trade) => trade.amount?.toFixed(4) ?? '-',
+      cell: (trade) => trade.amount?.toFixed(4) ?? '-',
     },
     {
       header: 'Value',
       cellClassName: 'value-cell',
-      cell: (trade: Trade) => (trade.value ? formatPrice(trade.value) : '-'),
+      cell: (trade) => (trade.value ? formatPrice(trade.value) : '-'),
     },
     {
       header: 'Buy/Sell',
       cellClassName: 'type-cell',
-      cell: (trade: Trade) => (
+      cell: (trade) => (
         <span
           className={trade.type === 'b' ? 'text-green-500' : 'text-red-500'}
         >
@@ -49,8 +49,7 @@ export default function LiveDataWrapper({
     {
       header: 'Time',
       cellClassName: 'time-cell',
-      cell: (trade: Trade) =>
-        trade.timestamp ? timeAgo(trade.timestamp) : '-',
+      cell: (trade) => (trade.timestamp ? timeAgo(trade.timestamp) : '-'),
     },
   ];
 
