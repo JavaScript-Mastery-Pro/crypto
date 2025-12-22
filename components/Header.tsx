@@ -4,7 +4,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { navItems } from '@/lib/constants';
 import { SearchModal } from './SearchModal';
 
 export const Header = ({ trendingCoins = [] }: HeaderProps) => {
@@ -23,31 +22,26 @@ export const Header = ({ trendingCoins = [] }: HeaderProps) => {
         </Link>
 
         <nav>
-          {navItems.map((item) => {
-            const isActive = pathname === item.href;
+          <Link
+            href='/'
+            className={cn('nav-link', {
+              'is-active': pathname === '/',
+              'is-home': true,
+            })}
+          >
+            Home
+          </Link>
 
-            if (item.label === 'Search') {
-              return (
-                <SearchModal
-                  key={item.label}
-                  initialTrendingCoins={trendingCoins}
-                />
-              );
-            }
+          <SearchModal initialTrendingCoins={trendingCoins} />
 
-            return (
-              <Link
-                key={item.label}
-                href={item.href}
-                className={cn('nav-link', {
-                  'is-active': isActive,
-                  'is-home': item.label === 'Home',
-                })}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
+          <Link
+            href='/coins'
+            className={cn('nav-link', {
+              'is-active': pathname === '/coins',
+            })}
+          >
+            All Coins
+          </Link>
         </nav>
       </div>
     </header>
