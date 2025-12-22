@@ -12,9 +12,9 @@ import {
 } from '@/components/ui/command';
 import { Button } from './ui/button';
 import { searchCoins } from '@/lib/coingecko.actions';
-import { Search as SearchIcon, TrendingUp } from 'lucide-react';
+import { Search as SearchIcon, TrendingDown, TrendingUp } from 'lucide-react';
 import { useState } from 'react';
-import { cn, formatPercentage, formatPrice } from '@/lib/utils';
+import { cn, formatPercentage } from '@/lib/utils';
 import useSWR from 'swr';
 import { useDebounce, useKey } from 'react-use';
 
@@ -28,8 +28,6 @@ const SearchItem = ({ coin, onSelect, isActiveName }: SearchItemProps) => {
   const change = isSearchCoin
     ? (coin as SearchCoin).data?.price_change_percentage_24h ?? 0
     : (coin as TrendingCoin['item']).data.price_change_percentage_24h?.usd ?? 0;
-
-  const price = isSearchCoin ? coin.data?.price : coin.data.price;
 
   return (
     <CommandItem
@@ -48,16 +46,19 @@ const SearchItem = ({ coin, onSelect, isActiveName }: SearchItemProps) => {
         </div>
       </div>
 
-      {!price && <span className='coin-price'>{formatPrice(price)}</span>}
-
-      <p
+      <div
         className={cn('coin-change', {
           'text-green-500': change > 0,
           'text-red-500': change < 0,
         })}
       >
-        {formatPercentage(change)}
-      </p>
+        {change > 0 ? (
+          <TrendingUp size={14} className='text-green-500' />
+        ) : (
+          <TrendingDown size={14} className='text-red-500' />
+        )}
+        <span>{formatPercentage(Math.abs(change))}</span>
+      </div>
     </CommandItem>
   );
 };
@@ -151,15 +152,7 @@ export const SearchModal = ({
           )}
 
           {isTrendingListVisible && (
-            <CommandGroup
-              heading={
-                <div className='heading'>
-                  <TrendingUp size={16} />
-                  Trending Coins
-                </div>
-              }
-              className='group'
-            >
+            <CommandGroup className='group'>
               {trendingCoins.map(({ item }) => (
                 <SearchItem
                   key={item.id}

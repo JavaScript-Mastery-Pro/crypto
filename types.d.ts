@@ -117,8 +117,6 @@ interface TopGainersLosers {
   image: string;
   price: number;
   priceChangePercentage24h: number;
-  volume24: number;
-  rank: number;
 }
 
 interface TopGainersLosersResponse {

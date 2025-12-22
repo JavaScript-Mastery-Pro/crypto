@@ -16,8 +16,6 @@ const renderCoinCard = (coin: TopGainersLosersResponse) => (
     image={coin.image}
     price={coin.usd}
     priceChangePercentage24h={coin.usd_24h_change}
-    volume24={coin.usd_24h_vol}
-    rank={coin.market_cap_rank}
   />
 );
 

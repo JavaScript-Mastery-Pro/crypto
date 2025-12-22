@@ -113,12 +113,3 @@ export const PERIOD_BUTTONS: { value: Period; label: string }[] = [
   { value: 'yearly', label: '1Y' },
   { value: 'max', label: 'Max' },
 ];
-
-// Test Data
-export const orderBook = [
-  { price: '0.031 BTC', amountBTC: '0.5 BTC', amountETH: '$15,000' },
-  { price: '0.0305 BTC', amountBTC: '1.0 BTC', amountETH: '$30,000' },
-  { price: '0.0300 BTC', amountBTC: '2.0 BTC', amountETH: '$60,000' },
-  { price: '0.0295 BTC', amountBTC: '1.5 BTC', amountETH: '$45,000' },
-  { price: '0.0290 BTC', amountBTC: '3.0 BTC', amountETH: '$90,000' },
-];
