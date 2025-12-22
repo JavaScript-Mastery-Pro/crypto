@@ -22,8 +22,6 @@ export default function LiveDataWrapper({
     liveInterval,
   });
 
-  console.log('Live Interval:', liveInterval);
-
   const tradeColumns: DataTableColumn<Trade>[] = [
     {
       header: 'Price',
