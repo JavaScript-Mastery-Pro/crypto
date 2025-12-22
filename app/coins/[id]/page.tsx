@@ -16,12 +16,18 @@ import { formatPrice, timeAgo } from '@/lib/utils';
 const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
   const coinData = await getCoinDetails(id);
-
-  const pool = coinData.asset_platform_id
-    ? await fetchTopPool(coinData.asset_platform_id, coinData.contract_address)
-    : await fetchPools(id);
-
   const coinOHLCData = await getCoinOHLC(id, 1, 'usd', 'hourly', 'full');
+
+  const platform = coinData.asset_platform_id
+    ? coinData.detail_platforms[coinData.asset_platform_id]
+    : null;
+  const network = platform?.geckoterminal_url.split('/')[3] || null;
+  const contractAddress = platform?.contract_address || null;
+
+  const pool =
+    network && contractAddress
+      ? await fetchTopPool(network, contractAddress)
+      : await fetchPools(id);
 
   const coinDetails = [
     {
