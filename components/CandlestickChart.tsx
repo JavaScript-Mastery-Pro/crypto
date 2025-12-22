@@ -185,7 +185,7 @@ export default function CandlestickChart({
                   ? 'config-button-active'
                   : 'config-button'
               }
-              onClick={() => setLiveInterval(value)}
+              onClick={() => setLiveInterval && setLiveInterval(value)}
               disabled={loading}
             >
               {label}
