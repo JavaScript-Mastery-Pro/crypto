@@ -18,7 +18,6 @@ import {
 import { Button } from './ui/button';
 import { searchCoins } from '@/lib/coingecko.actions';
 import { cn, formatPercentage, formatPrice } from '@/lib/utils';
-import { SearchItemProps, TrendingCoin, SearchCoin } from '@/types';
 
 const SearchItem = ({ coin, onSelect, isActiveName }: SearchItemProps) => {
   const price = coin.data?.price;

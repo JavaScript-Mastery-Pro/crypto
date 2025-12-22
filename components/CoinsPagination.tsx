@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/pagination';
 import { buildPageNumbers, cn, ELLIPSIS } from '@/lib/utils';
 
-export default function CoinsPagination({ currentPage, totalPages, hasMorePages }: Pagination) {
+export default function CoinsPagination({ currentPage, totalPages, hasMorePages }: PaginationProps) {
   const router = useRouter();
 
   const handlePageChange = (page: number) => {

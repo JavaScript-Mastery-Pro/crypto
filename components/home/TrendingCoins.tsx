@@ -5,7 +5,6 @@ import { ArrowDownRight, ArrowUpRight } from 'lucide-react';
 import { DataTable } from '@/components/DataTable';
 import { getTrendingCoins } from '@/lib/coingecko.actions';
 import { cn, formatPercentage, formatPrice } from '@/lib/utils';
-import { DataTableColumn, TrendingCoin } from '@/types';
 
 export const TrendingCoins = async () => {
   const trendingCoins = await getTrendingCoins();
@@ -52,7 +51,7 @@ export const TrendingCoins = async () => {
         bodyCellClassName='py-2'
         columns={columns}
         data={trendingCoins.slice(0, 6)}
-        rowKey={(coin) => coin.item.id}
+        rowKey={(coin: TrendingCoin) => coin.item.id}
       />
     </section>
   );

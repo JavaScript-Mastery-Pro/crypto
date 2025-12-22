@@ -4,7 +4,6 @@ import { ArrowDownRight, ArrowUpRight } from 'lucide-react';
 import { DataTable } from '@/components/DataTable';
 import { getCategories } from '@/lib/coingecko.actions';
 import { cn, formatPercentage, formatPrice } from '@/lib/utils';
-import { DataTableColumn, Category } from '@/types';
 
 export const Categories = async () => {
   const categories = await getCategories();
@@ -59,7 +58,7 @@ export const Categories = async () => {
     <section id='categories' className='custom-scrollbar'>
       <h4>Top Categories</h4>
 
-      <DataTable tableClassName='mt-3' columns={columns} data={categories} rowKey={(category) => category.name} />
+      <DataTable tableClassName='mt-3' columns={columns} data={categories} rowKey={(category: Category) => category.name} />
     </section>
   );
 };

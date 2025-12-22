@@ -1,6 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use server';
-
-import { CoinMarketData, TrendingCoin, SearchCoin, Category, CoinDetailsData, OHLCData } from '@/types';
 
 const BASE_URL = process.env.COINGECKO_BASE_URL;
 const API_KEY = process.env.COINGECKO_API_KEY;

@@ -6,7 +6,6 @@ import CoinHeader from './CoinHeader';
 import { Separator } from './ui/separator';
 import CandlestickChart from './CandlestickChart';
 import { useCoinGeckoWebSocket } from '@/hooks/useCoinGeckoWebSocket';
-import { LiveDataProps, Trade } from '@/types';
 
 export default function LiveDataWrapper({ coinId, poolId, coin, coinOHLCData, children }: LiveDataProps) {
   const { price, trades, ohlcv } = useCoinGeckoWebSocket({ coinId, poolId });
@@ -65,7 +64,7 @@ export default function LiveDataWrapper({ coinId, poolId, coin, coinOHLCData, ch
           tableClassName='trades-table'
           columns={tradeColumns}
           data={trades || []}
-          rowKey={(t, i) => `${t.timestamp}-${i}`}
+          rowKey={(t: Trade, i: number) => `${t.timestamp}-${i}`}
         />
       </div>
 

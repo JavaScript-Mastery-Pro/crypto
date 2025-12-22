@@ -5,7 +5,6 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { Input } from '../ui/input';
 import { formatPrice } from '@/lib/utils';
-import { ConverterProps } from '@/types';
 
 export const Converter = ({ symbol, icon, priceList }: ConverterProps) => {
   const [currency, setCurrency] = useState('usd');

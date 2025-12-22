@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { SearchModal } from './SearchModal';
-import { HeaderProps } from '@/types';
+
 
 export const Header = ({ trendingCoins = [] }: HeaderProps) => {
   const pathname = usePathname();

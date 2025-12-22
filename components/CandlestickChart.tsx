@@ -6,7 +6,6 @@ import { createChart, CandlestickSeries, IChartApi, ISeriesApi } from 'lightweig
 import { getChartConfig, getCandlestickConfig, PERIOD_BUTTONS, PERIOD_CONFIG } from '@/lib/constants';
 import { convertOHLCData } from '@/lib/utils';
 import { getCoinOHLC } from '@/lib/coingecko.actions';
-import { CandlestickChartProps } from '@/types';
 
 export default function CandlestickChart({ initialData, coinId, children, height = 400 }: CandlestickChartProps) {
   const chartContainerRef = useRef<HTMLDivElement>(null);

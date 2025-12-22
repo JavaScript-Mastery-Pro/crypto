@@ -1,13 +1,5 @@
 'use client';
 
-import {
-  UseCoinGeckoWebSocketProps,
-  UseCoinGeckoWebSocketReturn,
-  ExtendedPriceData,
-  Trade,
-  OHLCData,
-  WebSocketMessage,
-} from '@/types';
 import { useEffect, useRef, useState, useCallback } from 'react';
 
 const WS_BASE = `${process.env.NEXT_PUBLIC_COINGECKO_WEBSOCKET_URL}?x_cg_pro_api_key=${process.env.NEXT_PUBLIC_COINGECKO_API_KEY}`;
@@ -75,14 +67,18 @@ export function useCoinGeckoWebSocket({ coinId, poolId }: UseCoinGeckoWebSocketP
       }
 
       // OHLCV Stream (G3) - Corrected to Object Format
+      
       if (msg.ch === 'G3') {
-        setOhlcv({
-          time: msg.t ?? Date.now(),
-          open: Number(msg.o ?? 0),
-          high: Number(msg.h ?? 0),
-          low: Number(msg.l ?? 0),
-          close: Number(msg.c ?? 0),
-        });
+        const timestamp = msg.t || 0;
+        const newCandle: OHLCData = [
+          timestamp,
+          Number(msg.o ?? 0),
+          Number(msg.h ?? 0),
+          Number(msg.l ?? 0),
+          Number(msg.c ?? 0),
+        ];
+
+        setOhlcv(newCandle);
       }
     };
 
@@ -118,9 +114,12 @@ export function useCoinGeckoWebSocket({ coinId, poolId }: UseCoinGeckoWebSocketP
     };
 
     // Reset data and re-subscribe on asset change
-    setPrice(null);
-    setTrades([]);
-    setOhlcv(null);
+     queueMicrotask(() => {
+      setPrice(null);
+      setTrades([]);
+      setOhlcv(null);
+    });
+
     unsubscribeAll();
 
     // Market Price Subscription

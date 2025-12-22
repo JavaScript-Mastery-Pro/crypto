@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { cn, formatPercentage, formatPrice } from '@/lib/utils';
 
-export default function CoinCard({ coin }: { coin: any }) {
+export default function CoinCard({ coin }: { coin: TopGainersLosers }) {
   const isPositive = coin.price_change_percentage_24h >= 0;
 
   return (

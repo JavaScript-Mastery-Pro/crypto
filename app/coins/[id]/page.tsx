@@ -7,7 +7,6 @@ import { TopGainersLosers } from '@/components/coin-details/TopGainersLosers';
 import LiveDataWrapper from '@/components/LiveDataWrapper';
 import { DataTable } from '@/components/DataTable';
 import { formatPrice, timeAgo } from '@/lib/utils';
-import { CoinDetailsPageProps, DataTableColumn, Ticker } from '@/types';
 
 export default async function CoinDetailsPage({ params }: CoinDetailsPageProps) {
   const { id } = await params;
@@ -15,7 +14,7 @@ export default async function CoinDetailsPage({ params }: CoinDetailsPageProps) 
   const [coinData, coinOHLCData] = await Promise.all([getCoinDetails(id), getCoinOHLC(id, 1, 'usd', 'hourly')]);
 
   const platformId = coinData.asset_platform_id;
-  const platform = platformId ? coinData.detail_platforms[platformId] : null;
+  const platform = platformId ? coinData.detail_platforms?.[platformId] : null;
   const network = platform?.geckoterminal_url?.split('/')[3] ?? null;
   const contractAddress = platform?.contract_address ?? null;
 
@@ -74,7 +73,7 @@ export default async function CoinDetailsPage({ params }: CoinDetailsPageProps) 
               tableClassName='exchange-table'
               columns={exchangeColumns}
               data={coinData.tickers.slice(0, 7)}
-              rowKey={(ticker, index) => `${ticker.market.name}-${ticker.target}-${index}`}
+              rowKey={(ticker: Ticker, index: number) => `${ticker.market.name}-${ticker.target}-${index}`}
               bodyCellClassName='py-3!'
             />
           </div>

@@ -1,13 +1,5 @@
-import React from 'react';
-
 // --- Shared Utility & Base Types ---
-type OHLCData = {
-  time: number;
-  open: number;
-  high: number;
-  low: number;
-  close: number;
-};
+type OHLCData = [number, number, number, number, number];
 
 type Period = 'daily' | 'weekly' | 'monthly' | '3months' | '6months' | 'yearly' | 'max';
 
@@ -79,6 +71,7 @@ interface SearchCoin {
 }
 
 interface Category {
+  id: string;
   name: string;
   top_3_coins: string[];
   market_cap_change_24h: number;
@@ -163,7 +156,7 @@ interface WebSocketMessage {
 // --- Component Prop Interfaces ---
 interface CandlestickChartProps {
   initialData: OHLCData[];
-  liveOhlcv: OHLCData | null; // Resolves TS2741 & TS2322
+  liveOhlcv?: OHLCData | null; // Resolves TS2741 & TS2322
   coinId: string;
   children?: React.ReactNode;
   mode?: 'live' | 'historical';
@@ -265,4 +258,13 @@ interface UseCoinGeckoWebSocketReturn {
   trades: Trade[];
   ohlcv: OHLCData | null;
   isConnected: boolean;
+}
+
+interface TopGainersLosers {
+  id: string;
+  name: string;
+  symbol: string;
+  image: string;
+  current_price: number;
+  price_change_percentage_24h: number;
 }

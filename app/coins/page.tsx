@@ -5,7 +5,6 @@ import { DataTable } from '@/components/DataTable';
 import CoinsPagination from '@/components/CoinsPagination';
 import { getCoinList } from '@/lib/coingecko.actions';
 import { cn, formatPercentage, formatPrice } from '@/lib/utils';
-import { CoinsPageProps, DataTableColumn, CoinMarketData } from '@/types';
 
 const CoinsPage = async ({ searchParams }: CoinsPageProps) => {
   const params = await searchParams;
