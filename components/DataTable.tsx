@@ -27,11 +27,9 @@ export const DataTable = <T,>({
             <TableHead
               key={columnIndex}
               className={cn(
-                'bg-dark-400 text-purple-100 py-4',
+                'bg-dark-400 text-purple-100 py-4 first:pl-5 last:pr-5',
                 headerCellClassName,
-                column.headClassName,
-                columnIndex === 0 && 'pl-5',
-                columnIndex === columns.length - 1 && 'pr-5'
+                column.headClassName
               )}
             >
               {column.header}
@@ -52,11 +50,9 @@ export const DataTable = <T,>({
               <TableCell
                 key={columnIndex}
                 className={cn(
-                  'py-4',
+                  'py-4 first:pl-5 last:pr-5',
                   bodyCellClassName,
-                  column.cellClassName,
-                  columnIndex === 0 && 'pl-5',
-                  columnIndex === columns.length - 1 && 'pr-5'
+                  column.cellClassName
                 )}
               >
                 {column.cell(row, rowIndex)}

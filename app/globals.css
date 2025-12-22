@@ -152,11 +152,11 @@
 
 @layer components {
   .container {
-    @apply px-4 sm:px-6 mx-auto max-w-[1440px];
+    @apply px-4 sm:px-6 mx-auto max-w-360;
   }
 
   .main-container {
-    @apply py-6 md:py-12 mx-auto px-4 sm:px-6 max-w-[1440px] w-full space-y-6 md:space-y-6;
+    @apply py-6 md:py-12 mx-auto px-4 sm:px-6 max-w-360 w-full space-y-6 md:space-y-6;
   }
 
   .badge {
@@ -223,7 +223,7 @@
     }
 
     .chart {
-      @apply w-full min-h-[200px];
+      @apply w-full min-h-50;
     }
   }
 
@@ -439,7 +439,7 @@
     }
 
     .chart {
-      @apply h-[360px];
+      @apply h-90;
     }
 
     .chart-skeleton {
@@ -500,7 +500,7 @@
   }
 
   #coin-details-page {
-    @apply py-12 px-4 sm:px-6 mx-auto max-w-[1440px] size-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 items-center gap-6 xl:gap-10 justify-center;
+    @apply py-12 px-4 sm:px-6 mx-auto max-w-360 size-full grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 items-center gap-6 xl:gap-10 justify-center;
 
     .primary {
       @apply size-full xl:col-span-2;
@@ -533,7 +533,7 @@
         @apply font-medium h-full flex py-4 pr-5 space-x-2;
 
         p {
-          @apply truncate max-w-[100px] h-full;
+          @apply truncate max-w-full h-full;
         }
       }
 
@@ -572,7 +572,7 @@
   }
 
   #coins-page {
-    @apply py-12 px-4 sm:px-6 mx-auto max-w-[1440px] size-full items-center gap-10 justify-center;
+    @apply py-12 px-4 sm:px-6 mx-auto max-w-360 size-full items-center gap-10 justify-center;
 
     .content {
       @apply flex flex-col w-full space-y-5;
@@ -586,7 +586,7 @@
       @apply bg-dark-500 rounded-xl max-h-fit overflow-hidden;
 
       .rank-cell {
-        @apply pl-5 max-w-[80px]! py-5 font-medium text-purple-100;
+        @apply pl-5 max-w-20! py-5 font-medium text-purple-100;
 
         a {
           @apply absolute inset-0 z-10;
@@ -644,7 +644,7 @@
       }
 
       .list {
-        @apply bg-dark-500 max-h-[400px];
+        @apply bg-dark-500 max-h-100;
       }
 
       .empty {
@@ -744,7 +744,7 @@
       }
 
       .select-content[data-converter] {
-        @apply bg-dark-400 max-h-[500px];
+        @apply bg-dark-400 max-h-125;
 
         .select-item {
           @apply cursor-pointer hover:bg-dark-500!;
@@ -780,7 +780,7 @@
       @apply flex gap-3 items-center;
 
       img {
-        @apply size-[45px] sm:size-[50px] xl:size-[77px];
+        @apply size-11.25 sm:size-12.5 xl:size-19.25;
       }
     }
 
