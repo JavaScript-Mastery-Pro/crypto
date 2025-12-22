@@ -530,10 +530,10 @@
       }
 
       .pair {
-        @apply font-medium h-full flex py-4 pr-5 space-x-2;
+        @apply font-medium h-full flex gap-2 py-4 pr-5 space-x-2;
 
         p {
-          @apply truncate max-w-full h-full;
+          @apply truncate max-w-60 h-full;
         }
       }
 

@@ -21,6 +21,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
   const platform = coinData.asset_platform_id
     ? coinData.detail_platforms[coinData.asset_platform_id]
     : null;
+
   const network = platform?.geckoterminal_url.split('/')[3] || null;
   const contractAddress = platform?.contract_address || null;
 
@@ -83,6 +84,7 @@ const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
       cell: (ticker: Ticker) => (
         <div className='pair'>
           <p>{ticker.base}</p>
+          <span>/</span>
           <p>{ticker.target}</p>
         </div>
       ),
