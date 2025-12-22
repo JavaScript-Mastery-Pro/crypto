@@ -86,15 +86,17 @@ export default function LiveDataWrapper({
 
       <Separator className='divider' />
 
-      <div className='trades'>
-        <h4>Recent Trades</h4>
-        <DataTable
-          tableClassName='trades-table'
-          columns={tradeColumns}
-          data={trades ?? []}
-          rowKey={(_, index) => index}
-        />
-      </div>
+      {tradeColumns && (
+        <div className='trades'>
+          <h4>Recent Trades</h4>
+          <DataTable
+            tableClassName='trades-table'
+            columns={tradeColumns}
+            data={trades ?? []}
+            rowKey={(_, index) => index}
+          />
+        </div>
+      )}
 
       {children}
     </section>
