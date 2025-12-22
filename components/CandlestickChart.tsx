@@ -14,7 +14,7 @@ import {
   PERIOD_CONFIG,
 } from '@/lib/constants';
 import { convertOHLCData } from '@/lib/utils';
-const { getCoinOHLC } = await import('@/lib/coingecko.actions');
+const { fetcher } = await import('@/lib/coingecko.actions');
 
 export default function CandlestickChart({
   data,
@@ -40,13 +40,12 @@ export default function CandlestickChart({
     try {
       const config = PERIOD_CONFIG[selectedPeriod];
 
-      const newData = await getCoinOHLC(
-        coinId,
-        config.days,
-        'usd',
-        config.interval,
-        'full'
-      );
+      const newData = await fetcher<OHLCData[]>(`/coins/${coinId}/ohlc`, {
+        vs_currency: 'usd',
+        days: config.days,
+        interval: config.interval,
+        precision: 'full',
+      });
 
       setOhlcData(newData ?? []);
     } catch (err) {

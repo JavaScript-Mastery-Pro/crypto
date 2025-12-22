@@ -1,34 +1,36 @@
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 
-import {
-  getCoinDetails,
-  getCoinOHLC,
-  fetchPools,
-  fetchTopPool,
-} from '@/lib/coingecko.actions';
+import { fetcher, getPools } from '@/lib/coingecko.actions';
 import { Converter } from '@/components/coin-details/Converter';
 import LiveDataWrapper from '@/components/LiveDataWrapper';
 import { TopGainersLosers } from '@/components/coin-details/TopGainersLosers';
 import { DataTable } from '@/components/DataTable';
 import { formatPrice, timeAgo } from '@/lib/utils';
 
-const CoinDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
+const CoinDetails = async ({ params }: NextPageProps) => {
   const { id } = await params;
-  const coinData = await getCoinDetails(id);
-  const coinOHLCData = await getCoinOHLC(id, 1, 'usd', 'hourly', 'full');
+
+  const [coinData, coinOHLCData] = await Promise.all([
+    fetcher<CoinDetailsData>(`/coins/${id}`, {
+      dex_pair_format: 'contract_address',
+    }),
+    fetcher<OHLCData[]>(`/coins/${id}/ohlc`, {
+      vs_currency: 'usd',
+      days: 1,
+      interval: 'hourly',
+      precision: 'full',
+    }),
+  ]);
 
   const platform = coinData.asset_platform_id
-    ? coinData.detail_platforms[coinData.asset_platform_id]
+    ? coinData.detail_platforms?.[coinData.asset_platform_id]
     : null;
 
   const network = platform?.geckoterminal_url.split('/')[3] || null;
   const contractAddress = platform?.contract_address || null;
 
-  const pool =
-    network && contractAddress
-      ? await fetchTopPool(network, contractAddress)
-      : await fetchPools(id);
+  const pool = await getPools(id, network, contractAddress);
 
   const coinDetails = [
     {

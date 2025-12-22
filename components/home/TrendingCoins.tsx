@@ -3,11 +3,15 @@ import Link from 'next/link';
 import { TrendingDown, TrendingUp } from 'lucide-react';
 
 import { DataTable } from '@/components/DataTable';
-import { getTrendingCoins } from '@/lib/coingecko.actions';
+import { fetcher } from '@/lib/coingecko.actions';
 import { cn, formatPercentage, formatPrice } from '@/lib/utils';
 
 export const TrendingCoins = async () => {
-  const trendingCoins = (await getTrendingCoins()) as TrendingCoin[];
+  const trendingCoins = await fetcher<{ coins: TrendingCoin[] }>(
+    '/search/trending',
+    undefined,
+    300
+  );
 
   const columns: DataTableColumn<TrendingCoin>[] = [
     {
@@ -64,7 +68,7 @@ export const TrendingCoins = async () => {
       <DataTable
         tableClassName='trending-coins-table mt-3'
         columns={columns}
-        data={trendingCoins.slice(0, 6)}
+        data={trendingCoins.coins.slice(0, 6) || []}
         rowKey={(_, index) => index}
         headerCellClassName='py-3!'
         bodyCellClassName='py-2!'

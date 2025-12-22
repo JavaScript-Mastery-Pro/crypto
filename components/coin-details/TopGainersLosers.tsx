@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import CoinCard from '../CoinCard';
-import { getTopGainersLosers } from '@/lib/coingecko.actions';
+import { fetcher } from '@/lib/coingecko.actions';
 
 const TAB_CONFIG = [
   { value: 'top-gainers', label: 'Top Gainers', key: 'top_gainers' },
@@ -20,7 +20,15 @@ const renderCoinCard = (coin: TopGainersLosersResponse) => (
 );
 
 export const TopGainersLosers = async () => {
-  const topGainersLosers = await getTopGainersLosers();
+  const data = await fetcher<{
+    top_gainers: TopGainersLosersResponse[];
+    top_losers: TopGainersLosersResponse[];
+  }>('/coins/top_gainers_losers', { vs_currency: 'usd' });
+
+  const topGainersLosers = {
+    top_gainers: data.top_gainers?.slice(0, 4) ?? [],
+    top_losers: data.top_losers?.slice(0, 4) ?? [],
+  };
 
   return (
     <Tabs defaultValue='top-gainers' id='top-gainers-losers'>

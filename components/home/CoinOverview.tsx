@@ -1,13 +1,20 @@
 import Image from 'next/image';
 
 import CandlestickChart from '../CandlestickChart';
-import { getCoinDetails, getCoinOHLC } from '@/lib/coingecko.actions';
+import { fetcher } from '@/lib/coingecko.actions';
 import { formatPrice } from '@/lib/utils';
 
 export const CoinOverview = async () => {
   const [coinData, coinOHLCData] = await Promise.all([
-    getCoinDetails('bitcoin'),
-    getCoinOHLC('bitcoin', 1, 'usd', 'hourly', 'full'),
+    fetcher<CoinDetailsData>('/coins/bitcoin', {
+      dex_pair_format: 'contract_address',
+    }),
+    fetcher<OHLCData[]>('/coins/bitcoin/ohlc', {
+      vs_currency: 'usd',
+      days: 1,
+      interval: 'hourly',
+      precision: 'full',
+    }),
   ]);
 
   return (

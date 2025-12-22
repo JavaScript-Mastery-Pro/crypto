@@ -1,5 +1,10 @@
 type OHLCData = [number, number, number, number, number];
 
+interface NextPageProps {
+  params: Promise<{ [key: string]: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
 interface CandlestickChartProps {
   data?: OHLCData[];
   liveOhlcv?: OHLCData | null;
@@ -177,6 +182,14 @@ interface CoinDetailsData {
   id: string;
   name: string;
   symbol: string;
+  asset_platform_id?: string | null;
+  detail_platforms?: Record<
+    string,
+    {
+      geckoterminal_url: string;
+      contract_address: string;
+    }
+  >;
   image: {
     large: string;
     small: string;
@@ -293,4 +306,17 @@ interface SearchItemProps {
   coin: SearchItemCoin;
   onSelect: (coinId: string) => void;
   isActiveName: boolean;
+}
+
+interface CoinGeckoErrorBody {
+  error?: string;
+}
+
+type QueryParams = Record<string, string | number | boolean | undefined>;
+
+interface PoolData {
+  id: string;
+  address: string;
+  name: string;
+  network: string;
 }
