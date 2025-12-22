@@ -1,189 +1,119 @@
 'use server';
 
-const baseUrl = process.env.COINGECKO_BASE_URL!;
-const header = {
-  method: 'GET',
-  headers: {
-    'x-cg-pro-api-key': process.env.COINGECKO_API_KEY!,
-  },
-  cache: 'no-store' as RequestCache,
-};
+import qs from 'query-string';
 
-// Get detailed information about a specific coin by its ID
-export async function getCoinDetails(id: string) {
-  const res = await fetch(
-    `${baseUrl}/coins/${id}?dex_pair_format=contract_address`,
-    header
-  );
+const BASE_URL = process.env.COINGECKO_BASE_URL;
+const API_KEY = process.env.COINGECKO_API_KEY;
 
-  if (!res.ok) throw new Error('Failed to fetch CoinGecko API data');
-  return res.json();
+if (!BASE_URL) {
+  throw new Error('Missing COINGECKO_BASE_URL environment variable');
 }
 
-// Get OHLC (Open, High, Low, Close) data for a coin
-export async function getCoinOHLC(
-  id: string,
-  days: number | string,
-  currency?: string,
-  interval?: 'daily' | 'hourly',
-  precision?: 'full' | string
-) {
-  const currencyParam = currency || 'usd';
-  const params = new URLSearchParams({
-    vs_currency: currencyParam,
-    days: days.toString(),
+if (!API_KEY) {
+  throw new Error('Missing COINGECKO_API_KEY environment variable');
+}
+
+export async function fetcher<T>(
+  endpoint: string,
+  params?: QueryParams,
+  revalidate = 60
+): Promise<T> {
+  const url = qs.stringifyUrl(
+    {
+      url: `${BASE_URL}${endpoint}`,
+      query: params,
+    },
+    { skipEmptyString: true, skipNull: true }
+  );
+
+  const response = await fetch(url, {
+    headers: {
+      'x-cg-pro-api-key': API_KEY,
+      'Content-Type': 'application/json',
+    } as Record<string, string>,
+    next: { revalidate },
   });
 
-  if (interval) params.append('interval', interval);
-  if (precision) params.append('precision', precision);
+  if (!response.ok) {
+    const errorBody: CoinGeckoErrorBody = await response
+      .json()
+      .catch(() => ({}));
+    throw new Error(
+      `API Error ${response.status}: ${errorBody.error || response.statusText}`
+    );
+  }
 
-  const res = await fetch(`${baseUrl}/coins/${id}/ohlc?${params}`, header);
-
-  if (!res.ok) throw new Error('Failed to fetch CoinGecko API data');
-  return res.json();
+  return response.json();
 }
 
-// Get trending coins
-export async function getTrendingCoins() {
-  const res = await fetch(`${baseUrl}/search/trending`, header);
+export async function searchCoins(query: string): Promise<SearchCoin[]> {
+  if (!query?.trim()) return [];
 
-  if (!res.ok) throw new Error('Failed to fetch trending coins');
-
-  const data = await res.json();
-  return data.coins || [];
-}
-
-// Get coin categories
-export async function getCategories() {
-  const res = await fetch(`${baseUrl}/coins/categories`, header);
-
-  if (!res.ok) throw new Error('Failed to fetch categories');
-
-  const data = await res.json();
-  return data.slice(0, 10) || [];
-}
-
-// Get a list of coins with market data
-export async function getCoinList(page: number = 1, perPage: number = 50) {
-  const params = new URLSearchParams({
-    vs_currency: 'usd',
-    order: 'market_cap_desc',
-    per_page: perPage.toString(),
-    page: page.toString(),
-    sparkline: 'false',
-    locale: 'en',
-    price_change_percentage: '24h',
+  const searchData = await fetcher<{ coins: SearchCoin[] }>('/search', {
+    query,
   });
+  const coins = searchData.coins?.slice(0, 10) ?? [];
 
-  const res = await fetch(`${baseUrl}/coins/markets?${params}`, header);
-
-  if (!res.ok) throw new Error('Failed to fetch CoinGecko API data');
-  return res.json();
-}
-
-// Get top gainers and losers
-export async function getTopGainersLosers() {
-  const res = await fetch(
-    `${baseUrl}/coins/top_gainers_losers?vs_currency=usd`,
-    header
-  );
-
-  if (!res.ok) throw new Error('Failed to fetch top gainers/losers');
-
-  const data = await res.json();
-  return {
-    top_gainers: data.top_gainers.slice(0, 4) || [],
-    top_losers: data.top_losers.slice(0, 4) || [],
-  };
-}
-
-// Search for coins by query
-export async function searchCoins(query: string) {
-  if (!query || query.trim().length === 0) return [];
-
-  const res = await fetch(
-    `${baseUrl}/search?query=${encodeURIComponent(query)}`,
-    header
-  );
-
-  if (!res.ok) throw new Error('Failed to fetch search data');
-
-  const data = await res.json();
-  const coins = data.coins || [];
-
-  // Get price data for the search results (limit to first 10)
-  const coinIds = coins.slice(0, 10).map((coin: SearchCoin) => coin.id);
-
-  if (coinIds.length === 0) return [];
+  if (coins.length === 0) return [];
 
   try {
-    const priceParams = new URLSearchParams({
+    const coinIds = coins.map((coin) => coin.id).join(',');
+    const priceData = await fetcher<CoinMarketData[]>('/coins/markets', {
       vs_currency: 'usd',
-      ids: coinIds.join(','),
-      order: 'market_cap_desc',
-      per_page: '10',
-      page: '1',
-      sparkline: 'false',
+      ids: coinIds,
     });
+    const priceMap = new Map(priceData.map((coin) => [coin.id, coin]));
 
-    const priceRes = await fetch(
-      `${baseUrl}/coins/markets?${priceParams}`,
-      header
+    return coins.map((coin) => {
+      const market = priceMap.get(coin.id);
+      return {
+        ...coin,
+        data: {
+          price: market?.current_price,
+          price_change_percentage_24h: market?.price_change_percentage_24h ?? 0,
+        },
+      };
+    });
+  } catch (error) {
+    console.error('Search enrichment failed:', error);
+    return coins.map((coin) => ({
+      ...coin,
+      data: {
+        price: undefined,
+        price_change_percentage_24h: 0,
+      },
+    }));
+  }
+}
+
+export async function getPools(
+  id: string,
+  network?: string | null,
+  contractAddress?: string | null
+): Promise<PoolData> {
+  const fallback: PoolData = {
+    id: '',
+    address: '',
+    name: '',
+    network: '',
+  };
+
+  if (network && contractAddress) {
+    const poolData = await fetcher<{ data: PoolData[] }>(
+      `/onchain/networks/${network}/tokens/${contractAddress}/pools`
     );
 
-    if (priceRes.ok) {
-      const priceData = await priceRes.json();
-
-      // Create a map of coin prices
-      const priceMap = new Map<string, { price: number }>(
-        priceData.map((coin: CoinMarketData) => [
-          coin.id,
-          {
-            price: coin.current_price,
-            price_change_percentage_24h: coin.price_change_percentage_24h,
-          },
-        ])
-      );
-
-      return coins.slice(0, 10).map((coin: SearchCoin) => ({
-        ...coin,
-        data: priceMap.get(coin.id) || undefined,
-      }));
-    }
-  } catch (error) {
-    console.error('Failed to fetch price data for search results:', error);
+    return poolData.data?.[0] ?? fallback;
   }
 
-  return coins.slice(0, 10);
-}
+  try {
+    const poolData = await fetcher<{ data: PoolData[] }>(
+      '/onchain/search/pools',
+      { query: id }
+    );
 
-// Fetch the top pool for a given network and contract address
-export async function fetchTopPool(network: string, contractAddress: string) {
-  const res = await fetch(
-    `${baseUrl}/onchain/networks/${network}/tokens/${contractAddress}/pools`,
-    header
-  );
-
-  if (!res.ok) throw new Error('Failed to fetch top pool data');
-
-  const data = await res.json();
-  return data.data[0];
-}
-
-// Fetch pools by coin ID for coins that has no specific network
-export async function fetchPools(id: string) {
-  const res = await fetch(
-    `${baseUrl}/onchain/search/pools?query=${encodeURIComponent(id)}`,
-    header
-  );
-
-  if (!res.ok) {
-    console.warn(`No pool data found for ${id}`);
-    return { id: '', address: '', name: '', network: '' };
+    return poolData.data?.[0] ?? fallback;
+  } catch {
+    return fallback;
   }
-
-  const data = await res.json();
-  return data.data[0];
 }
-
-

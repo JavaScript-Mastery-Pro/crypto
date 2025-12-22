@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { Header } from '@/components/Header';
-import { getTrendingCoins } from '@/lib/coingecko.actions';
+import { fetcher } from '@/lib/coingecko.actions';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -24,14 +24,18 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const trendingCoins = await getTrendingCoins();
+  const trendingCoins = await fetcher<{ coins: TrendingCoin[] }>(
+    '/search/trending',
+    undefined,
+    300
+  );
 
   return (
     <html lang='en' className='dark'>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Header trendingCoins={trendingCoins || []} />
+        <Header trendingCoins={trendingCoins.coins || []} />
         {children}
       </body>
     </html>

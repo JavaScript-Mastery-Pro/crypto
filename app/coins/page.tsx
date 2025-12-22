@@ -1,4 +1,4 @@
-import { getCoinList } from '@/lib/coingecko.actions';
+import { fetcher } from '@/lib/coingecko.actions';
 import { DataTable } from '@/components/DataTable';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -6,16 +6,20 @@ import Link from 'next/link';
 import CoinsPagination from '@/components/CoinsPagination';
 import { cn, formatPercentage, formatPrice } from '@/lib/utils';
 
-const Coins = async ({
-  searchParams,
-}: {
-  searchParams: Promise<{ page?: string }>;
-}) => {
-  const params = await searchParams;
-  const currentPage = Number(params.page) || 1;
+const Coins = async ({ searchParams }: NextPageProps) => {
+  const { page } = await searchParams;
+
+  const currentPage = Number(page) || 1;
   const perPage = 10;
 
-  const coinsData = await getCoinList(currentPage, perPage);
+  const coinsData = await fetcher<CoinMarketData[]>('/coins/markets', {
+    vs_currency: 'usd',
+    order: 'market_cap_desc',
+    per_page: perPage,
+    page: currentPage,
+    sparkline: 'false',
+    price_change_percentage: '24h',
+  });
 
   // CoinGecko API doesn't return total count, so we determine pagination dynamically:
   // - If we receive fewer items than perPage, we're on the last page

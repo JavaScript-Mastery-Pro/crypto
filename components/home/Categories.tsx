@@ -2,11 +2,11 @@ import { TrendingDown, TrendingUp } from 'lucide-react';
 import Image from 'next/image';
 
 import { DataTable } from '@/components/DataTable';
-import { getCategories } from '@/lib/coingecko.actions';
+import { fetcher } from '@/lib/coingecko.actions';
 import { cn, formatPercentage, formatPrice } from '@/lib/utils';
 
 export const Categories = async () => {
-  const categories = (await getCategories()) as Category[];
+  const categories = await fetcher<Category[]>('/coins/categories');
 
   const columns: DataTableColumn<Category>[] = [
     {
@@ -69,7 +69,7 @@ export const Categories = async () => {
       <DataTable
         tableClassName='mt-3'
         columns={columns}
-        data={categories}
+        data={categories?.slice(0, 10) ?? []}
         rowKey={(_, index) => index}
       />
     </div>
