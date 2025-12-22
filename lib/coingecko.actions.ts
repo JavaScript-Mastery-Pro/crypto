@@ -38,13 +38,13 @@ export async function getCoinOHLC(
   days: number | string,
   currency: string = 'usd',
   interval?: 'daily' | 'hourly',
-    precision?: 'full' | string
+  precision?: 'full' | string
 ): Promise<OHLCData[]> {
   const vsCurrency = currency && currency !== 'undefined' ? currency : 'usd';
   const params = new URLSearchParams({ vs_currency: vsCurrency, days: days.toString() });
 
-  if (interval === 'daily') params.append('interval', interval);
-    if (precision) params.append('precision', precision);
+  if (interval) params.append('interval', interval);
+  if (precision) params.append('precision', precision);
 
   return fetcher<OHLCData[]>(`/coins/${id}/ohlc`, params);
 }

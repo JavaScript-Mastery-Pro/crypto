@@ -30,6 +30,7 @@ export default function CandlestickChart({ initialData, liveOhlcv, coinId, child
         config.days,
         'usd', // Add 'usd' explicitly here
         config.interval, // Interval is the 4th argument
+        'full'
       );
 
       setOhlcData(data);
@@ -42,11 +43,26 @@ export default function CandlestickChart({ initialData, liveOhlcv, coinId, child
   useEffect(() => {
     if (!chartContainerRef.current) return;
 
-    const chart = createChart(chartContainerRef.current, getChartConfig(height));
+    const showTime = ['daily', 'weekly', 'monthly'].includes(period);
+    const chart = createChart(chartContainerRef.current, {
+      ...getChartConfig(height, showTime),
+      width: chartContainerRef.current.clientWidth,
+    });
+
+    // const chart = createChart(chartContainerRef.current, getChartConfig(height));
     const series = chart.addSeries(CandlestickSeries, getCandlestickConfig());
+
+    series.setData(convertOHLCData(ohlcData));
+    chart.timeScale().fitContent();
 
     chartRef.current = chart;
     seriesRef.current = series;
+
+        const observer = new ResizeObserver((entries) => {
+      if (!entries.length) return;
+      chart.applyOptions({ width: entries[0].contentRect.width });
+    });
+    observer.observe(chartContainerRef.current);
 
     // Handle Resize
     const handleResize = () => {

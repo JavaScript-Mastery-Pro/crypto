@@ -35,7 +35,10 @@ export const getCandlestickConfig = (): CandlestickSeriesPartialOptions => ({
   wickVisible: true,
 });
 
-export const getChartConfig = (height: number, timeVisible: boolean = true): DeepPartial<ChartOptions> => ({
+export const getChartConfig = (
+  height: number,
+  timeVisible: boolean = true
+): DeepPartial<ChartOptions> => ({
   width: 0,
   height,
   layout: {
@@ -78,11 +81,15 @@ export const getChartConfig = (height: number, timeVisible: boolean = true): Dee
     },
   },
   localization: {
-    priceFormatter: (price: number) => '$' + price.toLocaleString(undefined, { maximumFractionDigits: 2 }),
+    priceFormatter: (price: number) =>
+      '$' + price.toLocaleString(undefined, { maximumFractionDigits: 2 }),
   },
 });
 
-export const PERIOD_CONFIG: Record<Period, { days: number | string; interval?: 'hourly' | 'daily' }> = {
+export const PERIOD_CONFIG: Record<
+  Period,
+  { days: number | string; interval?: 'hourly' | 'daily' }
+> = {
   daily: { days: 1, interval: 'hourly' },
   weekly: { days: 7, interval: 'hourly' },
   monthly: { days: 30, interval: 'hourly' },
@@ -91,7 +98,6 @@ export const PERIOD_CONFIG: Record<Period, { days: number | string; interval?: '
   yearly: { days: 365 },
   max: { days: 'max' },
 };
-
 export const PERIOD_BUTTONS: { value: Period; label: string }[] = [
   { value: 'daily', label: '1D' },
   { value: 'weekly', label: '1W' },
@@ -100,13 +106,4 @@ export const PERIOD_BUTTONS: { value: Period; label: string }[] = [
   { value: '6months', label: '6M' },
   { value: 'yearly', label: '1Y' },
   { value: 'max', label: 'Max' },
-];
-
-// Test Data
-export const orderBook = [
-  { price: '0.031 BTC', amountBTC: '0.5 BTC', amountETH: '$15,000' },
-  { price: '0.0305 BTC', amountBTC: '1.0 BTC', amountETH: '$30,000' },
-  { price: '0.0300 BTC', amountBTC: '2.0 BTC', amountETH: '$60,000' },
-  { price: '0.0295 BTC', amountBTC: '1.5 BTC', amountETH: '$45,000' },
-  { price: '0.0290 BTC', amountBTC: '3.0 BTC', amountETH: '$90,000' },
 ];
