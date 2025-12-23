@@ -173,25 +173,27 @@ export default function CandlestickChart({
         </div>
 
         {/* Update Frequency: as fast as 1s, for actively traded pools. */}
-        <div className='button-group'>
-          <span className='text-sm mx-2 font-medium text-purple-100/50'>
-            Update Frequency:
-          </span>
-          {LIVE_INTERVAL_BUTTONS.map(({ value, label }) => (
-            <button
-              key={value}
-              className={
-                liveInterval === value
-                  ? 'config-button-active'
-                  : 'config-button'
-              }
-              onClick={() => setLiveInterval && setLiveInterval(value)}
-              disabled={loading}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
+        {liveInterval && (
+          <div className='button-group'>
+            <span className='text-sm mx-2 font-medium text-purple-100/50'>
+              Update Frequency:
+            </span>
+            {LIVE_INTERVAL_BUTTONS.map(({ value, label }) => (
+              <button
+                key={value}
+                className={
+                  liveInterval === value
+                    ? 'config-button-active'
+                    : 'config-button'
+                }
+                onClick={() => setLiveInterval && setLiveInterval(value)}
+                disabled={loading}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <div ref={chartContainerRef} className='chart' style={{ height }} />
