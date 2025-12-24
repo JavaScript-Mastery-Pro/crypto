@@ -6,7 +6,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatPrice(
+export function formatCurrency(
   value: number | null | undefined,
   digits?: number,
   currency?: string,

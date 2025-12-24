@@ -4,7 +4,7 @@ import { TrendingDown, TrendingUp } from 'lucide-react';
 
 import { DataTable } from '@/components/DataTable';
 import { fetcher } from '@/lib/coingecko.actions';
-import { cn, formatPercentage, formatPrice } from '@/lib/utils';
+import { cn, formatPercentage, formatCurrency } from '@/lib/utils';
 
 export const TrendingCoins = async () => {
   const trendingCoins = await fetcher<{ coins: TrendingCoin[] }>(
@@ -56,7 +56,7 @@ export const TrendingCoins = async () => {
       header: 'Price',
       cellClassName: 'price-cell',
       cell: (coin) => {
-        return formatPrice(coin.item.data.price);
+        return formatCurrency(coin.item.data.price);
       },
     },
   ];

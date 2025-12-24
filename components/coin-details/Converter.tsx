@@ -10,7 +10,7 @@ import {
 import Image from 'next/image';
 import { useState } from 'react';
 import { Input } from '../ui/input';
-import { formatPrice } from '@/lib/utils';
+import { formatCurrency } from '@/lib/utils';
 
 export const Converter = ({ symbol, icon, priceList }: ConverterProps) => {
   const [currency, setCurrency] = useState('usd');
@@ -50,7 +50,7 @@ export const Converter = ({ symbol, icon, priceList }: ConverterProps) => {
         </div>
 
         <div className='output-wrapper'>
-          <p>{formatPrice(convertedPrice, 2, currency, false)}</p>
+          <p>{formatCurrency(convertedPrice, 2, currency, false)}</p>
 
           <Select value={currency} onValueChange={setCurrency}>
             <SelectTrigger className='select-trigger' value={currency}>

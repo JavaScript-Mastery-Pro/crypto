@@ -4,7 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
 
-import { formatPrice, formatPercentage, cn } from '@/lib/utils';
+import { formatCurrency, formatPercentage, cn } from '@/lib/utils';
 
 export default function CoinCard({
   id,
@@ -36,7 +36,7 @@ export default function CoinCard({
       </div>
 
       <div className='text-right space-y-2'>
-        <p className='font-bold text-sm'>{formatPrice(price)}</p>
+        <p className='font-bold text-sm'>{formatCurrency(price)}</p>
         <div
           className={cn(
             'flex items-center justify-end gap-1 text-xs font-bold',

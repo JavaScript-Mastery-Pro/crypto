@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 import { DataTable } from '@/components/DataTable';
 import { fetcher } from '@/lib/coingecko.actions';
-import { cn, formatPercentage, formatPrice } from '@/lib/utils';
+import { cn, formatPercentage, formatCurrency } from '@/lib/utils';
 
 export const Categories = async () => {
   const categories = await fetcher<Category[]>('/coins/categories');
@@ -54,12 +54,12 @@ export const Categories = async () => {
     {
       header: 'Market Cap',
       cellClassName: 'market-cap-cell',
-      cell: (category) => formatPrice(category.market_cap),
+      cell: (category) => formatCurrency(category.market_cap),
     },
     {
       header: '24h Volume',
       cellClassName: 'volume-cell',
-      cell: (category) => formatPrice(category.volume_24h),
+      cell: (category) => formatCurrency(category.volume_24h),
     },
   ];
 

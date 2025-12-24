@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 import CandlestickChart from '../CandlestickChart';
 import { fetcher } from '@/lib/coingecko.actions';
-import { formatPrice } from '@/lib/utils';
+import { formatCurrency } from '@/lib/utils';
 
 export const CoinOverview = async () => {
   const [coinData, coinOHLCData] = await Promise.all([
@@ -31,7 +31,7 @@ export const CoinOverview = async () => {
             <p>
               {coinData.name} / {coinData.symbol.toUpperCase()}
             </p>
-            <h1>{formatPrice(coinData.market_data.current_price.usd)}</h1>
+            <h1>{formatCurrency(coinData.market_data.current_price.usd)}</h1>
           </div>
         </div>
       </CandlestickChart>

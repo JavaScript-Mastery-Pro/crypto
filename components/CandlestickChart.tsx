@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useTransition } from 'react';
 import {
   IChartApi,
   ISeriesApi,
@@ -34,12 +34,11 @@ export default function CandlestickChart({
 
   const [period, setPeriod] = useState<Period>(initialPeriod);
   const [ohlcData, setOhlcData] = useState<OHLCData[]>(data ?? []);
-  const [loading, setLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const prevOhlcDataLength = useRef<number>(data?.length ?? 0);
 
   // Fetch OHLC data when period changes
   const fetchOHLCData = async (selectedPeriod: Period) => {
-    setLoading(true);
     try {
       const config = PERIOD_CONFIG[selectedPeriod];
 
@@ -50,11 +49,11 @@ export default function CandlestickChart({
         precision: 'full',
       });
 
-      setOhlcData(newData ?? []);
+      startTransition(() => {
+        setOhlcData(newData ?? []);
+      });
     } catch (err) {
       console.error('Failed to fetch OHLC data:', err);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -165,7 +164,7 @@ export default function CandlestickChart({
                 period === value ? 'config-button-active' : 'config-button'
               }
               onClick={() => handlePeriodChange(value)}
-              disabled={loading}
+              disabled={isPending}
             >
               {label}
             </button>
@@ -181,16 +180,16 @@ export default function CandlestickChart({
             {LIVE_INTERVAL_BUTTONS.map(({ value, label }) => (
               <button
                 key={value}
-                className={
-                  liveInterval === value
-                    ? 'config-button-active'
-                    : 'config-button'
-                }
-                onClick={() => setLiveInterval && setLiveInterval(value)}
-                disabled={loading}
-              >
-                {label}
-              </button>
+              className={
+                liveInterval === value
+                  ? 'config-button-active'
+                  : 'config-button'
+              }
+              onClick={() => setLiveInterval && setLiveInterval(value)}
+              disabled={isPending}
+            >
+              {label}
+            </button>
             ))}
           </div>
         )}

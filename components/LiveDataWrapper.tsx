@@ -4,7 +4,7 @@ import { DataTable } from '@/components/DataTable';
 import CoinHeader from './CoinHeader';
 import { Separator } from './ui/separator';
 import CandlestickChart from './CandlestickChart';
-import { formatPrice, timeAgo } from '@/lib/utils';
+import { formatCurrency, timeAgo } from '@/lib/utils';
 import { useCoinGeckoWebSocket } from '@/hooks/useCoinGeckoWebSocket';
 import { useState } from 'react';
 
@@ -26,7 +26,7 @@ export default function LiveDataWrapper({
     {
       header: 'Price',
       cellClassName: 'price-cell',
-      cell: (trade) => (trade.price ? formatPrice(trade.price) : '-'),
+      cell: (trade) => (trade.price ? formatCurrency(trade.price) : '-'),
     },
     {
       header: 'Amount',
@@ -36,7 +36,7 @@ export default function LiveDataWrapper({
     {
       header: 'Value',
       cellClassName: 'value-cell',
-      cell: (trade) => (trade.value ? formatPrice(trade.value) : '-'),
+      cell: (trade) => (trade.value ? formatCurrency(trade.value) : '-'),
     },
     {
       header: 'Buy/Sell',

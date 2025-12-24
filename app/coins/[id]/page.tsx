@@ -6,7 +6,7 @@ import { Converter } from '@/components/coin-details/Converter';
 import LiveDataWrapper from '@/components/LiveDataWrapper';
 import { TopGainersLosers } from '@/components/coin-details/TopGainersLosers';
 import { DataTable } from '@/components/DataTable';
-import { formatPrice, timeAgo } from '@/lib/utils';
+import { formatCurrency, timeAgo } from '@/lib/utils';
 
 const CoinDetails = async ({ params }: NextPageProps) => {
   const { id } = await params;
@@ -35,7 +35,7 @@ const CoinDetails = async ({ params }: NextPageProps) => {
   const coinDetails = [
     {
       label: 'Market Cap',
-      value: formatPrice(coinData.market_data.market_cap.usd),
+      value: formatCurrency(coinData.market_data.market_cap.usd),
     },
     {
       label: 'Market Cap Rank',
@@ -43,7 +43,7 @@ const CoinDetails = async ({ params }: NextPageProps) => {
     },
     {
       label: 'Total Volume',
-      value: formatPrice(coinData.market_data.total_volume.usd),
+      value: formatCurrency(coinData.market_data.total_volume.usd),
     },
     {
       label: 'Website',
@@ -94,7 +94,7 @@ const CoinDetails = async ({ params }: NextPageProps) => {
     {
       header: 'Price',
       cellClassName: 'price-cell',
-      cell: (ticker) => formatPrice(ticker.converted_last.usd),
+      cell: (ticker) => formatCurrency(ticker.converted_last.usd),
     },
     {
       header: 'Last Traded',
